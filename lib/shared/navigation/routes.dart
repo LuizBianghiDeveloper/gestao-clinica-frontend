@@ -8,7 +8,6 @@ import 'package:go_router/go_router.dart';
 
 import '../../responsive.dart';
 import '../widgets/sidemenu/sidebar.dart';
-import '../widgets/sidemenu/tab_sidebar.dart';
 
 final routerConfig = GoRouter(
   initialLocation: '/sign-in',
@@ -21,7 +20,7 @@ final routerConfig = GoRouter(
             body: Row(
               children: [
                 if (showSidebar && Responsive.isDesktop(context)) const Sidebar(),
-                if (showSidebar && Responsive.isTablet(context)) const TabSidebar(),
+                if (showSidebar && Responsive.isTablet(context)) const Sidebar(),
                 Expanded(
                   child: child,
                 ),
