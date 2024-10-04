@@ -1,23 +1,32 @@
-import 'package:core_dashboard/pages/dashboard/widgets/theme_tabs.dart';
 import 'package:core_dashboard/responsive.dart';
 import 'package:core_dashboard/shared/constants/defaults.dart';
 import 'package:core_dashboard/shared/constants/ghaps.dart';
-import 'package:core_dashboard/shared/widgets/sidemenu/customer_info.dart';
-import 'package:core_dashboard/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../constants/config.dart';
 import 'menu_tile.dart';
 
-class Sidebar extends StatelessWidget {
+class Sidebar extends StatefulWidget {
   const Sidebar({super.key});
+
+  @override
+  _SidebarState createState() => _SidebarState();
+}
+
+class _SidebarState extends State<Sidebar> {
+  int _activeIndex = 0;
+
+  void _onItemPressed(int index) {
+    setState(() {
+      _activeIndex = index;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      // width: Responsive.isMobile(context) ? double.infinity : null,
-      // width: MediaQuery.of(context).size.width < 1300 ? 260 : null,
       child: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -56,13 +65,15 @@ class Sidebar extends StatelessWidget {
                 child: ListView(
                   children: [
                     MenuTile(
-                      isActive: true,
+                      isActive: _activeIndex == 0,
                       title: "Início",
                       activeIconSrc: "assets/icons/home_filled.svg",
                       inactiveIconSrc: "assets/icons/home_light.svg",
-                      onPressed: () {},
+                      onPressed: () {
+                        _onItemPressed(0);
+                        context.go('/');
+                      },
                     ),
-                    // Customers
                     ExpansionTile(
                       leading: SvgPicture.asset(
                           "assets/icons/profile_circled_light.svg"),
@@ -76,55 +87,83 @@ class Sidebar extends StatelessWidget {
                       children: [
                         MenuTile(
                           isSubmenu: true,
+                          isActive: _activeIndex == 1, // Verifica item ativo
                           title: "Cliente",
-                          onPressed: () {},
+                          onPressed: () {
+                            _onItemPressed(1); // Atualiza o item ativo
+                          },
                         ),
                         MenuTile(
                           isSubmenu: true,
+                          isActive: _activeIndex == 2,
                           title: "Usuário",
-                          onPressed: () {},
+                          onPressed: () {
+                            _onItemPressed(2);
+                          },
                         ),
                         MenuTile(
                           isSubmenu: true,
+                          isActive: _activeIndex == 3,
                           title: "Produtos",
                           count: 16,
-                          onPressed: () {},
+                          onPressed: () {
+                            _onItemPressed(3);
+                          },
                         ),
                         MenuTile(
                           isSubmenu: true,
+                          isActive: _activeIndex == 4,
                           title: "Profissional",
-                          onPressed: () {},
+                          onPressed: () {
+                            _onItemPressed(4);
+                          },
                         ),
                         MenuTile(
                           isSubmenu: true,
+                          isActive: _activeIndex == 5,
                           title: "Sala",
-                          onPressed: () {},
+                          onPressed: () {
+                            _onItemPressed(5);
+                          },
                         ),
                       ],
                     ),
                     MenuTile(
+                      isActive: _activeIndex == 6, // Verifica item ativo
                       title: "Agendamentos",
                       activeIconSrc: "assets/icons/message_light.svg",
                       inactiveIconSrc: "assets/icons/message_filled.svg",
-                      onPressed: () {},
+                      onPressed: () {
+                        _onItemPressed(6); // Atualiza item ativo
+                      },
                     ),
                     MenuTile(
+                      isActive: _activeIndex == 7,
                       title: "Anamnese",
                       activeIconSrc: "assets/icons/file_add_light.svg",
                       inactiveIconSrc: "assets/icons/file_add_filled.svg",
-                      onPressed: () {},
+                      onPressed: () {
+                        _onItemPressed(7);
+                        context.go('/anamnese');
+                      },
                     ),
                     MenuTile(
+                      isActive: _activeIndex == 8,
                       title: "Evolução",
                       activeIconSrc: "assets/icons/check_all_light.svg",
                       inactiveIconSrc: "assets/icons/check_all_filled.svg",
-                      onPressed: () {},
+                      onPressed: () {
+                        _onItemPressed(8);
+                      },
                     ),
                     MenuTile(
+                      isActive: _activeIndex == 9,
                       title: "Relatórios",
                       activeIconSrc: "assets/icons/document_light.svg",
                       inactiveIconSrc: "assets/icons/document_filled.svg",
-                      onPressed: () {},
+                      onPressed: () {
+                        _onItemPressed(9);
+                      },
                     ),
                   ],
                 ),
@@ -158,3 +197,4 @@ class Sidebar extends StatelessWidget {
     );
   }
 }
+

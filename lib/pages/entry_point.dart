@@ -19,8 +19,6 @@ class EntryPoint extends StatelessWidget {
       drawer: Responsive.isMobile(context) ? const Sidebar() : null,
       body: Row(
         children: [
-          if (Responsive.isDesktop(context)) const Sidebar(),
-          if (Responsive.isTablet(context)) const TabSidebar(),
           Expanded(
             child: Column(
               children: [
