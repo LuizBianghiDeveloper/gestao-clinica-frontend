@@ -1,6 +1,8 @@
 import 'package:core_dashboard/pages/anamnese/anamnese.dart';
 import 'package:core_dashboard/pages/authentication/sign_in_page.dart';
 import 'package:core_dashboard/pages/cadastros/cliente/cliente.dart';
+import 'package:core_dashboard/pages/cadastros/cliente/cliente_search.dart';
+import 'package:core_dashboard/pages/cadastros/usuario/usuario_search.dart';
 import 'package:core_dashboard/pages/entry_point.dart';
 import 'package:core_dashboard/pages/cadastros/profissional/profissional_search.dart';
 import 'package:core_dashboard/pages/cadastros/usuario/usuario.dart';
@@ -44,8 +46,16 @@ final routerConfig = GoRouter(
             builder: (context, state) => const Anamnese(),
           ),
           GoRoute(
+            path: '/cadastro-search-cliente',
+            builder: (context, state) => const ClienteSearch(),
+          ),
+          GoRoute(
             path: '/cadastro-cliente',
             builder: (context, state) => const Cliente(),
+          ),
+          GoRoute(
+            path: '/cadastro-search-usuario',
+            builder: (context, state) => const UsuarioSearch(),
           ),
           GoRoute(
             path: '/cadastro-usuario',

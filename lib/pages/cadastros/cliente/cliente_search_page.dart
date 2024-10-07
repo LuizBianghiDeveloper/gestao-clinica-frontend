@@ -5,37 +5,37 @@ import '../../../shared/constants/defaults.dart';
 import '../../../shared/constants/ghaps.dart';
 import '../../../theme/app_colors.dart';
 
-class ProfissionalSearchPage extends StatefulWidget {
-  const ProfissionalSearchPage({super.key});
+class ClienteSearchPage extends StatefulWidget {
+  const ClienteSearchPage({super.key});
 
   @override
-  _ProfissionalSearchPageState createState() => _ProfissionalSearchPageState();
+  _ClienteSearchPageState createState() => _ClienteSearchPageState();
 }
 
-class _ProfissionalSearchPageState extends State<ProfissionalSearchPage> {
+class _ClienteSearchPageState extends State<ClienteSearchPage> {
   final TextEditingController searchController = TextEditingController();
-  List<String> allProfissionais = ['Ana', 'Bruno', 'Carlos', 'Diana', 'Eduardo'];
-  List<String> filteredProfissionais = [];
+  List<String> allClientes = ['Ana', 'Bruno', 'Carlos', 'Diana', 'Eduardo'];
+  List<String> filteredClientes = [];
 
   @override
   void initState() {
     super.initState();
-    filteredProfissionais = allProfissionais;
+    filteredClientes = allClientes;
   }
 
-  void _filterProfissionais(String query) {
+  void _filterClientes(String query) {
     List<String> results = [];
     if (query.isEmpty) {
-      results = allProfissionais;
+      results = allClientes;
     } else {
-      results = allProfissionais
-          .where((profissional) =>
-          profissional.toLowerCase().contains(query.toLowerCase()))
+      results = allClientes
+          .where((clientes) =>
+          clientes.toLowerCase().contains(query.toLowerCase()))
           .toList();
     }
 
     setState(() {
-      filteredProfissionais = results;
+      filteredClientes = results;
     });
   }
 
@@ -48,7 +48,7 @@ class _ProfissionalSearchPageState extends State<ProfissionalSearchPage> {
         if (!Responsive.isMobile(context)) gapH24,
         gapH20,
         Text(
-          "Cadastro de Profissional",
+          "Cadastro de Cliente",
           style: Theme.of(context)
               .textTheme
               .headlineLarge!
@@ -70,17 +70,17 @@ class _ProfissionalSearchPageState extends State<ProfissionalSearchPage> {
                 child: TextField(
                   controller: searchController,
                   decoration: const InputDecoration(
-                    labelText: 'Digite aqui o nome do profissional que deseja encontrar',
+                    labelText: 'Digite aqui o nome do cliente que deseja encontrar',
                     border: OutlineInputBorder(),
                     prefixIcon: Icon(Icons.search),
                   ),
-                  onChanged: _filterProfissionais,
+                  onChanged: _filterClientes,
                 ),
               ),
               const SizedBox(width: 10),
               ElevatedButton(
                 onPressed: () {
-                  context.go('/cadastro-profissional');
+                  context.go('/cadastro-cliente');
                 },
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
@@ -110,7 +110,7 @@ class _ProfissionalSearchPageState extends State<ProfissionalSearchPage> {
             ),
             child: ListView.builder(
               shrinkWrap: true,
-              itemCount: filteredProfissionais.length,
+              itemCount: filteredClientes.length,
               itemBuilder: (context, index) {
                 return Column(
                   children: [
@@ -118,19 +118,19 @@ class _ProfissionalSearchPageState extends State<ProfissionalSearchPage> {
                       title: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(filteredProfissionais[index]),
+                          Text(filteredClientes[index]),
                           Row(
                             children: [
                               IconButton(
                                 icon: const Icon(Icons.edit, color: Colors.orange),
                                 onPressed: () {
-                                  print('Editar ${filteredProfissionais[index]}');
+                                  print('Editar ${filteredClientes[index]}');
                                 },
                               ),
                               IconButton(
                                 icon: const Icon(Icons.delete, color: Colors.red),
                                 onPressed: () {
-                                  print('Excluir ${filteredProfissionais[index]}');
+                                  print('Excluir ${filteredClientes[index]}');
                                 },
                               ),
                             ],

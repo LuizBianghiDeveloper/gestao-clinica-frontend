@@ -5,14 +5,14 @@ import '../../../shared/constants/defaults.dart';
 import '../../../shared/constants/ghaps.dart';
 import '../../../theme/app_colors.dart';
 
-class ProfissionalSearchPage extends StatefulWidget {
-  const ProfissionalSearchPage({super.key});
+class UsuarioSearchPage extends StatefulWidget {
+  const UsuarioSearchPage({super.key});
 
   @override
-  _ProfissionalSearchPageState createState() => _ProfissionalSearchPageState();
+  _UsuarioSearchPageState createState() => _UsuarioSearchPageState();
 }
 
-class _ProfissionalSearchPageState extends State<ProfissionalSearchPage> {
+class _UsuarioSearchPageState extends State<UsuarioSearchPage> {
   final TextEditingController searchController = TextEditingController();
   List<String> allProfissionais = ['Ana', 'Bruno', 'Carlos', 'Diana', 'Eduardo'];
   List<String> filteredProfissionais = [];
@@ -48,7 +48,7 @@ class _ProfissionalSearchPageState extends State<ProfissionalSearchPage> {
         if (!Responsive.isMobile(context)) gapH24,
         gapH20,
         Text(
-          "Cadastro de Profissional",
+          "Cadastro de Usuário",
           style: Theme.of(context)
               .textTheme
               .headlineLarge!
@@ -70,7 +70,7 @@ class _ProfissionalSearchPageState extends State<ProfissionalSearchPage> {
                 child: TextField(
                   controller: searchController,
                   decoration: const InputDecoration(
-                    labelText: 'Digite aqui o nome do profissional que deseja encontrar',
+                    labelText: 'Digite aqui o nome do usuário que deseja encontrar',
                     border: OutlineInputBorder(),
                     prefixIcon: Icon(Icons.search),
                   ),
@@ -80,7 +80,7 @@ class _ProfissionalSearchPageState extends State<ProfissionalSearchPage> {
               const SizedBox(width: 10),
               ElevatedButton(
                 onPressed: () {
-                  context.go('/cadastro-profissional');
+                  context.go('/cadastro-usuario');
                 },
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),

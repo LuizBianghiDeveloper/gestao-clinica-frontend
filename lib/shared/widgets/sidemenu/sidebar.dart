@@ -87,11 +87,11 @@ class _SidebarState extends State<Sidebar> {
                       children: [
                         MenuTile(
                           isSubmenu: true,
-                          isActive: _activeIndex == 1, // Verifica item ativo
+                          isActive: _activeIndex == 1,
                           title: "Cliente",
                           onPressed: () {
                             _onItemPressed(1);
-                            context.go('/cadastro-cliente');
+                            context.go('/cadastro-search-cliente');
                           },
                         ),
                         MenuTile(
@@ -100,7 +100,7 @@ class _SidebarState extends State<Sidebar> {
                           title: "Usuário",
                           onPressed: () {
                             _onItemPressed(2);
-                            context.go('/cadastro-usuario');
+                            context.go('/cadastro-search-usuario');
                           },
                         ),
                         MenuTile(
