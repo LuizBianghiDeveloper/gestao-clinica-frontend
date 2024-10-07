@@ -90,7 +90,8 @@ class _SidebarState extends State<Sidebar> {
                           isActive: _activeIndex == 1, // Verifica item ativo
                           title: "Cliente",
                           onPressed: () {
-                            _onItemPressed(1); // Atualiza o item ativo
+                            _onItemPressed(1);
+                            context.go('/cadastro-cliente');
                           },
                         ),
                         MenuTile(
@@ -99,6 +100,7 @@ class _SidebarState extends State<Sidebar> {
                           title: "Usuário",
                           onPressed: () {
                             _onItemPressed(2);
+                            context.go('/cadastro-usuario');
                           },
                         ),
                         MenuTile(
@@ -116,6 +118,7 @@ class _SidebarState extends State<Sidebar> {
                           title: "Profissional",
                           onPressed: () {
                             _onItemPressed(4);
+                            context.go('/cadastro-search-profissional');
                           },
                         ),
                         MenuTile(

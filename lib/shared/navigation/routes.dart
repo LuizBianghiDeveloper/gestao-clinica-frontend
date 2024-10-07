@@ -1,11 +1,13 @@
-import 'package:core_dashboard/pages/anamnese.dart';
-import 'package:core_dashboard/pages/anamnese/anamnese_page.dart';
-import 'package:core_dashboard/pages/authentication/register_page.dart';
+import 'package:core_dashboard/pages/anamnese/anamnese.dart';
 import 'package:core_dashboard/pages/authentication/sign_in_page.dart';
+import 'package:core_dashboard/pages/cadastros/cliente/cliente.dart';
 import 'package:core_dashboard/pages/entry_point.dart';
+import 'package:core_dashboard/pages/cadastros/profissional/profissional_search.dart';
+import 'package:core_dashboard/pages/cadastros/usuario/usuario.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../pages/cadastros/profissional/profissional.dart';
 import '../../responsive.dart';
 import '../widgets/sidemenu/sidebar.dart';
 
@@ -38,13 +40,25 @@ final routerConfig = GoRouter(
             builder: (context, state) => const SignInPage(),
           ),
           GoRoute(
-            path: '/register',
-            builder: (context, state) => const RegisterPage(),
-          ),
-          GoRoute(
             path: '/anamnese',
             builder: (context, state) => const Anamnese(),
           ),
+          GoRoute(
+            path: '/cadastro-cliente',
+            builder: (context, state) => const Cliente(),
+          ),
+          GoRoute(
+            path: '/cadastro-usuario',
+            builder: (context, state) => const Usuario(),
+          ),
+          GoRoute(
+            path: '/cadastro-search-profissional',
+            builder: (context, state) => const ProfissionalSearch(),
+          ),
+          GoRoute(
+            path: '/cadastro-profissional',
+            builder: (context, state) => const Profissional(),
+          )
         ]
     )
   ],

@@ -2,8 +2,9 @@ import 'package:core_dashboard/responsive.dart';
 import 'package:core_dashboard/shared/constants/defaults.dart';
 import 'package:flutter/material.dart';
 
-import '../shared/widgets/header.dart';
-import 'anamnese/anamnese_page.dart';
+import '../../shared/widgets/header.dart';
+import '../../shared/widgets/sidemenu/sidebar.dart';
+import 'anamnese_page.dart';
 
 final GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
 
@@ -14,6 +15,7 @@ class Anamnese extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _drawerKey,
+      drawer: Responsive.isMobile(context) ? const Sidebar() : null,
       body: Row(
         children: [
           Expanded(

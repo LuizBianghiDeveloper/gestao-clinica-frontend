@@ -1,11 +1,11 @@
-import 'package:core_dashboard/pages/anamnese/widgets/anamnese_widget.dart';
+import 'package:core_dashboard/pages/cadastros/usuario/widgets/usuario_widget.dart';
 import 'package:core_dashboard/responsive.dart';
 import 'package:flutter/material.dart';
 
-import '../../shared/constants/ghaps.dart';
+import '../../../shared/constants/ghaps.dart';
 
-class AnamnesePage extends StatelessWidget {
-  const AnamnesePage({super.key});
+class UsuarioPage extends StatelessWidget {
+  const UsuarioPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +14,7 @@ class AnamnesePage extends StatelessWidget {
       children: [
         if (!Responsive.isMobile(context)) gapH24,
         Text(
-          "Anamnese",
+          "Cadastro de Usuário",
           style: Theme.of(context)
               .textTheme
               .headlineLarge!
@@ -28,7 +28,7 @@ class AnamnesePage extends StatelessWidget {
               flex: 5,
               child: Column(
                 children: [
-                  AnamneseWidget(),
+                  UsuarioWidget(),
                   gapH16,
                 ],
               ),
