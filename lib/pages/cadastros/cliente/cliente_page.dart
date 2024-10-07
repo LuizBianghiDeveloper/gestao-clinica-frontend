@@ -13,7 +13,7 @@ class ClientePage extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (!Responsive.isMobile(context)) gapH24,
+        gapH24,
         Text(
           "Cadastro de Clientes",
           style: Theme.of(context)

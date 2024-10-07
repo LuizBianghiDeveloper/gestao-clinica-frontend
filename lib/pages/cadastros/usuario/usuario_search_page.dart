@@ -45,7 +45,7 @@ class _UsuarioSearchPageState extends State<UsuarioSearchPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        if (!Responsive.isMobile(context)) gapH24,
+        gapH24,
         gapH20,
         Text(
           "Cadastro de Usuário",

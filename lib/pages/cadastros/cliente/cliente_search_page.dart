@@ -45,7 +45,7 @@ class _ClienteSearchPageState extends State<ClienteSearchPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        if (!Responsive.isMobile(context)) gapH24,
+        gapH24,
         gapH20,
         Text(
           "Cadastro de Cliente",

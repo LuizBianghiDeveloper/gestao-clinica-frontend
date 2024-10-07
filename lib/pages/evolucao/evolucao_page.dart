@@ -1,11 +1,11 @@
-import 'package:core_dashboard/pages/cadastros/profissional/widgets/profissional_widget.dart';
+import 'package:core_dashboard/pages/evolucao/widgets/evolucao_widget.dart';
 import 'package:core_dashboard/responsive.dart';
 import 'package:flutter/material.dart';
 
-import '../../../shared/constants/ghaps.dart';
+import '../../shared/constants/ghaps.dart';
 
-class ProfissionalPage extends StatelessWidget {
-  const ProfissionalPage({super.key});
+class EvolucaoPage extends StatelessWidget {
+  const EvolucaoPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +14,7 @@ class ProfissionalPage extends StatelessWidget {
       children: [
         gapH24,
         Text(
-          "Cadastro de Profissional",
+          "Evolução",
           style: Theme.of(context)
               .textTheme
               .headlineLarge!
@@ -28,7 +28,7 @@ class ProfissionalPage extends StatelessWidget {
               flex: 5,
               child: Column(
                 children: [
-                  ProfissionalWidget(),
+                  EvolucaoWidget(),
                   gapH16,
                 ],
               ),

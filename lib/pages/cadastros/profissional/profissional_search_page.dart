@@ -45,8 +45,7 @@ class _ProfissionalSearchPageState extends State<ProfissionalSearchPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        if (!Responsive.isMobile(context)) gapH24,
-        gapH20,
+        gapH24,
         Text(
           "Cadastro de Profissional",
           style: Theme.of(context)

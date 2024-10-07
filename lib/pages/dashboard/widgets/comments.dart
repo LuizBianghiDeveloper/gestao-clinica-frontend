@@ -26,7 +26,7 @@ class Comments extends StatelessWidget {
               horizontal: AppDefaults.padding * 0.5,
             ),
             child: SectionTitle(
-              title: "Profissionais",
+              title: "Aniversariantes",
               color: AppColors.secondaryPaleYellow,
             ),
           ),
@@ -60,7 +60,7 @@ class Comments extends StatelessWidget {
             child: OutlinedButton(
               onPressed: () {},
               child: Text(
-                "View all",
+                "Visualizar todos",
                 style: Theme.of(context).textTheme.titleMedium,
               ),
             ),

@@ -157,11 +157,12 @@ class _SidebarState extends State<Sidebar> {
                       inactiveIconSrc: "assets/icons/check_all_filled.svg",
                       onPressed: () {
                         _onItemPressed(8);
+                        context.go('/evolucao');
                       },
                     ),
                     MenuTile(
                       isActive: _activeIndex == 9,
-                      title: "Relatórios",
+                      title: "Plano de tratamento",
                       activeIconSrc: "assets/icons/document_light.svg",
                       inactiveIconSrc: "assets/icons/document_filled.svg",
                       onPressed: () {

@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../pages/cadastros/profissional/profissional.dart';
+import '../../pages/evolucao/evolucao.dart';
 import '../../responsive.dart';
 import '../widgets/sidemenu/sidebar.dart';
 
@@ -68,6 +69,10 @@ final routerConfig = GoRouter(
           GoRoute(
             path: '/cadastro-profissional',
             builder: (context, state) => const Profissional(),
+          ),
+          GoRoute(
+            path: '/evolucao',
+            builder: (context, state) => const Evolucao(),
           )
         ]
     )

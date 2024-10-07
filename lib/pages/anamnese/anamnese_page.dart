@@ -12,7 +12,7 @@ class AnamnesePage extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (!Responsive.isMobile(context)) gapH24,
+        gapH24,
         Text(
           "Anamnese",
           style: Theme.of(context)
