@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -91,7 +92,9 @@ class _OverviewTabsState extends State<OverviewTabs>
           ),
           width: double.infinity,
           child: OutlinedButton(
-            onPressed: () {},
+            onPressed: () {
+
+            },
             child: Text(
               "Criar novo agendamento",
               style: Theme.of(context).textTheme.titleMedium,
@@ -105,32 +108,15 @@ class _OverviewTabsState extends State<OverviewTabs>
           ),
           width: double.infinity,
           child: OutlinedButton(
-            onPressed: () {},
+            onPressed: () {
+              context.go('/agendamento');
+            },
             child: Text(
               "Visualizar agendamentos",
               style: Theme.of(context).textTheme.titleMedium,
             ),
           ),
         ),
-        // ElevatedButton(
-        //   onPressed: () {
-        //     // Lógica ao pressionar o botão
-        //     if (_selectedDay != null) {
-        //       ScaffoldMessenger.of(context).showSnackBar(
-        //         SnackBar(content: Text('Agendamento para ${_selectedDay.toString()}')),
-        //       );
-        //     } else {
-        //       ScaffoldMessenger.of(context).showSnackBar(
-        //         SnackBar(content: Text('Nenhuma data selecionada')),
-        //       );
-        //     }
-        //   },
-        //   child: const Text('Confirmar Agendamento'),
-        //   style: ElevatedButton.styleFrom(
-        //     primary: AppColors.primary,
-        //     padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-        //   ),
-        // ),
       ],
     );
   }

@@ -132,12 +132,13 @@ class _SidebarState extends State<Sidebar> {
                       ],
                     ),
                     MenuTile(
-                      isActive: _activeIndex == 6, // Verifica item ativo
+                      isActive: _activeIndex == 6,
                       title: "Agendamentos",
                       activeIconSrc: "assets/icons/message_light.svg",
                       inactiveIconSrc: "assets/icons/message_filled.svg",
                       onPressed: () {
-                        _onItemPressed(6); // Atualiza item ativo
+                        _onItemPressed(6);
+                        context.go('/agendamento');
                       },
                     ),
                     MenuTile(

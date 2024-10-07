@@ -1,3 +1,4 @@
+import 'package:core_dashboard/pages/agendamentos/agendamento.dart';
 import 'package:core_dashboard/pages/anamnese/anamnese.dart';
 import 'package:core_dashboard/pages/authentication/sign_in_page.dart';
 import 'package:core_dashboard/pages/cadastros/cliente/cliente.dart';
@@ -73,6 +74,10 @@ final routerConfig = GoRouter(
           GoRoute(
             path: '/evolucao',
             builder: (context, state) => const Evolucao(),
+          ),
+          GoRoute(
+            path: '/agendamento',
+            builder: (context, state) => const Agendamento(),
           )
         ]
     )

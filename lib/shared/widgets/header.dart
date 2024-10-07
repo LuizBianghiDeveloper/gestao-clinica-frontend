@@ -34,34 +34,6 @@ class Header extends StatelessWidget {
                   ),
                 ),
               ),
-            if (Responsive.isMobile(context))
-              IconButton(
-                onPressed: () {},
-                icon: Badge(
-                  isLabelVisible: false,
-                  child: SvgPicture.asset("assets/icons/search_filled.svg"),
-                ),
-              ),
-            if (!Responsive.isMobile(context))
-              Expanded(
-                flex: 1,
-                child: TextFormField(
-                  // style: Theme.of(context).textTheme.labelLarge,
-                  decoration: InputDecoration(
-                    hintText: "Pesquisar...",
-                    prefixIcon: Padding(
-                      padding: const EdgeInsets.only(
-                          left: AppDefaults.padding,
-                          right: AppDefaults.padding / 2),
-                      child: SvgPicture.asset("assets/icons/search_light.svg"),
-                    ),
-                    filled: true,
-                    fillColor: Theme.of(context).scaffoldBackgroundColor,
-                    border: AppDefaults.outlineInputBorder,
-                    focusedBorder: AppDefaults.focusedOutlineInputBorder,
-                  ),
-                ),
-              ),
             Expanded(
               flex: 2,
               child: Row(
