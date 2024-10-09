@@ -110,6 +110,7 @@ class _SidebarState extends State<Sidebar> {
                           count: 16,
                           onPressed: () {
                             _onItemPressed(3);
+                            context.go('/cadastro-search-produtos');
                           },
                         ),
                         MenuTile(
@@ -127,47 +128,57 @@ class _SidebarState extends State<Sidebar> {
                           title: "Sala",
                           onPressed: () {
                             _onItemPressed(5);
+                            context.go('/cadastro-search-sala');
+                          },
+                        ),
+                        MenuTile(
+                          isSubmenu: true,
+                          isActive: _activeIndex == 6,
+                          title: "Procedimentos",
+                          onPressed: () {
+                            _onItemPressed(6);
+                            context.go('/cadastro-search-procedimento');
                           },
                         ),
                       ],
                     ),
                     MenuTile(
-                      isActive: _activeIndex == 6,
+                      isActive: _activeIndex == 7,
                       title: "Agendamentos",
                       activeIconSrc: "assets/icons/message_light.svg",
                       inactiveIconSrc: "assets/icons/message_filled.svg",
                       onPressed: () {
-                        _onItemPressed(6);
+                        _onItemPressed(7);
                         context.go('/agendamento');
                       },
                     ),
                     MenuTile(
-                      isActive: _activeIndex == 7,
+                      isActive: _activeIndex == 8,
                       title: "Anamnese",
                       activeIconSrc: "assets/icons/file_add_light.svg",
                       inactiveIconSrc: "assets/icons/file_add_filled.svg",
                       onPressed: () {
-                        _onItemPressed(7);
+                        _onItemPressed(8);
                         context.go('/anamnese');
                       },
                     ),
                     MenuTile(
-                      isActive: _activeIndex == 8,
+                      isActive: _activeIndex == 9,
                       title: "Evolução",
                       activeIconSrc: "assets/icons/check_all_light.svg",
                       inactiveIconSrc: "assets/icons/check_all_filled.svg",
                       onPressed: () {
-                        _onItemPressed(8);
+                        _onItemPressed(9);
                         context.go('/evolucao');
                       },
                     ),
                     MenuTile(
-                      isActive: _activeIndex == 9,
+                      isActive: _activeIndex == 10,
                       title: "Plano de tratamento",
                       activeIconSrc: "assets/icons/document_light.svg",
                       inactiveIconSrc: "assets/icons/document_filled.svg",
                       onPressed: () {
-                        _onItemPressed(9);
+                        _onItemPressed(10);
                       },
                     ),
                   ],

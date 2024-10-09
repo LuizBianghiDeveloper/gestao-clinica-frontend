@@ -3,6 +3,12 @@ import 'package:core_dashboard/pages/anamnese/anamnese.dart';
 import 'package:core_dashboard/pages/authentication/sign_in_page.dart';
 import 'package:core_dashboard/pages/cadastros/cliente/cliente.dart';
 import 'package:core_dashboard/pages/cadastros/cliente/cliente_search.dart';
+import 'package:core_dashboard/pages/cadastros/procedimentos/procedimento.dart';
+import 'package:core_dashboard/pages/cadastros/procedimentos/procedimento_search.dart';
+import 'package:core_dashboard/pages/cadastros/produtos/produtos.dart';
+import 'package:core_dashboard/pages/cadastros/produtos/produtos_search.dart';
+import 'package:core_dashboard/pages/cadastros/sala/sala.dart';
+import 'package:core_dashboard/pages/cadastros/sala/sala_search.dart';
 import 'package:core_dashboard/pages/cadastros/usuario/usuario_search.dart';
 import 'package:core_dashboard/pages/entry_point.dart';
 import 'package:core_dashboard/pages/cadastros/profissional/profissional_search.dart';
@@ -78,7 +84,31 @@ final routerConfig = GoRouter(
           GoRoute(
             path: '/agendamento',
             builder: (context, state) => const Agendamento(),
-          )
+          ),
+          GoRoute(
+            path: '/cadastro-search-produtos',
+            builder: (context, state) => const ProdutosSearch(),
+          ),
+          GoRoute(
+            path: '/cadastro-produtos',
+            builder: (context, state) => const Produtos(),
+          ),
+          GoRoute(
+            path: '/cadastro-search-sala',
+            builder: (context, state) => const SalaSearch(),
+          ),
+          GoRoute(
+            path: '/cadastro-sala',
+            builder: (context, state) => const Sala(),
+          ),
+          GoRoute(
+            path: '/cadastro-search-procedimento',
+            builder: (context, state) => const ProcedimentoSearch(),
+          ),
+          GoRoute(
+            path: '/cadastro-procedimento',
+            builder: (context, state) => const Procedimento(),
+          ),
         ]
     )
   ],
