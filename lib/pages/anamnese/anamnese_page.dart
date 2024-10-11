@@ -13,12 +13,33 @@ class AnamnesePage extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         gapH24,
-        Text(
-          "Anamnese",
-          style: Theme.of(context)
-              .textTheme
-              .headlineLarge!
-              .copyWith(fontWeight: FontWeight.w600),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              "Anamnese",
+              style: Theme.of(context)
+                  .textTheme
+                  .headlineLarge!
+                  .copyWith(fontWeight: FontWeight.w600),
+            ),
+            ElevatedButton(
+              onPressed: () {
+
+              },
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+              ),
+              child: const Text(
+                'Consultar Anamnese',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ],
         ),
         gapH20,
         Row(
@@ -35,7 +56,7 @@ class AnamnesePage extends StatelessWidget {
             ),
             if (!Responsive.isMobile(context)) gapW16,
           ],
-        )
+        ),
       ],
     );
   }

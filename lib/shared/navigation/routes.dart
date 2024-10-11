@@ -13,6 +13,7 @@ import 'package:core_dashboard/pages/cadastros/usuario/usuario_search.dart';
 import 'package:core_dashboard/pages/entry_point.dart';
 import 'package:core_dashboard/pages/cadastros/profissional/profissional_search.dart';
 import 'package:core_dashboard/pages/cadastros/usuario/usuario.dart';
+import 'package:core_dashboard/pages/planoTratamento/plano_tratamento.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -108,6 +109,10 @@ final routerConfig = GoRouter(
           GoRoute(
             path: '/cadastro-procedimento',
             builder: (context, state) => const Procedimento(),
+          ),
+          GoRoute(
+            path: '/plano-tratamento',
+            builder: (context, state) => const PlanoTratamento(),
           ),
         ]
     )

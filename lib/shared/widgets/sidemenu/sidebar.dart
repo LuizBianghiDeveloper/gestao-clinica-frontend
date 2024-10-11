@@ -179,6 +179,7 @@ class _SidebarState extends State<Sidebar> {
                       inactiveIconSrc: "assets/icons/document_filled.svg",
                       onPressed: () {
                         _onItemPressed(10);
+                        context.go('/plano-tratamento');
                       },
                     ),
                   ],
