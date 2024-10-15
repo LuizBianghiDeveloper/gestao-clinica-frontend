@@ -3,31 +3,33 @@ import 'package:core_dashboard/shared/constants/ghaps.dart';
 import 'package:core_dashboard/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class CommentItem extends StatefulWidget {
   const CommentItem({
     super.key,
     required this.name,
-    required this.username,
-    required this.time,
-    required this.product,
-    required this.comment,
-    required this.imageSrc,
-    this.onProfilePressed,
-    this.onProductPressed,
   });
 
-  final String name, username, time, product, comment, imageSrc;
-
-  final Function()? onProfilePressed, onProductPressed;
+  final String name;
 
   @override
   State<CommentItem> createState() => _CommentItemState();
 }
 
 class _CommentItemState extends State<CommentItem> {
-  bool isProfileHovered = false;
-  bool isProductHovered = false;
+
+  Future<void> _launchWhatsApp() async {
+    final String phoneNumber = "+5531994980237";
+    final String message = "Olá, gostaria de saber mais sobre os produtos.";
+    final Uri whatsappUrl = Uri.parse("https://wa.me/$phoneNumber?text=$message");
+
+    if (await canLaunchUrl(whatsappUrl)) {
+      await launchUrl(whatsappUrl, mode: LaunchMode.externalApplication);
+    } else {
+      throw 'Não foi possível abrir o WhatsApp.';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,9 +44,9 @@ class _CommentItemState extends State<CommentItem> {
             mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              CircleAvatar(
+              const CircleAvatar(
                 radius: 24,
-                backgroundImage: NetworkImage(widget.imageSrc),
+                backgroundImage: AssetImage("assets/images/illustration/pessoa.jpg"),
               ),
               gapW8,
               Expanded(
@@ -52,9 +54,23 @@ class _CommentItemState extends State<CommentItem> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     gapH16,
-                    Text(
-                      widget.name,
-                      style: Theme.of(context).textTheme.titleSmall,
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            widget.name,
+                            style: Theme.of(context).textTheme.titleSmall,
+                          ),
+                        ),
+                        IconButton(
+                          icon: SvgPicture.asset(
+                            'assets/icons/send_filled.svg',
+                            height: 24,
+                            width: 24,
+                          ),
+                          onPressed: _launchWhatsApp,
+                        ),
+                      ],
                     ),
                     gapH8,
                   ],

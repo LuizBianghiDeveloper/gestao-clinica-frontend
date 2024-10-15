@@ -15,24 +15,24 @@ class EvolucaoWidget extends StatefulWidget {
 
 class _EvolucaoWidgetState extends State<EvolucaoWidget> {
   final TextEditingController searchController = TextEditingController();
-  List<String> allEvolucoes = ['Ana', 'Bruno', 'Carlos', 'Diana', 'Eduardo']; // Lista completa de evoluções (apenas exemplo)
+  List<String> allEvolucoes = ['Ana', 'Bruno', 'Carlos', 'Diana', 'Eduardo'];
   List<String> filteredEvolucoes = [];
 
   @override
   void initState() {
     super.initState();
-    filteredEvolucoes = allEvolucoes; // Inicia com todos os dados de evolução
+    filteredEvolucoes = allEvolucoes;
   }
 
   void _filterEvolucoes(String query) {
     List<String> results = [];
     if (query.isEmpty) {
-      results = allEvolucoes; // Mostra todos se a pesquisa estiver vazia
+      results = allEvolucoes;
     } else {
       results = allEvolucoes
           .where((evolucao) =>
           evolucao.toLowerCase().contains(query.toLowerCase()))
-          .toList(); // Filtra com base na query
+          .toList();
     }
 
     setState(() {

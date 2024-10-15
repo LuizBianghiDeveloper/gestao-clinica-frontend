@@ -93,7 +93,7 @@ class _OverviewTabsState extends State<OverviewTabs>
           width: double.infinity,
           child: OutlinedButton(
             onPressed: () {
-
+              context.go('/agendamento');
             },
             child: Text(
               "Criar novo agendamento",

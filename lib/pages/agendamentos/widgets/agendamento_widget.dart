@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart'; // Para formatar a data
 import 'package:go_router/go_router.dart';
 
@@ -36,6 +37,8 @@ class _AgendamentoWidgetState extends State<AgendamentoWidget> {
   @override
   void initState() {
     super.initState();
+    initializeDateFormatting('pt_BR', null);
+    Intl.defaultLocale = 'pt_BR';
     _gerarHorarios();
     _formatDate();
     _gerarAgendamentos();
@@ -57,9 +60,49 @@ class _AgendamentoWidgetState extends State<AgendamentoWidget> {
     agendamentos = {
       '07:00': [
         Agendamento(
-          descricao: "Consulta",
-          profissional: "Dr. João",
-          sala: "Sala 101",
+          descricao: "Drenagem",
+          profissional: "Ana Romani",
+          sala: "Sala 1",
+          cor: Colors.teal,
+        ),
+        Agendamento(
+          descricao: "Criolipolise",
+          profissional: "Thais Melo",
+          sala: "Sala 2",
+          cor: Colors.pinkAccent,
+        ),
+        Agendamento(
+          descricao: "Limpeza de pele",
+          profissional: "Maria Joaquina",
+          sala: "Sala 3",
+          cor: Colors.orange,
+        ),
+        Agendamento(
+          descricao: "Drenagem",
+          profissional: "Fulana de tal",
+          sala: "Sala 4",
+          cor: Colors.purple,
+        ),
+      ],
+      '07:30': [
+        Agendamento(
+          descricao: "Drenagem",
+          profissional: "Ana Romani",
+          sala: "Sala 1",
+          cor: Colors.teal,
+        ),
+        Agendamento(
+          descricao: "Drenagem",
+          profissional: "Fulana de tal",
+          sala: "Sala 4",
+          cor: Colors.purple,
+        ),
+      ],
+      '08:00': [
+        Agendamento(
+          descricao: "Limpeza de pele",
+          profissional: "Maria Joaquina",
+          sala: "Sala 3",
           cor: Colors.orange,
         ),
       ],
@@ -68,10 +111,36 @@ class _AgendamentoWidgetState extends State<AgendamentoWidget> {
           descricao: "Exame",
           profissional: "Enfermeira Ana",
           sala: "Sala 102",
-          cor: Colors.green,
+          cor: Colors.deepPurple,
         ),
       ],
-      '14:00': [
+      '10:00': [
+        Agendamento(
+          descricao: "Drenagem",
+          profissional: "Fulana de tal",
+          sala: "Sala 4",
+          cor: Colors.purple,
+        ),
+        Agendamento(
+          descricao: "Drenagem",
+          profissional: "Ana Romani",
+          sala: "Sala 1",
+          cor: Colors.teal,
+        ),
+        Agendamento(
+          descricao: "Limpeza de pele",
+          profissional: "Maria Joaquina",
+          sala: "Sala 3",
+          cor: Colors.orange,
+        ),
+        Agendamento(
+          descricao: "Criolipolise",
+          profissional: "Thais Melo",
+          sala: "Sala 2",
+          cor: Colors.pinkAccent,
+        ),
+      ],
+      '10:30': [
         Agendamento(
           descricao: "Reunião",
           profissional: "Sr. Carlos",
@@ -79,7 +148,7 @@ class _AgendamentoWidgetState extends State<AgendamentoWidget> {
           cor: Colors.blue,
         ),
       ],
-      '18:00': [
+      '11:00': [
         Agendamento(
           descricao: "Dentista",
           profissional: "Dr. Marta",
@@ -88,54 +157,57 @@ class _AgendamentoWidgetState extends State<AgendamentoWidget> {
         ),
       ],
     };
+  }
 
-    if (selectedDate.weekday == 1) {
-      agendamentos = {
-        '09:00': [
-          Agendamento(
-            descricao: "Consulta",
-            profissional: "Dr. João",
-            sala: "Sala 102",
-            cor: Colors.orange,
-          ),
-        ],
-        '12:00': [
-          Agendamento(
-            descricao: "Café",
-            profissional: "Maria",
-            sala: "Cozinha",
-            cor: Colors.green,
-          ),
-        ],
-        '18:30': [
-          Agendamento(
-            descricao: "Reunião de equipe",
-            profissional: "Carlos",
-            sala: "Sala 201",
-            cor: Colors.blue,
-          ),
-        ],
-      };
-    } else if (selectedDate.weekday == 2) {
-      agendamentos = {
-        '10:30': [
-          Agendamento(
-            descricao: "Exame de Sangue",
-            profissional: "Dr. Marta",
-            sala: "Sala 103",
-            cor: Colors.purple,
-          ),
-        ],
-        '15:00': [
-          Agendamento(
-            descricao: "Aula de Yoga",
-            profissional: "Instrutora Ana",
-            sala: "Sala 301",
-            cor: Colors.yellow,
-          ),
-        ],
-      };
+  Future<void> _confirmarExclusao(
+      BuildContext context, String horario, Agendamento agendamento) async {
+    bool? confirmacao = await showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Confirmação de Exclusão'),
+          content:
+              const Text('Tem certeza que deseja excluir este agendamento?'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(false); // Cancelar
+              },
+              child: const Text('Cancelar',
+                  style: TextStyle(
+                    color: Colors.grey,
+                  )),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              },
+              child: const Text('Excluir',
+                  style: TextStyle(
+                    color: Colors.red,
+                  )),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (confirmacao == true) {
+      _removerAgendamento(horario, agendamento);
     }
+  }
+
+  void _removerAgendamento(String horario, Agendamento agendamento) {
+    setState(() {
+      agendamentos[horario]?.remove(agendamento);
+      if (agendamentos[horario]?.isEmpty ?? true) {
+        agendamentos.remove(horario);
+      }
+    });
+  }
+
+  void _editarAgendamento(String horario, Agendamento agendamento) {
+    context.go('/editar-agendamento', extra: agendamento);
   }
 
   Future<void> _selectDate(BuildContext context) async {
@@ -144,7 +216,22 @@ class _AgendamentoWidgetState extends State<AgendamentoWidget> {
       initialDate: selectedDate,
       firstDate: DateTime(2020),
       lastDate: DateTime(2101),
+      locale: const Locale('pt', 'BR'),
+      builder: (BuildContext context, Widget? child) {
+        return Theme(
+          data: ThemeData.light().copyWith(
+            primaryColor: Colors.teal,
+            colorScheme: const ColorScheme.light(
+              primary: Colors.teal,
+              onSurface: Colors.black,
+            ),
+            dialogBackgroundColor: Colors.white,
+          ),
+          child: child!,
+        );
+      },
     );
+
     if (picked != null && picked != selectedDate) {
       setState(() {
         selectedDate = picked;
@@ -176,7 +263,6 @@ class _AgendamentoWidgetState extends State<AgendamentoWidget> {
                   'Agendamentos do dia $formattedDate',
                   style: const TextStyle(
                     fontSize: 22,
-                    fontWeight: FontWeight.bold,
                     color: Colors.black,
                   ),
                 ),
@@ -187,13 +273,13 @@ class _AgendamentoWidgetState extends State<AgendamentoWidget> {
                   _selectDate(context);
                 },
                 style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
                 ),
                 child: const Text(
                   'Trocar Data',
                   style: TextStyle(
                     fontSize: 16,
-                    fontWeight: FontWeight.bold,
                     color: Colors.white,
                   ),
                 ),
@@ -204,13 +290,13 @@ class _AgendamentoWidgetState extends State<AgendamentoWidget> {
                   context.go('/cadastro-cliente');
                 },
                 style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
                 ),
                 child: const Text(
                   'Cadastrar novo',
                   style: TextStyle(
                     fontSize: 16,
-                    fontWeight: FontWeight.bold,
                     color: Colors.white,
                   ),
                 ),
@@ -222,7 +308,8 @@ class _AgendamentoWidgetState extends State<AgendamentoWidget> {
         Flexible(
           fit: FlexFit.loose,
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: AppDefaults.padding),
+            padding:
+                const EdgeInsets.symmetric(horizontal: AppDefaults.padding),
             decoration: const BoxDecoration(
               color: AppColors.bgSecondayLight,
               borderRadius: BorderRadius.all(
@@ -234,7 +321,8 @@ class _AgendamentoWidgetState extends State<AgendamentoWidget> {
               itemCount: allHorarios.length,
               itemBuilder: (context, index) {
                 String horario = allHorarios[index];
-                List<Agendamento>? agendamentosDoHorario = agendamentos[horario];
+                List<Agendamento>? agendamentosDoHorario =
+                    agendamentos[horario];
                 return Row(
                   children: [
                     Container(
@@ -245,44 +333,89 @@ class _AgendamentoWidgetState extends State<AgendamentoWidget> {
                     Expanded(
                       child: agendamentosDoHorario != null
                           ? Row(
-                        children: agendamentosDoHorario.map((agendamento) {
-                          return Expanded(
-                            child: Container(
-                              height: 90,
-                              color: agendamento.cor,
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      agendamento.descricao,
-                                      style: const TextStyle(
-                                          color: Colors.white, fontWeight: FontWeight.bold),
+                              children:
+                                  agendamentosDoHorario.map((agendamento) {
+                                return Expanded(
+                                  child: Container(
+                                    height: 110,
+                                    margin: const EdgeInsets.symmetric(
+                                        horizontal: 4.0, vertical: 4),
+                                    color: agendamento.cor,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Stack(
+                                        children: [
+                                          Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                agendamento.descricao,
+                                                style: const TextStyle(
+                                                    color: Colors.white),
+                                              ),
+                                              const SizedBox(height: 4),
+                                              Text(
+                                                agendamento.profissional,
+                                                style: const TextStyle(
+                                                    color: Colors.white),
+                                              ),
+                                              const SizedBox(height: 4),
+                                              Text(
+                                                agendamento.sala,
+                                                style: const TextStyle(
+                                                    color: Colors.white70),
+                                              ),
+                                              const SizedBox(height: 4),
+                                              const Text(
+                                                "Paciente X",
+                                                style: TextStyle(
+                                                    color: Colors.white70),
+                                              ),
+                                            ],
+                                          ),
+                                          Positioned(
+                                            top: 0,
+                                            right: 0,
+                                            child: Row(
+                                              children: [
+                                                IconButton(
+                                                  icon: const Icon(Icons.edit,
+                                                      color: Colors.white),
+                                                  onPressed: () {
+                                                    _editarAgendamento(
+                                                        horario, agendamento);
+                                                  },
+                                                ),
+                                                IconButton(
+                                                  icon: const Icon(Icons.delete,
+                                                      color: Colors.white),
+                                                  onPressed: () {
+                                                    _confirmarExclusao(context,
+                                                        horario, agendamento);
+                                                  },
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      agendamento.profissional,
-                                      style: const TextStyle(color: Colors.white),
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      agendamento.sala,
-                                      style: const TextStyle(color: Colors.white70),
-                                    ),
-                                  ],
-                                ),
+                                  ),
+                                );
+                              }).toList(),
+                            )
+                          : Padding(
+                              padding: const EdgeInsets.all(4.0),
+                              child: Container(
+                                height: 50,
+                                color: Colors.grey[200],
+                                child: const Center(
+                                    child: Text("Sem Agendamentos")),
                               ),
                             ),
-                          );
-                        }).toList(),
-                      )
-                          : Container(
-                        height: 50,
-                        color: Colors.grey[200],
-                        child: const Center(child: Text("Sem Agendamentos")),
-                      ),
                     ),
                   ],
                 );

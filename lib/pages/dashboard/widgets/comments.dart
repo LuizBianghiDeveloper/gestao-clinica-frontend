@@ -10,6 +10,8 @@ class Comments extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final int itemCount = 12;
     return Container(
       decoration: const BoxDecoration(
         color: AppColors.bgSecondayLight,
@@ -21,48 +23,38 @@ class Comments extends StatelessWidget {
       child: Column(
         children: [
           gapH8,
-          const Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: AppDefaults.padding * 0.5,
-            ),
-            child: SectionTitle(
-              title: "Aniversariantes",
-              color: AppColors.secondaryPaleYellow,
-            ),
-          ),
-          gapH16,
-          ListView.builder(
-            itemCount: 2,
-            shrinkWrap: true,
-            padding: EdgeInsets.zero,
-            physics: const NeverScrollableScrollPhysics(),
-            itemBuilder: (_, index) {
-              return CommentItem(
-                name: 'Jazmyn',
-                username: 'jaz.designer',
-                time: '1h',
-                product: 'Fleet - Travel shopping',
-                comment: 'I need react version asap!',
-                imageSrc: index == 1
-                    ? 'https://t4.ftcdn.net/jpg/03/83/25/83/360_F_383258331_D8imaEMl8Q3lf7EKU2Pi78Cn0R7KkW9o.jpg'
-                    : 'https://th.bing.com/th/id/OIP.IGNf7GuQaCqz_RPq5wCkPgAAAA?rs=1&pid=ImgDetMain',
-                onProfilePressed: () {},
-                onProductPressed: () {},
-              );
-            },
-          ),
-          gapH8,
-          Container(
+          Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: AppDefaults.padding * 0.5,
             ),
-            width: double.infinity,
-            child: OutlinedButton(
-              onPressed: () {},
-              child: Text(
-                "Visualizar todos",
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const SectionTitle(
+                  title: "Aniversariantes",
+                  color: AppColors.secondaryPaleYellow,
+                ),
+                Text(
+                  "$itemCount",
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.grey.shade600,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          gapH16,
+          SizedBox(
+            height: screenHeight * 0.25,
+            child: ListView.builder(
+              itemCount: 12,
+              padding: EdgeInsets.zero,
+              itemBuilder: (_, index) {
+                return const CommentItem(
+                  name: 'Ana Paula'
+                );
+              },
             ),
           ),
           gapH8,

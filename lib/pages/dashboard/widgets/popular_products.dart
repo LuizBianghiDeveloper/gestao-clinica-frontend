@@ -53,10 +53,10 @@ class PopularProducts extends StatelessWidget {
             physics: const NeverScrollableScrollPhysics(),
             itemBuilder: (_, index) {
               return PopularProductItem(
-                name: 'Crypter - NFT UI kit',
+                name: 'Shampoo',
                 price: '\$2,453.80',
                 imageSrc:
-                    'https://t3.ftcdn.net/jpg/02/43/12/34/360_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg',
+                    'https://res.cloudinary.com/beleza-na-web/image/upload/w_1500,f_auto,fl_progressive,q_auto:eco,w_800/v1/imagens/products/E51504/SIAGE_NUTRI_ROSE_CONDIC_1L_E51504.jpg',
                 isActive: index % 2 == 0,
                 onPressed: () {},
               );
@@ -69,7 +69,9 @@ class PopularProducts extends StatelessWidget {
             ),
             width: double.infinity,
             child: OutlinedButton(
-              onPressed: () {},
+              onPressed: () {
+
+              },
               child: Text(
                 "Todos os produtos",
                 style: Theme.of(context).textTheme.titleMedium,
