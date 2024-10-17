@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text2/flutter_masked_text2.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../shared/constants/defaults.dart';
 import '../../../../shared/constants/ghaps.dart';
@@ -189,8 +190,8 @@ class _ClienteWidgetState extends State<ClienteWidget> {
                   ),
                   child: ElevatedButton(
                     onPressed: () {
-                      if (formKey.currentState?.validate() == true ) {
-
+                      if (formKey.currentState?.validate() == true) {
+                        // Lógica para salvar os dados
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
@@ -229,7 +230,6 @@ class _ClienteWidgetState extends State<ClienteWidget> {
                   ),
                 ),
               ),
-              gapW16,
             ],
           ),
         ],

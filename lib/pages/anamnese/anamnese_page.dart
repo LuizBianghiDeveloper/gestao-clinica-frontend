@@ -23,22 +23,6 @@ class AnamnesePage extends StatelessWidget {
                   .headlineLarge!
                   .copyWith(fontWeight: FontWeight.w600),
             ),
-            ElevatedButton(
-              onPressed: () {
-
-              },
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-              ),
-              child: const Text(
-                'Consultar Anamnese',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-            ),
           ],
         ),
         gapH20,

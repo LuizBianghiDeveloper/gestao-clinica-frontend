@@ -3,6 +3,7 @@ import 'package:core_dashboard/shared/constants/ghaps.dart';
 import 'package:core_dashboard/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class CommentItem extends StatefulWidget {
@@ -20,7 +21,7 @@ class CommentItem extends StatefulWidget {
 class _CommentItemState extends State<CommentItem> {
 
   Future<void> _launchWhatsApp() async {
-    final String phoneNumber = "+5531994980237";
+    final String phoneNumber = "+5531991692201";
     final String message = "Olá, gostaria de saber mais sobre os produtos.";
     final Uri whatsappUrl = Uri.parse("https://wa.me/$phoneNumber?text=$message");
 
@@ -63,12 +64,13 @@ class _CommentItemState extends State<CommentItem> {
                           ),
                         ),
                         IconButton(
-                          icon: SvgPicture.asset(
-                            'assets/icons/send_filled.svg',
-                            height: 24,
-                            width: 24,
+                          icon: const Icon(
+                            FontAwesomeIcons.whatsapp,
+                            color: Colors.green,
                           ),
-                          onPressed: _launchWhatsApp,
+                          onPressed: () {
+                            _launchWhatsApp();
+                          },
                         ),
                       ],
                     ),

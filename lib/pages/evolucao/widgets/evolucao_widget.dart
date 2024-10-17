@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text2/flutter_masked_text2.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../shared/constants/defaults.dart';
 import '../../../shared/constants/ghaps.dart';
@@ -91,6 +92,7 @@ class _EvolucaoWidgetState extends State<EvolucaoWidget> {
                                 IconButton(
                                   icon: const Icon(Icons.arrow_forward, color: Colors.green),
                                   onPressed: () {
+                                    context.go('/evolucao-cliente/${filteredEvolucoes[index]}');
                                     print('Editar ${filteredEvolucoes[index]}');
                                   },
                                 ),

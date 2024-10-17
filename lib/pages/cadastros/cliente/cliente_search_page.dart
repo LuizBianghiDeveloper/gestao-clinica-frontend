@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import '../../../shared/constants/defaults.dart';
 import '../../../shared/constants/ghaps.dart';
@@ -120,6 +121,15 @@ class _ClienteSearchPageState extends State<ClienteSearchPage> {
                           Text(filteredClientes[index]),
                           Row(
                             children: [
+                              IconButton(
+                                icon: const Icon(
+                                  FontAwesomeIcons.whatsapp,
+                                  color: Colors.green,
+                                ),
+                                onPressed: () {
+
+                                  },
+                              ),
                               IconButton(
                                 icon: const Icon(Icons.edit, color: Colors.orange),
                                 onPressed: () {

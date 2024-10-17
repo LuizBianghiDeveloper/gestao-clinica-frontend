@@ -13,12 +13,14 @@ import 'package:core_dashboard/pages/cadastros/usuario/usuario_search.dart';
 import 'package:core_dashboard/pages/entry_point.dart';
 import 'package:core_dashboard/pages/cadastros/profissional/profissional_search.dart';
 import 'package:core_dashboard/pages/cadastros/usuario/usuario.dart';
+import 'package:core_dashboard/pages/evolucao/evolucao_cliente.dart';
 import 'package:core_dashboard/pages/planoTratamento/plano_tratamento.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../pages/cadastros/profissional/profissional.dart';
 import '../../pages/evolucao/evolucao.dart';
+import '../../pages/evolucao/evolucao_cliente_page.dart';
 import '../../responsive.dart';
 import '../widgets/sidemenu/sidebar.dart';
 
@@ -113,6 +115,13 @@ final routerConfig = GoRouter(
           GoRoute(
             path: '/plano-tratamento',
             builder: (context, state) => const PlanoTratamento(),
+          ),
+          GoRoute(
+            path: '/evolucao-cliente/:nome',
+            builder: (context, state) {
+              final nomeUsuario = state.pathParameters['nome'];
+              return EvolucaoClientePage(nome: nomeUsuario!);
+            },
           ),
         ]
     )
