@@ -27,7 +27,7 @@ class Overview extends StatelessWidget {
             ],
           ),
           gapH24,
-          OverviewTabs(),
+          //OverviewTabs(),
         ],
       ),
     );

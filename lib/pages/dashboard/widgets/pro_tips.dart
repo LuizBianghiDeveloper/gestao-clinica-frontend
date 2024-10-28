@@ -59,7 +59,7 @@ class ProTips extends StatelessWidget {
           gapH8,
           const SectionTitle(
             title: "Agendamento do dia",
-            color: AppColors.secondaryMintGreen,
+            color: Colors.pink,
           ),
           gapH20,
           Text(

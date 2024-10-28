@@ -147,7 +147,7 @@ class _ProdutosWidgetState extends State<ProdutosWidget> {
                       }
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.green,
+                      backgroundColor: Colors.pink,
                       padding: const EdgeInsets.symmetric(vertical: 16.0),
                     ),
                     child: const Text('Salvar'),
@@ -161,10 +161,12 @@ class _ProdutosWidgetState extends State<ProdutosWidget> {
                   ),
                   child: ElevatedButton(
                     onPressed: () {
-                      // Ação de cancelamento
+
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red,
+                      backgroundColor: Colors.white,
+                      foregroundColor: Colors.pink,
+                      side: const BorderSide(color: Colors.pink),
                       padding: const EdgeInsets.symmetric(vertical: 16.0),
                     ),
                     child: const Text('Cancelar'),

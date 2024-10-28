@@ -76,6 +76,9 @@ class _EvolucaoClientePageState extends State<EvolucaoClientePage> {
                         showEvolucoesList = false;
                       });
                     },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.pink,
+                    ),
                     child: const Text('Cadastrar Evolução'),
                   ),
                   ElevatedButton(
@@ -85,6 +88,9 @@ class _EvolucaoClientePageState extends State<EvolucaoClientePage> {
                         showEvolucoesList = true;
                       });
                     },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.pink,
+                    ),
                     child: const Text('Consultar Evoluções'),
                   ),
                   ElevatedButton(
@@ -93,8 +99,11 @@ class _EvolucaoClientePageState extends State<EvolucaoClientePage> {
                         showEvolucaoWidget = false;
                         showEvolucoesList = false;
                       });
-                      context.go('/anamnese'); // Navega para a página de Anamnese
+                      context.go('/anamnese');
                     },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.pink,
+                    ),
                     child: const Text('Ver Anamnese'),
                   ),
                 ],

@@ -147,7 +147,7 @@ class _PlanoTratamentoWidgetState extends State<PlanoTratamentoWidget> {
                   Radio<String>(
                     value: 'Pix',
                     groupValue: _selectedPagamento,
-                    activeColor: Colors.green,
+                    activeColor: Colors.pink,
                     onChanged: (String? value) {
                       setState(() {
                         _selectedPagamento = value;
@@ -162,7 +162,7 @@ class _PlanoTratamentoWidgetState extends State<PlanoTratamentoWidget> {
                   Radio<String>(
                     value: 'Dinheiro',
                     groupValue: _selectedPagamento,
-                    activeColor: Colors.green,
+                    activeColor: Colors.pink,
                     onChanged: (String? value) {
                       setState(() {
                         _selectedPagamento = value;
@@ -177,7 +177,7 @@ class _PlanoTratamentoWidgetState extends State<PlanoTratamentoWidget> {
                   Radio<String>(
                     value: 'Crédito',
                     groupValue: _selectedPagamento,
-                    activeColor: Colors.green,
+                    activeColor: Colors.pink,
                     onChanged: (String? value) {
                       setState(() {
                         _selectedPagamento = value;
@@ -192,7 +192,7 @@ class _PlanoTratamentoWidgetState extends State<PlanoTratamentoWidget> {
                   Radio<String>(
                     value: 'Débito',
                     groupValue: _selectedPagamento,
-                    activeColor: Colors.green,
+                    activeColor: Colors.pink,
                     onChanged: (String? value) {
                       setState(() {
                         _selectedPagamento = value;
@@ -235,7 +235,7 @@ class _PlanoTratamentoWidgetState extends State<PlanoTratamentoWidget> {
                   }
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
+                  backgroundColor: Colors.pink,
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 ),
                 child: const Text(

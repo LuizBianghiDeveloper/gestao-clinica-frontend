@@ -422,7 +422,7 @@ class _AnamneseWidgetState extends State<AnamneseWidget> {
                                       _tabagismo = value;
                                     });
                                   },
-                                  activeColor: Colors.green,
+                                  activeColor: Colors.pink,
                                 ),
                                 const Text('Sim'),
                                 const SizedBox(width: 16),
@@ -434,7 +434,7 @@ class _AnamneseWidgetState extends State<AnamneseWidget> {
                                       _tabagismo = value;
                                     });
                                   },
-                                  activeColor: Colors.green,
+                                  activeColor: Colors.pink,
                                 ),
                                 const Text('Não'),
                               ],
@@ -474,7 +474,7 @@ class _AnamneseWidgetState extends State<AnamneseWidget> {
                                       _etilista = value;
                                     });
                                   },
-                                  activeColor: Colors.green,
+                                  activeColor: Colors.pink,
                                 ),
                                 const Text('Sim'),
                                 const SizedBox(width: 16),
@@ -486,7 +486,7 @@ class _AnamneseWidgetState extends State<AnamneseWidget> {
                                       _etilista = value;
                                     });
                                   },
-                                  activeColor: Colors.green,
+                                  activeColor: Colors.pink,
                                 ),
                                 const Text('Não'),
                               ],
@@ -526,7 +526,7 @@ class _AnamneseWidgetState extends State<AnamneseWidget> {
                                       _hipertensao = value;
                                     });
                                   },
-                                  activeColor: Colors.green,
+                                  activeColor: Colors.pink,
                                 ),
                                 const Text('Sim'),
                                 const SizedBox(width: 16),
@@ -538,7 +538,7 @@ class _AnamneseWidgetState extends State<AnamneseWidget> {
                                       _hipertensao = value;
                                     });
                                   },
-                                  activeColor: Colors.green,
+                                  activeColor: Colors.pink,
                                 ),
                                 const Text('Não'),
                               ],
@@ -578,7 +578,7 @@ class _AnamneseWidgetState extends State<AnamneseWidget> {
                                       _diabetes = value;
                                     });
                                   },
-                                  activeColor: Colors.green,
+                                  activeColor: Colors.pink,
                                 ),
                                 const Text('Sim'),
                                 const SizedBox(width: 16),
@@ -590,7 +590,7 @@ class _AnamneseWidgetState extends State<AnamneseWidget> {
                                       _diabetes = value;
                                     });
                                   },
-                                  activeColor: Colors.green,
+                                  activeColor: Colors.pink,
                                 ),
                                 const Text('Não'),
                               ],
@@ -631,7 +631,7 @@ class _AnamneseWidgetState extends State<AnamneseWidget> {
                                 _marcapasso = value;
                               });
                             },
-                            activeColor: Colors.green,
+                            activeColor: Colors.pink,
                           ),
                           const Text('Sim'),
                           const SizedBox(width: 16),
@@ -643,7 +643,7 @@ class _AnamneseWidgetState extends State<AnamneseWidget> {
                                 _marcapasso = value;
                               });
                             },
-                            activeColor: Colors.green,
+                            activeColor: Colors.pink,
                           ),
                           const Text('Não'),
                         ],
@@ -684,7 +684,7 @@ class _AnamneseWidgetState extends State<AnamneseWidget> {
                                 _implantemetalico = value;
                               });
                             },
-                            activeColor: Colors.green,
+                            activeColor: Colors.pink,
                           ),
                           const Text('Sim'),
                           const SizedBox(width: 16),
@@ -696,7 +696,7 @@ class _AnamneseWidgetState extends State<AnamneseWidget> {
                                 _implantemetalico = value;
                               });
                             },
-                            activeColor: Colors.green,
+                            activeColor: Colors.pink,
                           ),
                           const Text('Não'),
                         ],
@@ -737,7 +737,7 @@ class _AnamneseWidgetState extends State<AnamneseWidget> {
                                 _gestante = value;
                               });
                             },
-                            activeColor: Colors.green,
+                            activeColor: Colors.pink,
                           ),
                           const Text('Sim'),
                           const SizedBox(width: 16),
@@ -749,7 +749,7 @@ class _AnamneseWidgetState extends State<AnamneseWidget> {
                                 _gestante = value;
                               });
                             },
-                            activeColor: Colors.green,
+                            activeColor: Colors.pink,
                           ),
                           const Text('Não'),
                         ],
@@ -790,7 +790,7 @@ class _AnamneseWidgetState extends State<AnamneseWidget> {
                                 _lactante = value;
                               });
                             },
-                            activeColor: Colors.green,
+                            activeColor: Colors.pink,
                           ),
                           const Text('Sim'),
                           const SizedBox(width: 16),
@@ -802,7 +802,7 @@ class _AnamneseWidgetState extends State<AnamneseWidget> {
                                 _lactante = value;
                               });
                             },
-                            activeColor: Colors.green,
+                            activeColor: Colors.pink,
                           ),
                           const Text('Não'),
                         ],
@@ -842,7 +842,7 @@ class _AnamneseWidgetState extends State<AnamneseWidget> {
                                     _cicatrizacao = value;
                                   });
                                 },
-                                activeColor: Colors.green,
+                                activeColor: Colors.pink,
                               ),
                               const Text('Normal'),
                             ],
@@ -857,7 +857,7 @@ class _AnamneseWidgetState extends State<AnamneseWidget> {
                                     _cicatrizacao = value;
                                   });
                                 },
-                                activeColor: Colors.green,
+                                activeColor: Colors.pink,
                               ),
                               const Text('Hipertrófica'),
                             ],
@@ -872,7 +872,7 @@ class _AnamneseWidgetState extends State<AnamneseWidget> {
                                     _cicatrizacao = value;
                                   });
                                 },
-                                activeColor: Colors.green,
+                                activeColor: Colors.pink,
                               ),
                               const Text('Queloide'),
                             ],
@@ -912,7 +912,7 @@ class _AnamneseWidgetState extends State<AnamneseWidget> {
                                 _filhos = value;
                               });
                             },
-                            activeColor: Colors.green,
+                            activeColor: Colors.pink,
                           ),
                           const Text('Sim'),
                           const SizedBox(width: 16),
@@ -924,7 +924,7 @@ class _AnamneseWidgetState extends State<AnamneseWidget> {
                                 _filhos = value;
                               });
                             },
-                            activeColor: Colors.green,
+                            activeColor: Colors.pink,
                           ),
                           const Text('Não'),
                         ],
@@ -965,7 +965,7 @@ class _AnamneseWidgetState extends State<AnamneseWidget> {
                                 _hipotireoidismo = value;
                               });
                             },
-                            activeColor: Colors.green,
+                            activeColor: Colors.pink,
                           ),
                           const Text('Sim'),
                           const SizedBox(width: 16),
@@ -977,7 +977,7 @@ class _AnamneseWidgetState extends State<AnamneseWidget> {
                                 _hipotireoidismo = value;
                               });
                             },
-                            activeColor: Colors.green,
+                            activeColor: Colors.pink,
                           ),
                           const Text('Não'),
                         ],
@@ -1018,7 +1018,7 @@ class _AnamneseWidgetState extends State<AnamneseWidget> {
                                 _hipertireoidismo = value;
                               });
                             },
-                            activeColor: Colors.green,
+                            activeColor: Colors.pink,
                           ),
                           const Text('Sim'),
                           const SizedBox(width: 16),
@@ -1030,7 +1030,7 @@ class _AnamneseWidgetState extends State<AnamneseWidget> {
                                 _hipertireoidismo = value;
                               });
                             },
-                            activeColor: Colors.green,
+                            activeColor: Colors.pink,
                           ),
                           const Text('Não'),
                         ],
@@ -1070,7 +1070,7 @@ class _AnamneseWidgetState extends State<AnamneseWidget> {
                                       _vitaminaC = value;
                                     });
                                   },
-                                  activeColor: Colors.green,
+                                  activeColor: Colors.pink,
                                 ),
                                 const Text('Sim'),
                                 const SizedBox(width: 16),
@@ -1082,7 +1082,7 @@ class _AnamneseWidgetState extends State<AnamneseWidget> {
                                       _vitaminaC = value;
                                     });
                                   },
-                                  activeColor: Colors.green,
+                                  activeColor: Colors.pink,
                                 ),
                                 const Text('Não'),
                               ],
@@ -1122,7 +1122,7 @@ class _AnamneseWidgetState extends State<AnamneseWidget> {
                                 _anticoagulante = value;
                               });
                             },
-                            activeColor: Colors.green,
+                            activeColor: Colors.pink,
                           ),
                           const Text('Sim'),
                           const SizedBox(width: 16),
@@ -1134,7 +1134,7 @@ class _AnamneseWidgetState extends State<AnamneseWidget> {
                                 _anticoagulante = value;
                               });
                             },
-                            activeColor: Colors.green,
+                            activeColor: Colors.pink,
                           ),
                           const Text('Não'),
                         ],
@@ -1171,7 +1171,7 @@ class _AnamneseWidgetState extends State<AnamneseWidget> {
                                 _deficiencia = value;
                               });
                             },
-                            activeColor: Colors.green,
+                            activeColor: Colors.pink,
                           ),
                           const Text('Sim'),
                           const SizedBox(width: 16),
@@ -1183,7 +1183,7 @@ class _AnamneseWidgetState extends State<AnamneseWidget> {
                                 _deficiencia = value;
                               });
                             },
-                            activeColor: Colors.green,
+                            activeColor: Colors.pink,
                           ),
                           const Text('Não'),
                         ],
@@ -1360,7 +1360,7 @@ class _AnamneseWidgetState extends State<AnamneseWidget> {
                                 _divulgacao = value;
                               });
                             },
-                            activeColor: Colors.green,
+                            activeColor: Colors.pink,
                           ),
                           const Text('Sim'),
                           const SizedBox(width: 16),
@@ -1372,7 +1372,7 @@ class _AnamneseWidgetState extends State<AnamneseWidget> {
                                 _divulgacao = value;
                               });
                             },
-                            activeColor: Colors.green,
+                            activeColor: Colors.pink,
                           ),
                           const Text('Não'),
                         ],
@@ -1429,7 +1429,7 @@ class _AnamneseWidgetState extends State<AnamneseWidget> {
                       }
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.green, // Botão verde para salvar
+                      backgroundColor: Colors.pink,
                       padding: const EdgeInsets.symmetric(vertical: 16.0),
                     ),
                     child: const Text('Salvar'),
@@ -1443,11 +1443,12 @@ class _AnamneseWidgetState extends State<AnamneseWidget> {
                   ),
                   child: ElevatedButton(
                     onPressed: () {
-                      // Ação de cancelamento
+
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red,
-                      // Botão vermelho para cancelar
+                      backgroundColor: Colors.white,
+                      foregroundColor: Colors.pink,
+                      side: const BorderSide(color: Colors.pink),
                       padding: const EdgeInsets.symmetric(vertical: 16.0),
                     ),
                     child: const Text('Cancelar'),

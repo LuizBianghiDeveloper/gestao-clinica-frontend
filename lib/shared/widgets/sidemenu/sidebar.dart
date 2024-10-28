@@ -26,34 +26,41 @@ class _SidebarState extends State<Sidebar> {
 
   @override
   Widget build(BuildContext context) {
+    double imageWidth = MediaQuery.of(context).size.width * 0.4;
+    double imageHeight = MediaQuery.of(context).size.height * 0.3;
+
     return Drawer(
       child: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                if (Responsive.isMobile(context))
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppDefaults.padding,
-                    ),
-                    child: IconButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      icon: SvgPicture.asset('assets/icons/close_filled.svg'),
-                    ),
-                  ),
-                Padding(
+            if (Responsive.isMobile(context))
+              Align(
+                alignment: Alignment.topLeft,
+                child: Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: AppDefaults.padding,
-                    vertical: AppDefaults.padding * 1.5,
                   ),
-                  child: SvgPicture.asset(AppConfig.logo),
+                  child: IconButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    icon: SvgPicture.asset('assets/icons/close_filled.svg'),
+                  ),
                 ),
-              ],
+              ),
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  vertical: AppDefaults.padding * 1.5,
+                ),
+                child: Image.asset(
+                  AppConfig.logo,
+                  width: imageWidth > 250 ? 250 : imageWidth,
+                  height: imageHeight > 200 ? 200 : imageHeight,
+                  fit: BoxFit.contain,
+                ),
+              ),
             ),
             const Divider(),
             gapH16,
@@ -214,4 +221,3 @@ class _SidebarState extends State<Sidebar> {
     );
   }
 }
-

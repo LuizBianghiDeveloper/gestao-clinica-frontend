@@ -90,7 +90,7 @@ class _EvolucaoWidgetState extends State<EvolucaoWidget> {
                             Row(
                               children: [
                                 IconButton(
-                                  icon: const Icon(Icons.arrow_forward, color: Colors.green),
+                                  icon: const Icon(Icons.arrow_forward, color: Colors.pink),
                                   onPressed: () {
                                     context.go('/evolucao-cliente/${filteredEvolucoes[index]}');
                                     print('Editar ${filteredEvolucoes[index]}');

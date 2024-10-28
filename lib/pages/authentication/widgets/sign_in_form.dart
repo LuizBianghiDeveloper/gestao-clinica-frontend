@@ -11,6 +11,8 @@ class SignInForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double imageWidth = MediaQuery.of(context).size.width * 0.4;
+    double imageHeight = MediaQuery.of(context).size.height * 0.3;
     return SizedBox(
       width: 296,
       child: Column(
@@ -21,7 +23,12 @@ class SignInForm extends StatelessWidget {
             padding: const EdgeInsets.symmetric(
               vertical: AppDefaults.padding * 1.5,
             ),
-            child: SvgPicture.asset(AppConfig.logo),
+            child: Image.asset(
+              AppConfig.logo,
+              width: imageWidth > 250 ? 250 : imageWidth,
+              height: imageHeight > 200 ? 200 : imageHeight,
+              fit: BoxFit.contain,
+            ),
           ),
           Text(
             'Sign In',

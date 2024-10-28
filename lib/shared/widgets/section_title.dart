@@ -9,7 +9,7 @@ class SectionTitle extends StatelessWidget {
   const SectionTitle({
     super.key,
     required this.title,
-    this.color = AppColors.success,
+    this.color = Colors.pink,
   });
 
   final String title;

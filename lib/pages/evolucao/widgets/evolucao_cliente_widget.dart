@@ -138,7 +138,7 @@ class _EvolucaoClienteWidgetState extends State<EvolucaoClienteWidget> {
                         }
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green,
+                        backgroundColor: Colors.pink,
                         padding: const EdgeInsets.symmetric(vertical: 16.0),
                       ),
                       child: const Text('Salvar'),
@@ -153,13 +153,12 @@ class _EvolucaoClienteWidgetState extends State<EvolucaoClienteWidget> {
                     ),
                     child: ElevatedButton(
                       onPressed: () {
-                        // Limpar os campos e fechar o formulário
-                        dataController.clear();
-                        descricaoController.clear();
-                        profissionalController.clear();
+
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red,
+                        backgroundColor: Colors.white,
+                        foregroundColor: Colors.pink,
+                        side: const BorderSide(color: Colors.pink),
                         padding: const EdgeInsets.symmetric(vertical: 16.0),
                       ),
                       child: const Text('Cancelar'),

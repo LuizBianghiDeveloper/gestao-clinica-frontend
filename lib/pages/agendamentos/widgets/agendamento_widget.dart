@@ -171,7 +171,7 @@ class _AgendamentoWidgetState extends State<AgendamentoWidget> {
           actions: <Widget>[
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(false); // Cancelar
+                Navigator.of(context).pop(false);
               },
               child: const Text('Cancelar',
                   style: TextStyle(
@@ -273,8 +273,8 @@ class _AgendamentoWidgetState extends State<AgendamentoWidget> {
                   _selectDate(context);
                 },
                 style: ElevatedButton.styleFrom(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+                  backgroundColor: Colors.pink,
                 ),
                 child: const Text(
                   'Trocar Data',
@@ -290,8 +290,8 @@ class _AgendamentoWidgetState extends State<AgendamentoWidget> {
                   context.go('/cadastro-cliente');
                 },
                 style: ElevatedButton.styleFrom(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+                  backgroundColor: Colors.pink,
                 ),
                 child: const Text(
                   'Cadastrar novo',
