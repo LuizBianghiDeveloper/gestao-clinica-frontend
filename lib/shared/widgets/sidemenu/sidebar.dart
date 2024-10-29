@@ -202,12 +202,14 @@ class _SidebarState extends State<Sidebar> {
                   Row(
                     children: [
                       gapW8,
-                      Text(
-                        'Clinica Estética Avançada',
-                        style: Theme.of(context)
-                            .textTheme
-                            .labelMedium
-                            ?.copyWith(fontWeight: FontWeight.w600),
+                      Center(
+                        child: Text(
+                          'Clinica Thais Melo - Estética Integrativa',
+                          style: Theme.of(context)
+                              .textTheme
+                              .labelMedium
+                              ?.copyWith(fontWeight: FontWeight.w600),
+                        ),
                       ),
                     ],
                   ),

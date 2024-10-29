@@ -64,7 +64,7 @@ class PdfUtils {
 
     Future<Uint8List> loadAssetImage() async {
       final ByteData data = await rootBundle
-          .load('assets/images/illustration/signup_illustration.png');
+          .load('assets/logo/logoThais.png');
       return data.buffer.asUint8List();
     }
 
@@ -88,19 +88,19 @@ class PdfUtils {
                   crossAxisAlignment: pw.CrossAxisAlignment.start,
                   children: [
                     pw.Container(
-                      height: 50,
-                      width: 50,
+                      height: 100,
+                      width: 100,
                       child: pw.Image(
                         pw.MemoryImage(imageBytes),
                         fit: pw.BoxFit.contain,
                       ),
                     ),
-                    pw.SizedBox(width: 16),
+                    pw.SizedBox(width: 8),
                     pw.Column(
                       crossAxisAlignment: pw.CrossAxisAlignment.start,
                       children: [
                         pw.Text(
-                          'Thais Estética Integrativa - Telefone: (31)8254-0846',
+                          'Thais Estética Integrativa - Telefone: (31) 98254-0846',
                           style: const pw.TextStyle(
                             fontSize: 10,
                           ),
@@ -915,6 +915,14 @@ class PdfUtils {
       String dia,
       String mes,
       String ano) async {
+
+    Future<Uint8List> loadAssetImage() async {
+      final ByteData data = await rootBundle
+          .load('assets/logo/logoThais.png');
+      return data.buffer.asUint8List();
+    }
+
+    final Uint8List imageBytes = await loadAssetImage();
     final pdf = pw.Document();
 
     pdf.addPage(
@@ -923,12 +931,23 @@ class PdfUtils {
           return pw.Column(
             crossAxisAlignment: pw.CrossAxisAlignment.start,
             children: [
+              pw.Center(
+                child: pw.Container(
+                  height: 150,
+                  width: 150,
+                  child: pw.Image(
+                    pw.MemoryImage(imageBytes),
+                    fit: pw.BoxFit.contain,
+                  ),
+                ),
+              ),
+              pw.SizedBox(height: 12),
               pw.Text(
                 "CONTRATO DE PRESTAÇÃO DE SERVIÇOS QUE ENTRE SI FAZEM ",
                 style:
                     pw.TextStyle(fontSize: 12, fontWeight: pw.FontWeight.bold),
               ),
-              pw.SizedBox(height: 24),
+              pw.SizedBox(height: 12),
               pw.Text(
                 "Como contratante, $nome, $estadoCivil, $profissao, residente e domiciliado na $rua, $bairro, $numero, $cep; Como contratada, Thais Melo Estética Integrativa, pessoa jurídica de direito privado, inscrita no CNPJ sob o número 43.131.909/0001-91, situada na Avenida Rio Branco, número 106, Centro, na cidade de Nova Lima, Minas Gerais, CEP 34.000.132, empresa legalmente representada por Thais Rodrigues Melo, esteticista, microempreendedora individual, registrada sob o n.º 797.411-57.",
                 textAlign: pw.TextAlign.justify,

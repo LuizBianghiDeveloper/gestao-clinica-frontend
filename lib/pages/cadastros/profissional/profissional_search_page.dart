@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../../../responsive.dart';
 import '../../../shared/constants/defaults.dart';
 import '../../../shared/constants/ghaps.dart';
 import '../../../theme/app_colors.dart';
@@ -14,7 +13,36 @@ class ProfissionalSearchPage extends StatefulWidget {
 
 class _ProfissionalSearchPageState extends State<ProfissionalSearchPage> {
   final TextEditingController searchController = TextEditingController();
-  List<String> allProfissionais = ['Ana', 'Bruno', 'Carlos', 'Diana', 'Eduardo'];
+
+
+  List<String> allProfissionais = [
+    'Ana Paula Silva',
+    'Bruno Mendes Oliveira',
+    'Carlos Alberto Souza',
+    'Diana Costa Pereira',
+    'Eduardo Gomes Ferreira',
+    'Fernanda Lima Santos',
+    'Gabriel Rocha Lima',
+    'Helena Martins Alves',
+    'Igor Henrique Dias',
+    'Júlia de Souza Almeida',
+    'Karla Cristina Lima',
+    'Leonardo da Silva Santos',
+    'Mariana Oliveira Costa',
+    'Natália Mendes Nascimento',
+    'Otávio Augusto Lima',
+    'Paula Regina Cardoso',
+    'Quiteria de Almeida Oliveira',
+    'Ricardo Carvalho Pinto',
+    'Sofia Regina Ferreira',
+    'Thiago Fernandes da Costa',
+    'Ulisses Martins de Oliveira',
+    'Vanessa Silva Freitas',
+    'William Figueiredo Santos',
+    'Xuxa de Almeida',
+    'Yasmin Rodrigues da Silva',
+  ];
+
   List<String> filteredProfissionais = [];
 
   @override
@@ -41,6 +69,9 @@ class _ProfissionalSearchPageState extends State<ProfissionalSearchPage> {
 
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final int itemCount = filteredProfissionais.length;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
@@ -83,12 +114,12 @@ class _ProfissionalSearchPageState extends State<ProfissionalSearchPage> {
                 },
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+                  backgroundColor: Colors.pink,
                 ),
                 child: const Text(
                   'Cadastrar novo',
                   style: TextStyle(
                     fontSize: 16,
-                    fontWeight: FontWeight.bold,
                     color: Colors.white,
                   ),
                 ),
@@ -97,51 +128,75 @@ class _ProfissionalSearchPageState extends State<ProfissionalSearchPage> {
           ),
         ),
         gapH20,
-        Flexible(
-          fit: FlexFit.loose,
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: AppDefaults.padding),
-            decoration: const BoxDecoration(
-              color: AppColors.bgSecondayLight,
-              borderRadius: BorderRadius.all(
-                Radius.circular(AppDefaults.borderRadius),
-              ),
+        Container(
+          decoration: const BoxDecoration(
+            color: AppColors.bgSecondayLight,
+            borderRadius: BorderRadius.all(
+              Radius.circular(AppDefaults.borderRadius),
             ),
-            child: ListView.builder(
-              shrinkWrap: true,
-              itemCount: filteredProfissionais.length,
-              itemBuilder: (context, index) {
-                return Column(
+          ),
+          padding: const EdgeInsets.all(AppDefaults.padding * 0.75),
+          child: Column(
+            children: [
+              gapH8,
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppDefaults.padding * 0.5,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    ListTile(
-                      title: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(filteredProfissionais[index]),
-                          Row(
+                    Text(
+                      "$itemCount",
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey.shade600,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              gapH16,
+              SizedBox(
+                height: itemCount > 5 ? screenHeight * 0.4 : itemCount * 90,
+                child: ListView.builder(
+                  itemCount: itemCount,
+                  padding: EdgeInsets.zero,
+                  itemBuilder: (context, index) {
+                    return Column(
+                      children: [
+                        ListTile(
+                          title: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              IconButton(
-                                icon: const Icon(Icons.edit, color: Colors.orange),
-                                onPressed: () {
-                                  print('Editar ${filteredProfissionais[index]}');
-                                },
-                              ),
-                              IconButton(
-                                icon: const Icon(Icons.delete, color: Colors.red),
-                                onPressed: () {
-                                  print('Excluir ${filteredProfissionais[index]}');
-                                },
+                              Text(filteredProfissionais[index]),
+                              Row(
+                                children: [
+                                  IconButton(
+                                    icon: const Icon(Icons.edit, color: Colors.orange),
+                                    onPressed: () {
+                                      print('Editar ${filteredProfissionais[index]}');
+                                    },
+                                  ),
+                                  IconButton(
+                                    icon: const Icon(Icons.delete, color: Colors.red),
+                                    onPressed: () {
+                                      print('Excluir ${filteredProfissionais[index]}');
+                                    },
+                                  ),
+                                ],
                               ),
                             ],
                           ),
-                        ],
-                      ),
-                    ),
-                    const Divider(),
-                  ],
-                );
-              },
-            )
+                        ),
+                        const Divider(),
+                      ],
+                    );
+                  },
+                ),
+              ),
+              gapH8,
+            ],
           ),
         ),
       ],

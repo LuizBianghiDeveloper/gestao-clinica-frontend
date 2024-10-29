@@ -17,12 +17,23 @@ class DashboardPage extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         gapH24,
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Text(
+              "Olá Luiz Bianghi, seja bem vindo!",
+              style: Theme.of(context)
+                  .textTheme
+                  .headlineSmall!
+            ),
+          ],
+        ),
+        gapH24,
         Text(
           "Dashboard",
           style: Theme.of(context)
               .textTheme
-              .headlineLarge!
-              .copyWith(fontWeight: FontWeight.w600),
+              .headlineSmall!
         ),
         gapH20,
         Row(

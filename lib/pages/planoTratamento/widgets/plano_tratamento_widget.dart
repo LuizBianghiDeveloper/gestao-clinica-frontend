@@ -21,8 +21,51 @@ class _PlanoTratamentoWidgetState extends State<PlanoTratamentoWidget> {
   final TextEditingController observacaoController = TextEditingController();
   final TextEditingController sessaoController = TextEditingController();
 
-  final List<String> _clientes = ['João Silva', 'Maria Souza', 'Carlos Pereira'];
-  final List<String> _procedimentos = ['Hipertensão', 'Diabetes', 'Obesidade'];
+  final List<String> _clientes = [ 'Ana Paula Silva',
+    'Bruno Mendes Oliveira',
+    'Carlos Alberto Souza',
+    'Diana Costa Pereira',
+    'Eduardo Gomes Ferreira',
+    'Fernanda Lima Santos',
+    'Gabriel Rocha Lima',
+    'Helena Martins Alves',
+    'Igor Henrique Dias',
+    'Júlia de Souza Almeida',
+    'Karla Cristina Lima',
+    'Leonardo da Silva Santos',
+    'Mariana Oliveira Costa',
+    'Natália Mendes Nascimento',
+    'Otávio Augusto Lima',
+    'Paula Regina Cardoso',
+    'Quiteria de Almeida Oliveira',
+    'Ricardo Carvalho Pinto',
+    'Sofia Regina Ferreira',
+    'Thiago Fernandes da Costa',
+    'Ulisses Martins de Oliveira',
+    'Vanessa Silva Freitas',
+    'William Figueiredo Santos',
+    'Xuxa de Almeida',
+    'Yasmin Rodrigues da Silva',];
+  final List<String> _procedimentos = ['Botox',
+    'Preenchimento Labial',
+    'Limpeza de Pele',
+    'Peeling Químico',
+    'Depilação a Laser',
+    'Tratamento para Acne',
+    'Rinomodelação',
+    'Microagulhamento',
+    'Lifting Facial',
+    'Tratamento de Melasma',
+    'Harmonização Facial',
+    'Escleroterapia',
+    'Carboxiterapia',
+    'Criolipólise',
+    'Drenagem Linfática',
+    'Laser Fracionado',
+    'Peeling de Diamante',
+    'Massagem Modeladora',
+    'Radiofrequência',
+    'Aplicação de Fios de Sustentação',];
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +91,7 @@ class _PlanoTratamentoWidgetState extends State<PlanoTratamentoWidget> {
           Autocomplete<String>(
             optionsBuilder: (TextEditingValue textEditingValue) {
               if (textEditingValue.text.isEmpty) {
-                return _clientes.take(3);
+                return _clientes.take(999);
               }
               return _clientes.where((String cliente) {
                 return cliente.toLowerCase().contains(textEditingValue.text.toLowerCase());
@@ -83,7 +126,7 @@ class _PlanoTratamentoWidgetState extends State<PlanoTratamentoWidget> {
                 child: Autocomplete<String>(
                   optionsBuilder: (TextEditingValue textEditingValue) {
                     if (textEditingValue.text.isEmpty) {
-                      return _procedimentos.take(3);
+                      return _procedimentos.take(999);
                     }
                     return _procedimentos.where((String procedimento) {
                       return procedimento.toLowerCase().contains(textEditingValue.text.toLowerCase());
@@ -115,6 +158,7 @@ class _PlanoTratamentoWidgetState extends State<PlanoTratamentoWidget> {
               Expanded(
                 child: TextFormField(
                   controller: sessaoController,
+                  keyboardType: TextInputType.number,
                   decoration: const InputDecoration(
                     labelText: 'N° Sessões',
                     border: OutlineInputBorder(),
@@ -264,14 +308,14 @@ class _PlanoTratamentoWidgetState extends State<PlanoTratamentoWidget> {
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: Colors.grey),
+                        border: Border.all(color: Colors.pink),
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
                             _procedimentosAdicionados[index],
-                            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.pink),
                           ),
                           IconButton(
                             icon: const Icon(Icons.delete, color: Colors.red),
@@ -309,7 +353,7 @@ class _PlanoTratamentoWidgetState extends State<PlanoTratamentoWidget> {
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
                   backgroundColor: Colors.white,
-                  side: const BorderSide(color: Colors.grey),
+                  side: const BorderSide(color: Colors.pink),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -319,7 +363,7 @@ class _PlanoTratamentoWidgetState extends State<PlanoTratamentoWidget> {
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
-                    color: Colors.grey,
+                    color: Colors.pink,
                   ),
                 ),
               ),
@@ -340,7 +384,7 @@ class _PlanoTratamentoWidgetState extends State<PlanoTratamentoWidget> {
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
                   backgroundColor: Colors.white,
-                  side: const BorderSide(color: Colors.grey),
+                  side: const BorderSide(color: Colors.pink),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -350,7 +394,7 @@ class _PlanoTratamentoWidgetState extends State<PlanoTratamentoWidget> {
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
-                    color: Colors.grey,
+                    color: Colors.pink,
                   ),
                 ),
               )

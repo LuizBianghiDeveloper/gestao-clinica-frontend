@@ -22,7 +22,13 @@ class _CommentItemState extends State<CommentItem> {
 
   Future<void> _launchWhatsApp() async {
     final String phoneNumber = "+5531991692201";
-    final String message = "Olá, gostaria de saber mais sobre os produtos.";
+    final String message = "🎉 Parabéns! 🎉\n\n"
+        "A Clínica Thais Melo Estética Integrativa deseja a você um dia repleto de alegria e realizações! "
+        "Que este novo ano de vida traga muitas conquistas e momentos especiais. "
+        "Estamos aqui para cuidar de você e ajudar a realçar sua beleza. "
+        "Aproveite seu dia! 🎂✨";
+
+
     final Uri whatsappUrl = Uri.parse("https://wa.me/$phoneNumber?text=$message");
 
     if (await canLaunchUrl(whatsappUrl)) {

@@ -11,7 +11,12 @@ class Comments extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
-    final int itemCount = 1;
+    final List<String> birthdayList = [
+      'Ana Paula Silva',
+      'Bruno Mendes Oliveira',
+      'Carlos Alberto Souza',];
+    final int itemCount = birthdayList.length;
+
     return Container(
       decoration: const BoxDecoration(
         color: AppColors.bgSecondayLight,
@@ -46,13 +51,13 @@ class Comments extends StatelessWidget {
           ),
           gapH16,
           SizedBox(
-            height: screenHeight * 0.55,
+            height: itemCount > 5 ? screenHeight * 0.4 : itemCount * 90,
             child: ListView.builder(
-              itemCount: 1,
+              itemCount: itemCount,
               padding: EdgeInsets.zero,
               itemBuilder: (_, index) {
-                return const CommentItem(
-                  name: 'Ana Paula'
+                return CommentItem(
+                  name: birthdayList[index],
                 );
               },
             ),

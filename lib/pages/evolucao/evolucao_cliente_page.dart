@@ -14,11 +14,25 @@ class EvolucaoClientePage extends StatefulWidget {
 }
 
 class _EvolucaoClientePageState extends State<EvolucaoClientePage> {
-  bool showEvolucaoWidget = true; // Inicializa como true para mostrar o widget de evolução
+  bool showEvolucaoWidget = true;
   bool showEvolucoesList = false;
 
-  // Lista de evoluções mockadas
   List<Map<String, String>> evolucoes = [
+    {
+      'data': '10/10/2023',
+      'profissional': 'Dr. João',
+      'descricao': 'Paciente apresenta melhoras significativas.'
+    },
+    {
+      'data': '05/10/2023',
+      'profissional': 'Dra. Maria',
+      'descricao': 'Paciente com quadro estável, sem alterações.'
+    },
+    {
+      'data': '01/10/2023',
+      'profissional': 'Enfermeira Ana',
+      'descricao': 'Realizado acompanhamento pós-cirúrgico.'
+    },
     {
       'data': '10/10/2023',
       'profissional': 'Dr. João',

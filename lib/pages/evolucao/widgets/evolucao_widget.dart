@@ -16,7 +16,33 @@ class EvolucaoWidget extends StatefulWidget {
 
 class _EvolucaoWidgetState extends State<EvolucaoWidget> {
   final TextEditingController searchController = TextEditingController();
-  List<String> allEvolucoes = ['Ana', 'Bruno', 'Carlos', 'Diana', 'Eduardo'];
+  List<String> allEvolucoes = [
+    'Ana Paula Silva',
+    'Bruno Mendes Oliveira',
+    'Carlos Alberto Souza',
+    'Diana Costa Pereira',
+    'Eduardo Gomes Ferreira',
+    'Fernanda Lima Santos',
+    'Gabriel Rocha Lima',
+    'Helena Martins Alves',
+    'Igor Henrique Dias',
+    'Júlia de Souza Almeida',
+    'Karla Cristina Lima',
+    'Leonardo da Silva Santos',
+    'Mariana Oliveira Costa',
+    'Natália Mendes Nascimento',
+    'Otávio Augusto Lima',
+    'Paula Regina Cardoso',
+    'Quiteria de Almeida Oliveira',
+    'Ricardo Carvalho Pinto',
+    'Sofia Regina Ferreira',
+    'Thiago Fernandes da Costa',
+    'Ulisses Martins de Oliveira',
+    'Vanessa Silva Freitas',
+    'William Figueiredo Santos',
+    'Xuxa de Almeida',
+    'Yasmin Rodrigues da Silva',
+  ];
   List<String> filteredEvolucoes = [];
 
   @override
@@ -43,6 +69,8 @@ class _EvolucaoWidgetState extends State<EvolucaoWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final int itemCount = filteredEvolucoes.length;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
@@ -76,35 +104,38 @@ class _EvolucaoWidgetState extends State<EvolucaoWidget> {
                   Radius.circular(AppDefaults.borderRadius),
                 ),
               ),
-              child: ListView.builder(
-                shrinkWrap: true,
-                itemCount: filteredEvolucoes.length,
-                itemBuilder: (context, index) {
-                  return Column(
-                    children: [
-                      ListTile(
-                        title: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(filteredEvolucoes[index]),
-                            Row(
-                              children: [
-                                IconButton(
-                                  icon: const Icon(Icons.arrow_forward, color: Colors.pink),
-                                  onPressed: () {
-                                    context.go('/evolucao-cliente/${filteredEvolucoes[index]}');
-                                    print('Editar ${filteredEvolucoes[index]}');
-                                  },
-                                ),
-                              ],
-                            ),
-                          ],
+              child: SizedBox(
+                height: itemCount > 5 ? screenHeight * 0.4 : itemCount * 90,
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: itemCount,
+                  itemBuilder: (context, index) {
+                    return Column(
+                      children: [
+                        ListTile(
+                          title: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(filteredEvolucoes[index]),
+                              Row(
+                                children: [
+                                  IconButton(
+                                    icon: const Icon(Icons.arrow_forward, color: Colors.pink),
+                                    onPressed: () {
+                                      context.go('/evolucao-cliente/${filteredEvolucoes[index]}');
+                                      print('Editar ${filteredEvolucoes[index]}');
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                      const Divider(),
-                    ],
-                  );
-                },
+                        const Divider(),
+                      ],
+                    );
+                  },
+                ),
               )
           ),
         ),

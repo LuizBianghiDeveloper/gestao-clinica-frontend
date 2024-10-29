@@ -3,6 +3,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart'; // Para formatar a data
 import 'package:go_router/go_router.dart';
 
+import '../../../responsive.dart';
 import '../../../shared/constants/defaults.dart';
 import '../../../shared/constants/ghaps.dart';
 import '../../../theme/app_colors.dart';
@@ -57,106 +58,142 @@ class _AgendamentoWidgetState extends State<AgendamentoWidget> {
   }
 
   void _gerarAgendamentos() {
-    agendamentos = {
-      '07:00': [
-        Agendamento(
-          descricao: "Drenagem",
-          profissional: "Ana Romani",
-          sala: "Sala 1",
-          cor: Colors.teal,
-        ),
-        Agendamento(
-          descricao: "Criolipolise",
-          profissional: "Thais Melo",
-          sala: "Sala 2",
-          cor: Colors.pinkAccent,
-        ),
-        Agendamento(
-          descricao: "Limpeza de pele",
-          profissional: "Maria Joaquina",
-          sala: "Sala 3",
-          cor: Colors.orange,
-        ),
-        Agendamento(
-          descricao: "Drenagem",
-          profissional: "Fulana de tal",
-          sala: "Sala 4",
-          cor: Colors.purple,
-        ),
-      ],
-      '07:30': [
-        Agendamento(
-          descricao: "Drenagem",
-          profissional: "Ana Romani",
-          sala: "Sala 1",
-          cor: Colors.teal,
-        ),
-        Agendamento(
-          descricao: "Drenagem",
-          profissional: "Fulana de tal",
-          sala: "Sala 4",
-          cor: Colors.purple,
-        ),
-      ],
-      '08:00': [
-        Agendamento(
-          descricao: "Limpeza de pele",
-          profissional: "Maria Joaquina",
-          sala: "Sala 3",
-          cor: Colors.orange,
-        ),
-      ],
-      '09:00': [
-        Agendamento(
-          descricao: "Exame",
-          profissional: "Enfermeira Ana",
-          sala: "Sala 102",
-          cor: Colors.deepPurple,
-        ),
-      ],
-      '10:00': [
-        Agendamento(
-          descricao: "Drenagem",
-          profissional: "Fulana de tal",
-          sala: "Sala 4",
-          cor: Colors.purple,
-        ),
-        Agendamento(
-          descricao: "Drenagem",
-          profissional: "Ana Romani",
-          sala: "Sala 1",
-          cor: Colors.teal,
-        ),
-        Agendamento(
-          descricao: "Limpeza de pele",
-          profissional: "Maria Joaquina",
-          sala: "Sala 3",
-          cor: Colors.orange,
-        ),
-        Agendamento(
-          descricao: "Criolipolise",
-          profissional: "Thais Melo",
-          sala: "Sala 2",
-          cor: Colors.pinkAccent,
-        ),
-      ],
-      '10:30': [
-        Agendamento(
-          descricao: "Reunião",
-          profissional: "Sr. Carlos",
-          sala: "Sala 201",
-          cor: Colors.blue,
-        ),
-      ],
-      '11:00': [
-        Agendamento(
-          descricao: "Dentista",
-          profissional: "Dr. Marta",
-          sala: "Sala 301",
-          cor: Colors.pink,
-        ),
-      ],
-    };
+    agendamentos.clear();
+    if (selectedDate.day % 2 == 0) {
+      agendamentos = {
+        '07:00': [
+          Agendamento(
+            descricao: "Drenagem",
+            profissional: "Ana Romani",
+            sala: "Sala 1",
+            cor: Colors.teal,
+          ),
+          Agendamento(
+            descricao: "Criolipolise",
+            profissional: "Thais Melo",
+            sala: "Sala 2",
+            cor: Colors.pinkAccent,
+          ),
+          Agendamento(
+            descricao: "Limpeza de pele",
+            profissional: "Maria Joaquina",
+            sala: "Sala 3",
+            cor: Colors.orange,
+          ),
+          Agendamento(
+            descricao: "Drenagem",
+            profissional: "Fulana de tal",
+            sala: "Sala 4",
+            cor: Colors.purple,
+          ),
+        ],
+        '07:30': [
+          Agendamento(
+            descricao: "Drenagem",
+            profissional: "Ana Romani",
+            sala: "Sala 1",
+            cor: Colors.teal,
+          ),
+          Agendamento(
+            descricao: "Drenagem",
+            profissional: "Fulana de tal",
+            sala: "Sala 4",
+            cor: Colors.purple,
+          ),
+        ],
+        '08:00': [
+          Agendamento(
+            descricao: "Limpeza de pele",
+            profissional: "Maria Joaquina",
+            sala: "Sala 3",
+            cor: Colors.orange,
+          ),
+        ],
+        '09:00': [
+          Agendamento(
+            descricao: "Exame",
+            profissional: "Enfermeira Ana",
+            sala: "Sala 102",
+            cor: Colors.deepPurple,
+          ),
+        ],
+        '10:00': [
+          Agendamento(
+            descricao: "Drenagem",
+            profissional: "Fulana de tal",
+            sala: "Sala 4",
+            cor: Colors.purple,
+          ),
+          Agendamento(
+            descricao: "Drenagem",
+            profissional: "Ana Romani",
+            sala: "Sala 1",
+            cor: Colors.teal,
+          ),
+          Agendamento(
+            descricao: "Limpeza de pele",
+            profissional: "Maria Joaquina",
+            sala: "Sala 3",
+            cor: Colors.orange,
+          ),
+          Agendamento(
+            descricao: "Criolipolise",
+            profissional: "Thais Melo",
+            sala: "Sala 2",
+            cor: Colors.pinkAccent,
+          ),
+        ],
+        '10:30': [
+          Agendamento(
+            descricao: "Reunião",
+            profissional: "Sr. Carlos",
+            sala: "Sala 201",
+            cor: Colors.blue,
+          ),
+        ],
+        '11:00': [
+          Agendamento(
+            descricao: "Dentista",
+            profissional: "Dr. Marta",
+            sala: "Sala 301",
+            cor: Colors.pink,
+          ),
+        ],
+      };
+    } else {
+      agendamentos = {
+        '07:00': [
+          Agendamento(
+            descricao: "Limpeza de pele",
+            profissional: "Maria Joaquina",
+            sala: "Sala 3",
+            cor: Colors.orange,
+          ),
+          Agendamento(
+            descricao: "Drenagem",
+            profissional: "Fulana de tal",
+            sala: "Sala 4",
+            cor: Colors.purple,
+          ),
+        ],
+        '07:30': [
+          Agendamento(
+            descricao: "Drenagem",
+            profissional: "Ana Romani",
+            sala: "Sala 1",
+            cor: Colors.teal,
+          ),
+        ],
+        '09:00': [
+          Agendamento(
+            descricao: "Exame",
+            profissional: "Enfermeira Ana",
+            sala: "Sala 102",
+            cor: Colors.deepPurple,
+          ),
+        ],
+      };
+    }
   }
 
   Future<void> _confirmarExclusao(
@@ -220,10 +257,10 @@ class _AgendamentoWidgetState extends State<AgendamentoWidget> {
       builder: (BuildContext context, Widget? child) {
         return Theme(
           data: ThemeData.light().copyWith(
-            primaryColor: Colors.teal,
+            primaryColor: Colors.pink,
             colorScheme: const ColorScheme.light(
-              primary: Colors.teal,
-              onSurface: Colors.black,
+              primary: Colors.pink,
+              onSurface: Colors.pink,
             ),
             dialogBackgroundColor: Colors.white,
           ),
@@ -256,28 +293,31 @@ class _AgendamentoWidgetState extends State<AgendamentoWidget> {
             ),
           ),
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Expanded(
-                flex: 5,
-                child: Text(
-                  'Agendamentos do dia $formattedDate',
-                  style: const TextStyle(
-                    fontSize: 22,
-                    color: Colors.black,
+              if (!Responsive.isMobile(context))
+                Expanded(
+                  flex: 5,
+                  child: Text(
+                    'Agendamentos do dia $formattedDate',
+                    style: const TextStyle(
+                      fontSize: 22,
+                      color: Colors.black,
+                    ),
                   ),
                 ),
-              ),
               const SizedBox(width: 10),
               ElevatedButton(
                 onPressed: () {
                   _selectDate(context);
                 },
                 style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
                   backgroundColor: Colors.pink,
                 ),
                 child: const Text(
-                  'Trocar Data',
+                  'Alterar data',
                   style: TextStyle(
                     fontSize: 16,
                     color: Colors.white,
@@ -290,11 +330,12 @@ class _AgendamentoWidgetState extends State<AgendamentoWidget> {
                   context.go('/cadastro-cliente');
                 },
                 style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
                   backgroundColor: Colors.pink,
                 ),
                 child: const Text(
-                  'Cadastrar novo',
+                  'Novo agendamento',
                   style: TextStyle(
                     fontSize: 16,
                     color: Colors.white,
@@ -355,51 +396,71 @@ class _AgendamentoWidgetState extends State<AgendamentoWidget> {
                                                 agendamento.descricao,
                                                 style: const TextStyle(
                                                     color: Colors.white),
+                                                overflow: TextOverflow.ellipsis,
+                                                maxLines: 1,
+                                                softWrap: false,
                                               ),
                                               const SizedBox(height: 4),
                                               Text(
                                                 agendamento.profissional,
                                                 style: const TextStyle(
                                                     color: Colors.white),
+                                                overflow: TextOverflow.ellipsis,
+                                                maxLines: 1,
+                                                softWrap: false,
                                               ),
                                               const SizedBox(height: 4),
-                                              Text(
-                                                agendamento.sala,
-                                                style: const TextStyle(
-                                                    color: Colors.white70),
-                                              ),
+                                              if (!Responsive.isMobile(context))
+                                                Text(
+                                                  agendamento.sala,
+                                                  style: const TextStyle(
+                                                      color: Colors.white70),
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  maxLines: 1,
+                                                  softWrap: false,
+                                                ),
                                               const SizedBox(height: 4),
-                                              const Text(
-                                                "Paciente X",
-                                                style: TextStyle(
-                                                    color: Colors.white70),
-                                              ),
+                                              if (!Responsive.isMobile(context))
+                                                const Text(
+                                                  "Paciente X",
+                                                  style: const TextStyle(
+                                                      color: Colors.white70),
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  maxLines: 1,
+                                                  softWrap: false,
+                                                ),
                                             ],
                                           ),
-                                          Positioned(
-                                            top: 0,
-                                            right: 0,
-                                            child: Row(
-                                              children: [
-                                                IconButton(
-                                                  icon: const Icon(Icons.edit,
-                                                      color: Colors.white),
-                                                  onPressed: () {
-                                                    _editarAgendamento(
-                                                        horario, agendamento);
-                                                  },
-                                                ),
-                                                IconButton(
-                                                  icon: const Icon(Icons.delete,
-                                                      color: Colors.white),
-                                                  onPressed: () {
-                                                    _confirmarExclusao(context,
-                                                        horario, agendamento);
-                                                  },
-                                                ),
-                                              ],
+                                          if (!Responsive.isMobile(context))
+                                            Positioned(
+                                              top: 0,
+                                              right: 0,
+                                              child: Row(
+                                                children: [
+                                                  IconButton(
+                                                    icon: const Icon(Icons.edit,
+                                                        color: Colors.white),
+                                                    onPressed: () {
+                                                      _editarAgendamento(
+                                                          horario, agendamento);
+                                                    },
+                                                  ),
+                                                  IconButton(
+                                                    icon: const Icon(
+                                                        Icons.delete,
+                                                        color: Colors.white),
+                                                    onPressed: () {
+                                                      _confirmarExclusao(
+                                                          context,
+                                                          horario,
+                                                          agendamento);
+                                                    },
+                                                  ),
+                                                ],
+                                              ),
                                             ),
-                                          ),
                                         ],
                                       ),
                                     ),
@@ -407,13 +468,18 @@ class _AgendamentoWidgetState extends State<AgendamentoWidget> {
                                 );
                               }).toList(),
                             )
-                          : Padding(
-                              padding: const EdgeInsets.all(4.0),
-                              child: Container(
-                                height: 50,
-                                color: Colors.grey[200],
-                                child: const Center(
-                                    child: Text("Sem Agendamentos")),
+                          : GestureDetector(
+                              onTap: () {
+                                context.go('/cadastro-cliente');
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.all(4.0),
+                                child: Container(
+                                  height: 50,
+                                  color: Colors.grey[200],
+                                  child: const Center(
+                                      child: Text("Sem Agendamentos")),
+                                ),
                               ),
                             ),
                     ),
