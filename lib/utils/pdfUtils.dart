@@ -13,15 +13,15 @@ class PdfUtils {
 
     List<Map<String, dynamic>> procedimentos = [
       {
-        'servico': 'Procedimento 1',
-        'numero_sessoes': 5,
-        'unitario': 100.00,
-        'total': 500.00,
+        'servico': 'Botox',
+        'numero_sessoes': 1,
+        'unitario': 800.00,
+        'total': 800.00,
         'desconto': 50.00,
-        'valor_final': 450.00,
+        'valor_final': 750.00,
       },
       {
-        'servico': 'Procedimento 2',
+        'servico': 'Drenagem linfática',
         'numero_sessoes': 3,
         'unitario': 150.00,
         'total': 450.00,
@@ -29,36 +29,45 @@ class PdfUtils {
         'valor_final': 405.00,
       },
       {
-        'servico': 'Procedimento 1',
-        'numero_sessoes': 5,
-        'unitario': 100.00,
-        'total': 500.00,
-        'desconto': 50.00,
-        'valor_final': 450.00,
+        'servico': 'Criolipólise',
+        'numero_sessoes': 1,
+        'unitario': 900.00,
+        'total': 900.00,
+        'desconto': 0.00,
+        'valor_final': 900.00,
+      },
+    ];
+
+    List<Map<String, dynamic>> parcelas = [
+      {
+        'parcelas': '1',
+        'vencimento': '10/11/2024',
+        'valor': '411.00',
+        'forma': 'Crédito'
       },
       {
-        'servico': 'Procedimento 2',
-        'numero_sessoes': 3,
-        'unitario': 150.00,
-        'total': 450.00,
-        'desconto': 45.00,
-        'valor_final': 405.00,
+        'parcelas': '2',
+        'vencimento': '10/12/2024',
+        'valor': '411.00',
+        'forma': 'Crédito'
       },
       {
-        'servico': 'Procedimento 1',
-        'numero_sessoes': 5,
-        'unitario': 100.00,
-        'total': 500.00,
-        'desconto': 50.00,
-        'valor_final': 450.00,
+        'parcelas': '3',
+        'vencimento': '10/01/2024',
+        'valor': '411.00',
+        'forma': 'Crédito'
       },
       {
-        'servico': 'Procedimento 2',
-        'numero_sessoes': 3,
-        'unitario': 150.00,
-        'total': 450.00,
-        'desconto': 45.00,
-        'valor_final': 405.00,
+        'parcelas': '4',
+        'vencimento': '10/02/2024',
+        'valor': '411.00',
+        'forma': 'Crédito'
+      },
+      {
+        'parcelas': '5',
+        'vencimento': '10/03/2024',
+        'valor': '411.00',
+        'forma': 'Crédito'
       },
     ];
 
@@ -114,7 +123,7 @@ class PdfUtils {
                         ),
                         pw.SizedBox(height: 24),
                         pw.Text(
-                          'PROPOSTA VÁLIDA ATÉ: 14/09/2024',
+                          'PROPOSTA VÁLIDA ATÉ: 14/11/2024',
                           style: pw.TextStyle(
                             fontSize: 10,
                             fontStyle: pw.FontStyle.italic,
@@ -500,7 +509,7 @@ class PdfUtils {
                       border: pw.Border.all(color: PdfColors.black),
                     ),
                     child: pw.Text(
-                      "R\$ 2.880,00",
+                      "R\$ 2.150,00",
                       style: pw.TextStyle(
                         fontSize: 10,
                         fontWeight: pw.FontWeight.bold,
@@ -534,7 +543,7 @@ class PdfUtils {
                       border: pw.Border.all(color: PdfColors.black),
                     ),
                     child: pw.Text(
-                      "R\$ 2.880,00",
+                      "R\$ 2.055,00",
                       style: pw.TextStyle(
                         fontSize: 10,
                         fontWeight: pw.FontWeight.bold,
@@ -564,7 +573,7 @@ class PdfUtils {
                       border: pw.Border.all(color: PdfColors.black),
                     ),
                     child: pw.Text(
-                      "R\$ 0,00",
+                      "R\$ 95,00",
                       style: pw.TextStyle(
                         fontSize: 10,
                         fontWeight: pw.FontWeight.bold,
@@ -594,7 +603,7 @@ class PdfUtils {
                       border: pw.Border.all(color: PdfColors.black),
                     ),
                     child: pw.Text(
-                      "R\$ 2.880,00",
+                      "R\$ 2.055,00",
                       style: pw.TextStyle(
                         fontSize: 10,
                         fontWeight: pw.FontWeight.bold,
@@ -701,8 +710,8 @@ class PdfUtils {
                   ],
                 ),
               ),
-              ...List.generate(procedimentos.length, (index) {
-                final procedimento = procedimentos[index];
+              ...List.generate(parcelas.length, (index) {
+                final parcela = parcelas[index];
                 return pw.Container(
                   padding: const pw.EdgeInsets.all(1),
                   decoration: pw.BoxDecoration(
@@ -717,7 +726,7 @@ class PdfUtils {
                           color: PdfColors.white,
                         ),
                         child: pw.Text(
-                          procedimento['servico'],
+                          parcela['parcelas'],
                           textAlign: pw.TextAlign.center,
                           style: const pw.TextStyle(
                             fontSize: 10,
@@ -731,7 +740,7 @@ class PdfUtils {
                           color: PdfColors.white,
                         ),
                         child: pw.Text(
-                          procedimento['numero_sessoes'].toString(),
+                          parcela['vencimento'].toString(),
                           textAlign: pw.TextAlign.center,
                           style: const pw.TextStyle(
                             fontSize: 10,
@@ -745,7 +754,7 @@ class PdfUtils {
                           color: PdfColors.white,
                         ),
                         child: pw.Text(
-                          procedimento['unitario'].toString(),
+                          parcela['valor'].toString(),
                           textAlign: pw.TextAlign.center,
                           style: const pw.TextStyle(
                             fontSize: 10,
@@ -759,7 +768,7 @@ class PdfUtils {
                           color: PdfColors.white,
                         ),
                         child: pw.Text(
-                          procedimento['total'].toString(),
+                          parcela['forma'].toString(),
                           textAlign: pw.TextAlign.center,
                           style: const pw.TextStyle(
                             fontSize: 10,
@@ -822,7 +831,7 @@ class PdfUtils {
                       border: pw.Border.all(color: PdfColors.black),
                     ),
                     child: pw.Text(
-                      "R\$ 2.880,00",
+                      "R\$ 2.150,00",
                       style: pw.TextStyle(
                         fontSize: 10,
                         fontWeight: pw.FontWeight.bold,
@@ -852,7 +861,7 @@ class PdfUtils {
                       border: pw.Border.all(color: PdfColors.black),
                     ),
                     child: pw.Text(
-                      "R\$ 0,00",
+                      "R\$ 95,00",
                       style: pw.TextStyle(
                         fontSize: 10,
                         fontWeight: pw.FontWeight.bold,
@@ -882,7 +891,7 @@ class PdfUtils {
                       border: pw.Border.all(color: PdfColors.black),
                     ),
                     child: pw.Text(
-                      "R\$ 2.880,00",
+                      "R\$ 2.055,00",
                       style: pw.TextStyle(
                         fontSize: 10,
                         fontWeight: pw.FontWeight.bold,

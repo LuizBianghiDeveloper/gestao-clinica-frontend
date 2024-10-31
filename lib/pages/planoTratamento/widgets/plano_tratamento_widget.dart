@@ -17,11 +17,13 @@ class _PlanoTratamentoWidgetState extends State<PlanoTratamentoWidget> {
   String? _selectedCliente;
   String? _selectedProcedimento;
   String? _selectedPagamento;
+  int? _selectedParcelas;
   List<String> _procedimentosAdicionados = [];
   final TextEditingController observacaoController = TextEditingController();
   final TextEditingController sessaoController = TextEditingController();
 
-  final List<String> _clientes = [ 'Ana Paula Silva',
+  final List<String> _clientes = [
+    'Ana Paula Silva',
     'Bruno Mendes Oliveira',
     'Carlos Alberto Souza',
     'Diana Costa Pereira',
@@ -45,8 +47,10 @@ class _PlanoTratamentoWidgetState extends State<PlanoTratamentoWidget> {
     'Vanessa Silva Freitas',
     'William Figueiredo Santos',
     'Xuxa de Almeida',
-    'Yasmin Rodrigues da Silva',];
-  final List<String> _procedimentos = ['Botox',
+    'Yasmin Rodrigues da Silva',
+  ];
+  final List<String> _procedimentos = [
+    'Botox',
     'Preenchimento Labial',
     'Limpeza de Pele',
     'Peeling Químico',
@@ -65,7 +69,15 @@ class _PlanoTratamentoWidgetState extends State<PlanoTratamentoWidget> {
     'Peeling de Diamante',
     'Massagem Modeladora',
     'Radiofrequência',
-    'Aplicação de Fios de Sustentação',];
+    'Aplicação de Fios de Sustentação',
+  ];
+
+  final List<String> _formasPagamento = [
+    'Pix',
+    'Dinheiro',
+    'Crédito',
+    'Débito',
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -183,71 +195,51 @@ class _PlanoTratamentoWidgetState extends State<PlanoTratamentoWidget> {
             style: TextStyle(fontSize: 16, color: Colors.black),
           ),
           const SizedBox(height: 8),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Radio<String>(
-                    value: 'Pix',
-                    groupValue: _selectedPagamento,
-                    activeColor: Colors.pink,
-                    onChanged: (String? value) {
-                      setState(() {
-                        _selectedPagamento = value;
-                      });
-                    },
-                  ),
-                  const Text('Pix'),
-                ],
-              ),
-              Row(
-                children: [
-                  Radio<String>(
-                    value: 'Dinheiro',
-                    groupValue: _selectedPagamento,
-                    activeColor: Colors.pink,
-                    onChanged: (String? value) {
-                      setState(() {
-                        _selectedPagamento = value;
-                      });
-                    },
-                  ),
-                  const Text('Dinheiro'),
-                ],
-              ),
-              Row(
-                children: [
-                  Radio<String>(
-                    value: 'Crédito',
-                    groupValue: _selectedPagamento,
-                    activeColor: Colors.pink,
-                    onChanged: (String? value) {
-                      setState(() {
-                        _selectedPagamento = value;
-                      });
-                    },
-                  ),
-                  const Text('Crédito'),
-                ],
-              ),
-              Row(
-                children: [
-                  Radio<String>(
-                    value: 'Débito',
-                    groupValue: _selectedPagamento,
-                    activeColor: Colors.pink,
-                    onChanged: (String? value) {
-                      setState(() {
-                        _selectedPagamento = value;
-                      });
-                    },
-                  ),
-                  const Text('Débito'),
-                ],
-              ),
-            ],
+          DropdownButtonFormField<String>(
+            value: _selectedPagamento,
+            decoration: const InputDecoration(
+              labelText: 'Selecione a forma de pagamento',
+              border: OutlineInputBorder(),
+            ),
+            items: _formasPagamento.map((String pagamento) {
+              return DropdownMenuItem<String>(
+                value: pagamento,
+                child: Text(pagamento),
+              );
+            }).toList(),
+            onChanged: (String? novoPagamento) {
+              setState(() {
+                _selectedPagamento = novoPagamento;
+                if (novoPagamento != 'Crédito') {
+                  _selectedParcelas = null;
+                }
+              });
+            },
           ),
+          const SizedBox(height: 16),
+          if (_selectedPagamento == 'Crédito') ...[
+            const Text(
+              'Número de Parcelas:',
+              style: TextStyle(fontSize: 16, color: Colors.black),
+            ),
+            DropdownButtonFormField<int>(
+              value: _selectedParcelas,
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+              ),
+              items: List.generate(12, (index) => index + 1).map((int value) {
+                return DropdownMenuItem<int>(
+                  value: value,
+                  child: Text(value.toString()),
+                );
+              }).toList(),
+              onChanged: (int? novoValor) {
+                setState(() {
+                  _selectedParcelas = novoValor;
+                });
+              },
+            ),
+          ],
           const SizedBox(height: 32),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -308,14 +300,14 @@ class _PlanoTratamentoWidgetState extends State<PlanoTratamentoWidget> {
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: Colors.pink),
+                        border: Border.all(color: Colors.black),
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
                             _procedimentosAdicionados[index],
-                            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.pink),
+                            style: const TextStyle(fontSize: 14, color: Colors.black),
                           ),
                           IconButton(
                             icon: const Icon(Icons.delete, color: Colors.red),
@@ -334,75 +326,74 @@ class _PlanoTratamentoWidgetState extends State<PlanoTratamentoWidget> {
             ),
           const SizedBox(height: 32),
           if (_procedimentosAdicionados.isNotEmpty)
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ElevatedButton(
-                onPressed: () {
-                  if (_selectedCliente != null &&
-                      _procedimentosAdicionados.isNotEmpty &&
-                      _selectedPagamento != null) {
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    if (_selectedCliente != null &&
+                        _procedimentosAdicionados.isNotEmpty &&
+                        _selectedPagamento != null) {
 
-                    PdfUtils.abrirPlanoTratamentoPdf(_selectedCliente!, _procedimentosAdicionados.join(', '), "Administrador", observacaoController.text);
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Preencha todos os campos antes de gerar o plano de tratamento!')),
-                    );
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-                  backgroundColor: Colors.white,
-                  side: const BorderSide(color: Colors.pink),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
+                      PdfUtils.abrirPlanoTratamentoPdf(_selectedCliente!, _procedimentosAdicionados.join(', '), "Administrador", observacaoController.text);
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Preencha todos os campos antes de gerar o plano de tratamento!')),
+                      );
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+                    backgroundColor: Colors.white,
+                    side: const BorderSide(color: Colors.grey),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  child: const Text(
+                    'Gerar Plano de Tratamento',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey,
+                    ),
                   ),
                 ),
-                child: const Text(
-                  'Gerar Plano de Tratamento',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.pink,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 16),
-              ElevatedButton(
-                onPressed: () {
-                  if (_selectedCliente != null &&
-                      _procedimentosAdicionados.isNotEmpty &&
-                      _selectedPagamento != null ) {
+                const SizedBox(width: 16),
+                ElevatedButton(
+                  onPressed: () {
+                    if (_selectedCliente != null &&
+                        _procedimentosAdicionados.isNotEmpty &&
+                        _selectedPagamento != null ) {
 
-                    PdfUtils.abrirContratoPdf("Joao", "casado", "médico", "Rua Joao Ferreira", "Retiro", "152", "34002-582", "10", "Setembro", "2024");
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Preencha todos os campos antes de gerar o contrato!')),
-                    );
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-                  backgroundColor: Colors.white,
-                  side: const BorderSide(color: Colors.pink),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
+                      PdfUtils.abrirContratoPdf(_selectedCliente!, "casado", "médico", "Rua Joao Ferreira", "Retiro", "152", "34002-582", "31", "Outubro", "2024");
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Preencha todos os campos antes de gerar o contrato!')),
+                      );
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+                    backgroundColor: Colors.white,
+                    side: const BorderSide(color: Colors.grey),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
                   ),
-                ),
-                child: const Text(
-                  'Gerar Contrato',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.pink,
+                  child: const Text(
+                    'Gerar Contrato',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey,
+                    ),
                   ),
-                ),
-              )
-            ],
-          ),
+                )
+              ],
+            ),
         ],
       ),
     );
   }
 }
-

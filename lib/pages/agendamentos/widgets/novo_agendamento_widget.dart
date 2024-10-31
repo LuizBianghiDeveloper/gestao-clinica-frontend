@@ -32,6 +32,9 @@ class NovoAgendamentoWidget extends StatefulWidget {
 
 class _NovoAgendamentoWidgetState extends State<NovoAgendamentoWidget> {
   final formKey = GlobalKey<FormState>();
+  final List<String> _recorrenciaOpcoes = [
+    'Uma vez', 'Diariamente', 'Semanalmente', 'Mensalmente'
+  ];
   final List<String> _clientes = [
     'Ana Paula Silva', 'Bruno Mendes Oliveira', 'Carlos Alberto Souza',
     'Diana Costa Pereira', 'Eduardo Gomes Ferreira', 'Fernanda Lima Santos',
@@ -42,6 +45,14 @@ class _NovoAgendamentoWidgetState extends State<NovoAgendamentoWidget> {
     'Sofia Regina Ferreira', 'Thiago Fernandes da Costa', 'Ulisses Martins de Oliveira',
     'Vanessa Silva Freitas', 'William Figueiredo Santos', 'Xuxa de Almeida',
     'Yasmin Rodrigues da Silva',
+  ];
+
+  final List<String> _sala = [
+    'Sala 1', 'Sala 2', 'Sala 3', 'Sala 4'
+  ];
+
+  final List<String> _profissional = [
+    'Ana Romani', 'Thais Melo', 'Michelle'
   ];
 
   final List<String> _procedimentos = [
@@ -55,6 +66,9 @@ class _NovoAgendamentoWidgetState extends State<NovoAgendamentoWidget> {
 
   String? _selectedCliente;
   String? _selectedProcedimento;
+  String? _selectedSala;
+  String? _selectedProfissional;
+  String? _selectedRecorrencia;
   final phoneController = MaskedTextController(mask: '(00) 00000-0000');
   final birthDateController = MaskedTextController(mask: '00/00/0000');
   final cpfController = MaskedTextController(mask: '000.000.000-00');
@@ -62,9 +76,10 @@ class _NovoAgendamentoWidgetState extends State<NovoAgendamentoWidget> {
   final TextEditingController enderecoController = TextEditingController();
   final TextEditingController rgController = TextEditingController();
   final TextEditingController _dataController = TextEditingController();
-  String? _selectedHorario;
+  String? _selectedHorarioInicio;
+  String? _selectedHorarioFim;
   final List<String> _horariosDisponiveis = [];
-
+  final List<String> _horariosDisponiveisFim = [];
   DateTime? _selectedDate;
 
   @override
@@ -80,6 +95,19 @@ class _NovoAgendamentoWidgetState extends State<NovoAgendamentoWidget> {
     while (inicio.isBefore(fim)) {
       _horariosDisponiveis.add(DateFormat('HH:mm').format(inicio));
       inicio = inicio.add(const Duration(minutes: 30));
+    }
+  }
+
+  void _atualizarHorariosFim() {
+    _horariosDisponiveisFim.clear();
+    if (_selectedHorarioInicio != null) {
+      final DateTime horarioInicio = DateFormat('HH:mm').parse(_selectedHorarioInicio!);
+      for (String horario in _horariosDisponiveis) {
+        final DateTime horarioAtual = DateFormat('HH:mm').parse(horario);
+        if (horarioAtual.isAfter(horarioInicio)) {
+          _horariosDisponiveisFim.add(horario);
+        }
+      }
     }
   }
 
@@ -150,7 +178,6 @@ class _NovoAgendamentoWidgetState extends State<NovoAgendamentoWidget> {
             ],
           ),
           gapH24,
-          // Campo de Seleção de Cliente
           Autocomplete<String>(
             optionsBuilder: (TextEditingValue textEditingValue) {
               if (textEditingValue.text.isEmpty) return _clientes.take(999);
@@ -182,35 +209,60 @@ class _NovoAgendamentoWidgetState extends State<NovoAgendamentoWidget> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Expanded(
-                child: TextFormField(
-                  controller: _dataController,
-                  readOnly: true,
-                  decoration: const InputDecoration(
-                    labelText: 'Data do Agendamento',
-                    border: OutlineInputBorder(),
-                  ),
-                  onTap: _showDatePickerDialog,
+                child: Autocomplete<String>(
+                  optionsBuilder: (TextEditingValue textEditingValue) {
+                    if (textEditingValue.text.isEmpty) return _profissional.take(999);
+                    return _profissional.where((String profissional) {
+                      return profissional.toLowerCase().contains(textEditingValue.text.toLowerCase());
+                    });
+                  },
+                  onSelected: (String selectedProfissional) {
+                    setState(() {
+                      _selectedProfissional = selectedProfissional;
+                    });
+                  },
+                  fieldViewBuilder: (BuildContext context, TextEditingController fieldTextEditingController, FocusNode fieldFocusNode, VoidCallback onFieldSubmitted) {
+                    return TextFormField(
+                      controller: fieldTextEditingController,
+                      focusNode: fieldFocusNode,
+                      decoration: const InputDecoration(
+                        labelText: 'Selecione o profissional',
+                        border: OutlineInputBorder(),
+                      ),
+                      onTap: () {
+                        if (!fieldFocusNode.hasFocus) fieldFocusNode.requestFocus();
+                      },
+                    );
+                  },
                 ),
               ),
               const SizedBox(width: 16),
               Expanded(
-                child: DropdownButtonFormField<String>(
-                  value: _selectedHorario,
-                  items: _horariosDisponiveis.map((String horario) {
-                    return DropdownMenuItem(
-                      value: horario,
-                      child: Text(horario),
-                    );
-                  }).toList(),
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      _selectedHorario = newValue;
+                child: Autocomplete<String>(
+                  optionsBuilder: (TextEditingValue textEditingValue) {
+                    if (textEditingValue.text.isEmpty) return _sala.take(999);
+                    return _sala.where((String sala) {
+                      return sala.toLowerCase().contains(textEditingValue.text.toLowerCase());
                     });
                   },
-                  decoration: const InputDecoration(
-                    labelText: 'Horário do Agendamento',
-                    border: OutlineInputBorder(),
-                  ),
+                  onSelected: (String selectedSala) {
+                    setState(() {
+                      _selectedSala = selectedSala;
+                    });
+                  },
+                  fieldViewBuilder: (BuildContext context, TextEditingController fieldTextEditingController, FocusNode fieldFocusNode, VoidCallback onFieldSubmitted) {
+                    return TextFormField(
+                      controller: fieldTextEditingController,
+                      focusNode: fieldFocusNode,
+                      decoration: const InputDecoration(
+                        labelText: 'Selecione a sala',
+                        border: OutlineInputBorder(),
+                      ),
+                      onTap: () {
+                        if (!fieldFocusNode.hasFocus) fieldFocusNode.requestFocus();
+                      },
+                    );
+                  },
                 ),
               ),
             ],
@@ -247,22 +299,111 @@ class _NovoAgendamentoWidgetState extends State<NovoAgendamentoWidget> {
                   },
                 ),
               ),
-              const SizedBox(width: 16),
+            ],
+          ),
+          gapH24,
+          const Row(
+            children: [
+              SectionTitle(title: "Horário do Agendamento"),
+            ],
+          ),
+          gapH16,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
               Expanded(
                 child: TextFormField(
-                  controller: TextEditingController(),
+                  controller: _dataController,
                   decoration: const InputDecoration(
-                    labelText: 'Selecione o Profissional',
+                    labelText: 'Data',
                     border: OutlineInputBorder(),
                   ),
+                  readOnly: true,
+                  onTap: _showDatePickerDialog,
+                ),
+              ),
+            ],
+          ),
+          gapH24,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: DropdownButtonFormField<String>(
+                  value: _selectedHorarioInicio,
+                  decoration: const InputDecoration(
+                    labelText: 'Horário Início',
+                    border: OutlineInputBorder(),
+                  ),
+                  items: _horariosDisponiveis.map<DropdownMenuItem<String>>((String horario) {
+                    return DropdownMenuItem<String>(
+                      value: horario,
+                      child: Text(horario),
+                    );
+                  }).toList(),
+                  onChanged: (String? value) {
+                    setState(() {
+                      _selectedHorarioInicio = value;
+                      _atualizarHorariosFim(); // Atualiza os horários de fim
+                    });
+                  },
+                  validator: (value) => value == null ? 'Horário de Início é obrigatório' : null,
                 ),
               ),
               const SizedBox(width: 16),
               Expanded(
+                child: DropdownButtonFormField<String>(
+                  value: _selectedHorarioFim,
+                  decoration: const InputDecoration(
+                    labelText: 'Horário Fim',
+                    border: OutlineInputBorder(),
+                  ),
+                  items: _horariosDisponiveisFim.map<DropdownMenuItem<String>>((String horario) {
+                    return DropdownMenuItem<String>(
+                      value: horario,
+                      child: Text(horario),
+                    );
+                  }).toList(),
+                  onChanged: (String? value) {
+                    setState(() {
+                      _selectedHorarioFim = value;
+                    });
+                  },
+                  validator: (value) => value == null ? 'Horário de Fim é obrigatório' : null,
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: DropdownButtonFormField<String>(
+                  value: _selectedRecorrencia,
+                  decoration: const InputDecoration(
+                    labelText: 'Recorrência',
+                    border: OutlineInputBorder(),
+                  ),
+                  items: _recorrenciaOpcoes.map((String opcao) {
+                    return DropdownMenuItem<String>(
+                      value: opcao,
+                      child: Text(opcao),
+                    );
+                  }).toList(),
+                  onChanged: (String? novaOpcao) {
+                    setState(() {
+                      _selectedRecorrencia = novaOpcao;
+                    });
+                  },
+                ),
+              ),
+            ],
+          ),
+          gapH16,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
                 child: TextFormField(
                   controller: TextEditingController(),
                   decoration: const InputDecoration(
-                    labelText: 'Selecione a Sala',
+                    labelText: 'Observações',
                     border: OutlineInputBorder(),
                   ),
                 ),
@@ -270,27 +411,13 @@ class _NovoAgendamentoWidgetState extends State<NovoAgendamentoWidget> {
             ],
           ),
           gapH24,
-          // Botões de Salvar e Cancelar
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Expanded(
                 child: ElevatedButton(
                   onPressed: () {
-                    if (formKey.currentState?.validate() == true) {
-                      // Lógica para salvar os dados
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text(
-                            'Por favor, preencha todos os campos do cadastro de cliente.',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                          backgroundColor: Colors.red,
-                          duration: Duration(seconds: 3),
-                        ),
-                      );
-                    }
+
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.pink,
@@ -303,7 +430,7 @@ class _NovoAgendamentoWidgetState extends State<NovoAgendamentoWidget> {
               Expanded(
                 child: ElevatedButton(
                   onPressed: () {
-                    // Lógica de cancelamento
+
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white,

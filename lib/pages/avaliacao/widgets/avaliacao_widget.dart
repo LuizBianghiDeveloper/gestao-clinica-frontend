@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart'; // Importe o pacote go_router para navegação
 
 import '../../../shared/constants/defaults.dart';
 import '../../../shared/widgets/section_title.dart';
@@ -25,24 +26,18 @@ class _AvaliacaoWidgetState extends State<AvaliacaoWidget> {
     "😡", "😕", "😐", "😀", "😍"
   ];
 
-  void _showThankYouDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Obrigado!'),
-          content: const Text('Sua avaliação foi enviada com sucesso!'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Fecha o dialog
-              },
-              child: const Text('OK'),
-            ),
-          ],
-        );
-      },
+  void _showThankYouSnackbarAndNavigate() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Text('Avaliação enviada com sucesso! Agradecemos seu feedback!'),
+        backgroundColor: Colors.green,
+        duration: const Duration(seconds: 2),
+      ),
     );
+
+    Future.delayed(const Duration(seconds: 2), () {
+      context.go('/'); // Redireciona para a rota inicial após o Snackbar
+    });
   }
 
   @override
@@ -92,7 +87,7 @@ class _AvaliacaoWidgetState extends State<AvaliacaoWidget> {
               onPressed: _selectedScore != null
                   ? () {
                 print("Score NPS selecionado: $_selectedScore");
-                _showThankYouDialog(); // Chama o popup
+                _showThankYouSnackbarAndNavigate(); // Exibe o Snackbar e redireciona
               }
                   : null,
               style: ElevatedButton.styleFrom(
