@@ -39,24 +39,28 @@ class Header extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   if (!Responsive.isMobile(context))
-                    PopupMenuButton<int>(
-                      icon: const CircleAvatar(
-                        backgroundImage: NetworkImage(
-                          "https://media.istockphoto.com/id/1337144146/pt/vetorial/default-avatar-profile-icon-vector.jpg?s=612x612&w=0&k=20&c=_XeYoSJQIN7GrE08cUQDJCo3U7yvoEp5OKpbhQzpmC0=",
-                        ),
-                      ),
-                      onSelected: (int value) {
-                        if (value == 0) {
-                          context.go('/sign-in');
-                        }
-                      },
-                      itemBuilder: (BuildContext context) => <PopupMenuEntry<int>>[
-                        const PopupMenuItem<int>(
-                          value: 0,
-                          child: ListTile(
-                            leading: Icon(Icons.logout),
-                            title: Text('Logout'),
+                    Row(
+                      children: [
+                        Text(
+                          "Bem vindo, Luiz Bianghi!",
+                          style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                            color: Colors.grey,
+                            fontSize: 18,
                           ),
+                        ),
+                        const SizedBox(width: 8), // Espaço entre o texto e o separador
+                        // Substituir VerticalDivider por um Container
+                        Container(
+                          height: 20, // Ajuste a altura conforme necessário
+                          width: 1, // Largura do separador
+                          color: Colors.grey, // Cor do separador
+                        ),
+                        const SizedBox(width: 8), // Espaço entre o separador e o ícone
+                        IconButton(
+                          icon: Icon(Icons.logout, color: Colors.grey),
+                          onPressed: () {
+                            context.go('/sign-in'); // Ação de logout
+                          },
                         ),
                       ],
                     ),

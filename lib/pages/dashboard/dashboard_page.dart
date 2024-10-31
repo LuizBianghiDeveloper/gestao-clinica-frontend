@@ -1,3 +1,5 @@
+import 'package:core_dashboard/pages/dashboard/widgets/agendamento_dia.dart';
+import 'package:core_dashboard/pages/dashboard/widgets/avaliacao.dart';
 import 'package:core_dashboard/pages/dashboard/widgets/overview.dart';
 import 'package:core_dashboard/pages/dashboard/widgets/product_overview.dart';
 import 'package:core_dashboard/responsive.dart';
@@ -18,22 +20,14 @@ class DashboardPage extends StatelessWidget {
       children: [
         gapH24,
         Row(
-          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              "Olá Luiz Bianghi, seja bem vindo!",
-              style: Theme.of(context)
-                  .textTheme
-                  .headlineSmall!
+              "Dashboard",
+              style: Theme.of(context).textTheme.headlineSmall!,
             ),
+            gapW24,
           ],
-        ),
-        gapH24,
-        Text(
-          "Dashboard",
-          style: Theme.of(context)
-              .textTheme
-              .headlineSmall!
         ),
         gapH20,
         Row(
@@ -44,22 +38,16 @@ class DashboardPage extends StatelessWidget {
               child: Column(
                 children: [
                   const Overview(),
-                  // gapH16,
-                  // const ProductOverviews(),
                   gapH16,
-                  const ProTips(),
+                  const AgendamentoDia(),
                   gapH16,
-                  //const GetMoreCustomers(),
                   if (Responsive.isMobile(context))
                     const Column(
                       children: [
-                        // gapH16,
-                        // PopularProducts(),
                         gapH16,
                         Comments(),
                         gapH16,
-                        // RefundRequest(newRefund: 8, totalRefund: 52),
-                        // gapH8,
+                        Avaliacao(),
                       ],
                     ),
                 ],
@@ -71,12 +59,10 @@ class DashboardPage extends StatelessWidget {
                 flex: 2,
                 child: Column(
                   children: [
-                    //PopularProducts(),
                     gapH16,
                     Comments(),
                     gapH16,
-                    // RefundRequest(newRefund: 8, totalRefund: 52),
-                    // gapH8,
+                    Avaliacao(),
                   ],
                 ),
               ),

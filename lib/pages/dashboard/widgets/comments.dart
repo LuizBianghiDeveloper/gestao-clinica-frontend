@@ -14,7 +14,10 @@ class Comments extends StatelessWidget {
     final List<String> birthdayList = [
       'Ana Paula Silva',
       'Bruno Mendes Oliveira',
-      'Carlos Alberto Souza',];
+      'Carlos Alberto Souza',
+      'Bruno Mendes Oliveira',
+      'Bruno Mendes Oliveira'
+    ];
     final int itemCount = birthdayList.length;
 
     return Container(
@@ -51,7 +54,7 @@ class Comments extends StatelessWidget {
           ),
           gapH16,
           SizedBox(
-            height: itemCount > 5 ? screenHeight * 0.4 : itemCount * 90,
+            height: itemCount > 3 ? screenHeight * 0.35 : itemCount * 80,
             child: ListView.builder(
               itemCount: itemCount,
               padding: EdgeInsets.zero,

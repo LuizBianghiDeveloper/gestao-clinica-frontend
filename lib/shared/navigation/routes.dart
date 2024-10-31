@@ -2,6 +2,7 @@ import 'package:core_dashboard/pages/agendamentos/agendamento.dart';
 import 'package:core_dashboard/pages/agendamentos/novo_agendamento.dart';
 import 'package:core_dashboard/pages/anamnese/anamnese.dart';
 import 'package:core_dashboard/pages/authentication/sign_in_page.dart';
+import 'package:core_dashboard/pages/avaliacao/avaliacao.dart';
 import 'package:core_dashboard/pages/cadastros/cliente/cliente.dart';
 import 'package:core_dashboard/pages/cadastros/cliente/cliente_search.dart';
 import 'package:core_dashboard/pages/cadastros/procedimentos/procedimento.dart';
@@ -120,6 +121,10 @@ final routerConfig = GoRouter(
           GoRoute(
             path: '/novo-agendamento',
             builder: (context, state) => const NovoAgendamento(),
+          ),
+          GoRoute(
+            path: '/avaliacao',
+            builder: (context, state) => const Avaliacao(),
           ),
           GoRoute(
             path: '/evolucao-cliente/:nome',

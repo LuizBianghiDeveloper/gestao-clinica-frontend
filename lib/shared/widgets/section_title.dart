@@ -32,10 +32,11 @@ class SectionTitle extends StatelessWidget {
         Text(
           title,
           style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                fontWeight: FontWeight.w600,
-                fontSize: Responsive.isDesktop(context) ? null : 20,
-              ),
+            fontWeight: FontWeight.w600,
+            fontSize: Responsive.isDesktop(context) ? 18 : 16,
+          ),
         )
+
       ],
     );
   }
