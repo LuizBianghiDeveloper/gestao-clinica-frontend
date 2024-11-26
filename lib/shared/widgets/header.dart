@@ -55,11 +55,22 @@ class Header extends StatelessWidget {
                           width: 1, // Largura do separador
                           color: Colors.grey, // Cor do separador
                         ),
-                        const SizedBox(width: 8), // Espaço entre o separador e o ícone
-                        IconButton(
-                          icon: Icon(Icons.logout, color: Colors.grey),
-                          onPressed: () {
-                            context.go('/sign-in'); // Ação de logout
+                        const SizedBox(width: 8),
+                        PopupMenuButton<String>(
+                          icon: const Icon(Icons.person, color: Colors.grey),
+                          onSelected: (value) {
+                            if (value == 'logout') {
+                              // Ação de logout
+                              context.go('/sign-in');
+                            }
+                          },
+                          itemBuilder: (BuildContext context) {
+                            return [
+                              const PopupMenuItem<String>(
+                                value: 'logout',
+                                child: Text('Sair'),
+                              ),
+                            ];
                           },
                         ),
                       ],

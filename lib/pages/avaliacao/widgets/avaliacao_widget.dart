@@ -55,11 +55,11 @@ class _AvaliacaoWidgetState extends State<AvaliacaoWidget> {
         children: [
           const SectionTitle(title: 'Avaliação NPS'),
           const SizedBox(height: 8),
-          const Text(
-            'Em uma escala de 0 a 10, qual a probabilidade de você recomendar nossos serviços para um amigo?',
-            style: TextStyle(fontSize: 16),
-          ),
-          const SizedBox(height: 16),
+        const Text(
+          'Como você avaliaria o atendimento que recebeu? Estamos sempre buscando melhorar!',
+          style: TextStyle(fontSize: 16),
+        ),
+        const SizedBox(height: 16),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: List.generate(5, (index) {

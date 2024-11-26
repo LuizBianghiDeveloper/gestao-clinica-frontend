@@ -23,6 +23,26 @@ class _ProfissionalWidgetState extends State<ProfissionalWidget> {
   final TextEditingController especialidadeController = TextEditingController();
   final TextEditingController telefoneController = TextEditingController();
 
+  Color? selectedColor; // Variável para armazenar a cor selecionada
+
+  final List<Color> availableColors = [
+    Colors.green,
+    Colors.pinkAccent,
+    Colors.orange,
+    Colors.cyan,
+    Colors.blue,
+    Colors.red,
+  ];
+
+  final List<String> colorNames = [
+    "Verde",
+    "Rosa",
+    "Laranja",
+    "Ciano",
+    "Azul",
+    "Vermelho",
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -83,6 +103,44 @@ class _ProfissionalWidgetState extends State<ProfissionalWidget> {
                       ),
                     ),
                     gapW16,
+                    Expanded(
+                      flex: 1,
+                      child: DropdownButtonFormField<Color>(
+                        decoration: const InputDecoration(
+                          labelText: 'Cor',
+                          border: OutlineInputBorder(),
+                        ),
+                        value: selectedColor,
+                        items: List.generate(availableColors.length, (index) {
+                          return DropdownMenuItem<Color>(
+                            value: availableColors[index],
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center, // Centraliza a cor
+                              children: [
+                                SizedBox(
+                                  width: 20, // Tamanho do quadrado
+                                  height: 20,
+                                  child: Container(
+                                    color: availableColors[index],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        }),
+                        onChanged: (Color? newValue) {
+                          setState(() {
+                            selectedColor = newValue;
+                          });
+                        },
+                        validator: (value) {
+                          if (value == null) {
+                            return 'Por favor, selecione uma cor';
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
                   ],
                 ),
                 gapH16,
@@ -140,7 +198,7 @@ class _ProfissionalWidgetState extends State<ProfissionalWidget> {
                   ),
                   child: ElevatedButton(
                     onPressed: () {
-                      if (formKey.currentState?.validate() == true ) {
+                      if (formKey.currentState?.validate() == true) {
                         // Ação ao salvar o formulário
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -170,7 +228,7 @@ class _ProfissionalWidgetState extends State<ProfissionalWidget> {
                   ),
                   child: ElevatedButton(
                     onPressed: () {
-
+                      // Ação ao cancelar
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,

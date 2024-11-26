@@ -104,12 +104,6 @@ class SignInPage extends StatelessWidget {
                     ),
 
                   ),
-                  gapH24,
-                  Text(
-                    'Este site é protegido pelo reCAPTCHA e pela Política de Privacidade do Google.',
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                  gapH24,
                 ],
               ),
             ),

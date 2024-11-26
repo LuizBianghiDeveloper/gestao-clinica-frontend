@@ -158,7 +158,7 @@ class _ClienteSearchPageState extends State<ClienteSearchPage> {
               ),
               gapH16,
               SizedBox(
-                height: itemCount > 5 ? screenHeight * 0.4 : itemCount * 90,
+                height: itemCount > 5 ? screenHeight * 0.5 : itemCount * 90,
                 child: ListView.builder(
                   itemCount: itemCount,
                   padding: EdgeInsets.zero,

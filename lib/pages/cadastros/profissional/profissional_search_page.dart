@@ -14,33 +14,11 @@ class ProfissionalSearchPage extends StatefulWidget {
 class _ProfissionalSearchPageState extends State<ProfissionalSearchPage> {
   final TextEditingController searchController = TextEditingController();
 
-
   List<String> allProfissionais = [
-    'Ana Paula Silva',
-    'Bruno Mendes Oliveira',
-    'Carlos Alberto Souza',
-    'Diana Costa Pereira',
-    'Eduardo Gomes Ferreira',
-    'Fernanda Lima Santos',
-    'Gabriel Rocha Lima',
-    'Helena Martins Alves',
-    'Igor Henrique Dias',
-    'Júlia de Souza Almeida',
-    'Karla Cristina Lima',
-    'Leonardo da Silva Santos',
-    'Mariana Oliveira Costa',
-    'Natália Mendes Nascimento',
-    'Otávio Augusto Lima',
-    'Paula Regina Cardoso',
-    'Quiteria de Almeida Oliveira',
-    'Ricardo Carvalho Pinto',
-    'Sofia Regina Ferreira',
-    'Thiago Fernandes da Costa',
-    'Ulisses Martins de Oliveira',
-    'Vanessa Silva Freitas',
-    'William Figueiredo Santos',
-    'Xuxa de Almeida',
-    'Yasmin Rodrigues da Silva',
+    'Ana Romani',
+    'Thais Melo',
+    'Fernanda Costa',
+    'Pedro Costa',
   ];
 
   List<String> filteredProfissionais = [];
@@ -78,7 +56,7 @@ class _ProfissionalSearchPageState extends State<ProfissionalSearchPage> {
       children: [
         gapH24,
         Text(
-          "Cadastro de Profissional",
+          "issional",
           style: Theme.of(context)
               .textTheme
               .headlineLarge!
@@ -158,7 +136,7 @@ class _ProfissionalSearchPageState extends State<ProfissionalSearchPage> {
               ),
               gapH16,
               SizedBox(
-                height: itemCount > 5 ? screenHeight * 0.4 : itemCount * 90,
+                height: itemCount > 5 ? screenHeight * 0.5 : itemCount * 90,
                 child: ListView.builder(
                   itemCount: itemCount,
                   padding: EdgeInsets.zero,

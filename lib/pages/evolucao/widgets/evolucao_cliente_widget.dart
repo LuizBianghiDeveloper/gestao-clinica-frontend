@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text2/flutter_masked_text2.dart'; // Import da máscara
+import 'package:intl/intl.dart'; // Import para formatação de data
 
 import '../../../shared/constants/defaults.dart';
 import '../../../shared/constants/ghaps.dart';
@@ -16,10 +17,25 @@ class EvolucaoClienteWidget extends StatefulWidget {
 class _EvolucaoClienteWidgetState extends State<EvolucaoClienteWidget> {
   final formKey = GlobalKey<FormState>();
 
-  // Controlador com máscara de data
   final MaskedTextController dataController = MaskedTextController(mask: '00/00/0000');
   final TextEditingController descricaoController = TextEditingController();
-  final TextEditingController profissionalController = TextEditingController();
+
+  String? selectedProfissional;
+
+  final List<String> profissionais = [
+    'Ana Romani',
+    'Thais Melo',
+    'Fernanda Costa',
+    'Pedro Costa',
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    // Define a data atual no formato DD/MM/AAAA
+    String formattedDate = DateFormat('dd/MM/yyyy').format(DateTime.now());
+    dataController.text = formattedDate; // Preenche o campo de data com a data atual
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,6 +72,7 @@ class _EvolucaoClienteWidgetState extends State<EvolucaoClienteWidget> {
                       border: OutlineInputBorder(),
                       hintText: 'DD/MM/AAAA',
                     ),
+                    readOnly: true, // Campo não editável
                     validator: (value) {
                       if (value == null || value.isEmpty || value.length != 10) {
                         return 'Por favor, insira uma data válida';
@@ -80,16 +97,26 @@ class _EvolucaoClienteWidgetState extends State<EvolucaoClienteWidget> {
                     },
                   ),
                   gapH16,
-                  // Campo do profissional responsável
-                  TextFormField(
-                    controller: profissionalController,
+                  DropdownButtonFormField<String>(
+                    value: selectedProfissional,
+                    hint: const Text('Selecione o Profissional'),
                     decoration: const InputDecoration(
-                      labelText: 'Profissional Responsável',
                       border: OutlineInputBorder(),
                     ),
+                    items: profissionais.map((String profissional) {
+                      return DropdownMenuItem<String>(
+                        value: profissional,
+                        child: Text(profissional),
+                      );
+                    }).toList(),
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        selectedProfissional = newValue;
+                      });
+                    },
                     validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Por favor, insira o nome do profissional responsável';
+                      if (value == null) {
+                        return 'Por favor, selecione um profissional responsável';
                       }
                       return null;
                     },
@@ -121,9 +148,8 @@ class _EvolucaoClienteWidgetState extends State<EvolucaoClienteWidget> {
                             ),
                           );
                           // Limpar os campos após o cadastro
-                          dataController.clear();
                           descricaoController.clear();
-                          profissionalController.clear();
+                          selectedProfissional = null; // Reseta a seleção do Dropdown
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
@@ -153,7 +179,7 @@ class _EvolucaoClienteWidgetState extends State<EvolucaoClienteWidget> {
                     ),
                     child: ElevatedButton(
                       onPressed: () {
-
+                        // Lógica ao cancelar
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.white,

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../shared/constants/ghaps.dart';
-import 'package:core_dashboard/responsive.dart';
 import 'package:core_dashboard/pages/evolucao/widgets/evolucao_cliente_widget.dart';
 
 class EvolucaoClientePage extends StatefulWidget {
@@ -20,40 +19,25 @@ class _EvolucaoClientePageState extends State<EvolucaoClientePage> {
   List<Map<String, String>> evolucoes = [
     {
       'data': '10/10/2023',
-      'profissional': 'Dr. João',
-      'descricao': 'Paciente apresenta melhoras significativas.'
+      'profissional': 'Ana Romani',
+      'descricao': 'Após avaliação, o paciente apresenta melhoras significativas no aspecto da pele, com redução visível das marcas de acne e maior uniformidade no tom.'
     },
     {
       'data': '05/10/2023',
-      'profissional': 'Dra. Maria',
-      'descricao': 'Paciente com quadro estável, sem alterações.'
+      'profissional': 'Thais Melo',
+      'descricao': 'O paciente apresenta quadro estável, sem alterações significativas. Os sinais vitais estão normais e não houve reações adversas ao tratamento.'
     },
     {
       'data': '01/10/2023',
-      'profissional': 'Enfermeira Ana',
-      'descricao': 'Realizado acompanhamento pós-cirúrgico.'
-    },
-    {
-      'data': '10/10/2023',
-      'profissional': 'Dr. João',
-      'descricao': 'Paciente apresenta melhoras significativas.'
-    },
-    {
-      'data': '05/10/2023',
-      'profissional': 'Dra. Maria',
-      'descricao': 'Paciente com quadro estável, sem alterações.'
-    },
-    {
-      'data': '01/10/2023',
-      'profissional': 'Enfermeira Ana',
-      'descricao': 'Realizado acompanhamento pós-cirúrgico.'
+      'profissional': 'Thais Melo',
+      'descricao': 'Foi realizado acompanhamento pós-cirúrgico, com verificação de pontos e avaliação da cicatrização. O paciente está se recuperando conforme o esperado.'
     },
   ];
+
 
   @override
   void initState() {
     super.initState();
-    // Inicialize o estado aqui se precisar de lógica adicional ao criar o widget
   }
 
   @override

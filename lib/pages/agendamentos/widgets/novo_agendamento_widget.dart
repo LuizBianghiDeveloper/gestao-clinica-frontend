@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text2/flutter_masked_text2.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -110,7 +111,6 @@ class _NovoAgendamentoWidgetState extends State<NovoAgendamentoWidget> {
       }
     }
   }
-
   Future<void> _showDatePickerDialog() async {
     await showDialog(
       context: context,
@@ -118,6 +118,7 @@ class _NovoAgendamentoWidgetState extends State<NovoAgendamentoWidget> {
         final size = MediaQuery.of(context).size;
         return AlertDialog(
           title: const Text('Selecione a Data'),
+          backgroundColor: Colors.white, // Define o fundo do AlertDialog como branco
           content: SizedBox(
             height: size.height * 0.5,
             width: size.width * 0.6,
@@ -157,6 +158,7 @@ class _NovoAgendamentoWidgetState extends State<NovoAgendamentoWidget> {
       },
     );
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -417,7 +419,7 @@ class _NovoAgendamentoWidgetState extends State<NovoAgendamentoWidget> {
               Expanded(
                 child: ElevatedButton(
                   onPressed: () {
-
+                    context.go('/agendamento');
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.pink,
@@ -430,7 +432,7 @@ class _NovoAgendamentoWidgetState extends State<NovoAgendamentoWidget> {
               Expanded(
                 child: ElevatedButton(
                   onPressed: () {
-
+                    context.go('/agendamento');
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white,

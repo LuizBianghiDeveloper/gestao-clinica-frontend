@@ -8,17 +8,20 @@
   import '../../../shared/constants/defaults.dart';
   import '../../../shared/constants/ghaps.dart';
   import '../../../theme/app_colors.dart';
+  import 'dart:math';
 
   class Agendamento {
     final String descricao;
     final String profissional;
     final String sala;
+    final String paciente;
     final Color cor;
 
     Agendamento({
       required this.descricao,
       required this.profissional,
       required this.sala,
+      required this.paciente,
       required this.cor,
     });
   }
@@ -47,12 +50,17 @@
     }
 
     void _gerarHorarios() {
-      for (int hora = 7; hora <= 21; hora++) {
+      for (int hora = 9; hora <= 20; hora++) {
         String horaStr = hora.toString().padLeft(2, '0');
         allHorarios.add('$horaStr:00');
-        allHorarios.add('$horaStr:30');
+
+        // Adiciona 30 minutos apenas se a hora não for 20
+        if (hora < 20) {
+          allHorarios.add('$horaStr:30');
+        }
       }
     }
+
 
     void _formatDate() {
       formattedDate = DateFormat('dd/MM/yyyy').format(selectedDate);
@@ -60,142 +68,86 @@
 
     void _gerarAgendamentos() {
       agendamentos.clear();
-      if (selectedDate.day % 2 == 0) {
-        agendamentos = {
-          '07:00': [
-            Agendamento(
-              descricao: "Drenagem",
-              profissional: "Ana Romani",
-              sala: "Sala 1",
-              cor: Colors.teal,
-            ),
-            Agendamento(
-              descricao: "Criolipolise",
-              profissional: "Thais Melo",
-              sala: "Sala 2",
-              cor: Colors.pinkAccent,
-            ),
-            Agendamento(
-              descricao: "Limpeza de pele",
-              profissional: "Maria Joaquina",
-              sala: "Sala 3",
-              cor: Colors.orange,
-            ),
-            Agendamento(
-              descricao: "Drenagem",
-              profissional: "Fulana de tal",
-              sala: "Sala 4",
-              cor: Colors.purple,
-            ),
-          ],
-          '07:30': [
-            Agendamento(
-              descricao: "Drenagem",
-              profissional: "Ana Romani",
-              sala: "Sala 1",
-              cor: Colors.teal,
-            ),
-            Agendamento(
-              descricao: "Drenagem",
-              profissional: "Fulana de tal",
-              sala: "Sala 4",
-              cor: Colors.purple,
-            ),
-          ],
-          '08:00': [
-            Agendamento(
-              descricao: "Limpeza de pele",
-              profissional: "Maria Joaquina",
-              sala: "Sala 3",
-              cor: Colors.orange,
-            ),
-          ],
-          '09:00': [
-            Agendamento(
-              descricao: "Exame",
-              profissional: "Enfermeira Ana",
-              sala: "Sala 102",
-              cor: Colors.deepPurple,
-            ),
-          ],
-          '10:00': [
-            Agendamento(
-              descricao: "Drenagem",
-              profissional: "Fulana de tal",
-              sala: "Sala 4",
-              cor: Colors.purple,
-            ),
-            Agendamento(
-              descricao: "Drenagem",
-              profissional: "Ana Romani",
-              sala: "Sala 1",
-              cor: Colors.teal,
-            ),
-            Agendamento(
-              descricao: "Limpeza de pele",
-              profissional: "Maria Joaquina",
-              sala: "Sala 3",
-              cor: Colors.orange,
-            ),
-            Agendamento(
-              descricao: "Criolipolise",
-              profissional: "Thais Melo",
-              sala: "Sala 2",
-              cor: Colors.pinkAccent,
-            ),
-          ],
-          '10:30': [
-            Agendamento(
-              descricao: "Reunião",
-              profissional: "Sr. Carlos",
-              sala: "Sala 201",
-              cor: Colors.blue,
-            ),
-          ],
-          '11:00': [
-            Agendamento(
-              descricao: "Dentista",
-              profissional: "Dr. Marta",
-              sala: "Sala 301",
-              cor: Colors.pink,
-            ),
-          ],
-        };
-      } else {
-        agendamentos = {
-          '07:00': [
-            Agendamento(
-              descricao: "Limpeza de pele",
-              profissional: "Maria Joaquina",
-              sala: "Sala 3",
-              cor: Colors.orange,
-            ),
-            Agendamento(
-              descricao: "Drenagem",
-              profissional: "Fulana de tal",
-              sala: "Sala 4",
-              cor: Colors.purple,
-            ),
-          ],
-          '07:30': [
-            Agendamento(
-              descricao: "Drenagem",
-              profissional: "Ana Romani",
-              sala: "Sala 1",
-              cor: Colors.teal,
-            ),
-          ],
-          '09:00': [
-            Agendamento(
-              descricao: "Exame",
-              profissional: "Enfermeira Ana",
-              sala: "Sala 102",
-              cor: Colors.deepPurple,
-            ),
-          ],
-        };
+
+      final List<String> pacientes = [
+        "João Silva", "Maria Souza", "Carlos Lima", "Ana Pereira",
+        "Bruno Santos", "Patrícia Almeida", "Marcos Teixeira", "Fernanda Costa",
+        "Renata Gomes", "Joana Dias", "Luís Fernandes", "Carla Silva",
+        "Pedro Costa", "Laura Nunes", "Thiago Mendes", "Daniela Souza"
+      ];
+
+      final List<String> procedimentos = [
+        "Drenagem", "Criolipólise", "Limpeza de Pele", "Massagem Relaxante",
+        "Peeling", "Radiofrequência", "Microagulhamento", "Laserterapia"
+      ];
+
+      final Map<String, Color> profissionais = {
+        "Ana Romani": Colors.green,
+        "Thais Melo": Colors.pinkAccent,
+        "Carlos Almeida": Colors.orange,
+        "Fernanda Costa": Colors.cyan,
+      };
+
+      final random = Random();
+
+      // Gera horários de 07:00 até 21:00 com intervalos de 30 minutos
+      for (int hour = 9; hour <= 20; hour++) {
+        for (int minute = 0; minute < 60; minute += 30) {
+          String horario = '${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}';
+
+          if (selectedDate.weekday == DateTime.sunday) {
+            continue; // Ignora se for domingo
+          }
+
+          if (selectedDate.weekday == DateTime.saturday) {
+            if (hour < 9 || hour > 14 || (hour == 14 && minute > 0)) {
+              continue; // Ignora horários fora do intervalo permitido
+            }
+          }
+
+          // Define uma quantidade aleatória de agendamentos (entre 0 e 4)
+          int quantidadeAgendamentos = random.nextInt(5); // Número entre 0 e 4
+
+          // Lista para armazenar os agendamentos do horário atual
+          List<Agendamento> agendamentosHorario = [];
+
+          // Conjunto para verificar os profissionais já agendados nesse horário
+          Set<String> profissionaisAgendados = {};
+
+          for (int i = 0; i < quantidadeAgendamentos; i++) {
+            // Seleciona um profissional aleatório e garante que ele ainda não foi agendado
+            String profissional;
+            do {
+              profissional = profissionais.keys.elementAt(random.nextInt(profissionais.length));
+            } while (profissionaisAgendados.contains(profissional));
+
+            // Marca o profissional como já agendado para esse horário
+            profissionaisAgendados.add(profissional);
+
+            // Seleciona aleatoriamente o procedimento e o paciente
+            String descricao = procedimentos[random.nextInt(procedimentos.length)];
+            String paciente = pacientes[random.nextInt(pacientes.length)];
+            Color cor = profissionais[profissional]!;
+            String sala = "Sala ${i + 1}";
+
+            // Cria o agendamento e o adiciona à lista do horário
+            agendamentosHorario.add(Agendamento(
+              descricao: descricao,
+              profissional: profissional,
+              paciente: paciente,
+              sala: sala,
+              cor: cor,
+            ));
+          }
+
+          // Adiciona a lista de agendamentos para o horário no mapa principal, se houver agendamentos
+          if (agendamentosHorario.isNotEmpty) {
+            agendamentos[horario] = agendamentosHorario;
+          }
+        }
       }
     }
+
 
     Future<void> _confirmarExclusao(
         BuildContext context, String horario, Agendamento agendamento) async {
@@ -441,8 +393,7 @@
                                                   ),
                                                 const SizedBox(height: 4),
                                                 if (!Responsive.isMobile(context))
-                                                  const Text(
-                                                    "Paciente X",
+                                                   Text('Paciente: ${agendamento.paciente}',
                                                     style: const TextStyle(
                                                         color: Colors.white70),
                                                     overflow:

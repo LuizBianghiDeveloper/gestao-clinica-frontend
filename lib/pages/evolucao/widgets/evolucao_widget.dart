@@ -105,7 +105,7 @@ class _EvolucaoWidgetState extends State<EvolucaoWidget> {
                 ),
               ),
               child: SizedBox(
-                height: itemCount > 5 ? screenHeight * 0.4 : itemCount * 90,
+                height: itemCount > 5 ? screenHeight * 0.65 : itemCount * 90,
                 child: ListView.builder(
                   shrinkWrap: true,
                   itemCount: itemCount,

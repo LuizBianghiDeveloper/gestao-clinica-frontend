@@ -21,12 +21,8 @@ class CommentItem extends StatefulWidget {
 class _CommentItemState extends State<CommentItem> {
 
   Future<void> _launchWhatsApp() async {
-    final String phoneNumber = "+5531991692201";
-    final String message = "🎉 Parabéns! 🎉\n\n"
-        "A Clínica Thais Melo Estética Integrativa deseja a você um dia repleto de alegria e realizações! "
-        "Que este novo ano de vida traga muitas conquistas e momentos especiais. "
-        "Estamos aqui para cuidar de você e ajudar a realçar sua beleza. "
-        "Aproveite seu dia! 🎂✨";
+    final String phoneNumber = "+5531982540846";
+    final String message = "Felicidades! \n\nParabéns por escolher cuidar de si mesmo(a)! \n\nPara comemorar, a equipe da Clinica Thais Melo, oferece 10% de desconto em seu próximo procedimento. Continue brilhando e inspire todos ao seu redor!";
 
 
     final Uri whatsappUrl = Uri.parse("https://wa.me/$phoneNumber?text=$message");
