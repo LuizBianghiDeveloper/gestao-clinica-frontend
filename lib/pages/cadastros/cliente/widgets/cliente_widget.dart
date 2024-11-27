@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text2/flutter_masked_text2.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../../controllers/clientes_controller.dart';
 import '../../../../shared/constants/defaults.dart';
 import '../../../../shared/constants/ghaps.dart';
 import '../../../../shared/widgets/section_title.dart';
 import '../../../../theme/app_colors.dart';
 
 class ClienteWidget extends StatefulWidget {
-  const ClienteWidget({super.key});
+  final Map<String, dynamic>? cliente; // Dados do cliente (opcional)
+
+  const ClienteWidget({super.key, this.cliente});
 
   @override
   State<ClienteWidget> createState() => _ClienteWidgetState();
@@ -23,6 +28,34 @@ class _ClienteWidgetState extends State<ClienteWidget> {
   final TextEditingController nomeController = TextEditingController();
   final TextEditingController enderecoController = TextEditingController();
   final TextEditingController rgController = TextEditingController();
+  final TextEditingController profissaoController = TextEditingController();
+  final ClientesController clientesController = Get.find<ClientesController>();
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (clientesController.clientesSelecionado != null && clientesController.clientesSelecionado != "") {
+      final cliente = clientesController.clientesSelecionado;
+
+      nomeController.text = cliente['nome'] ?? '';
+      enderecoController.text = cliente['endereco'] ?? '';
+      phoneController.text = cliente['telefone'] ?? '';
+
+      // Conversão da data de yyyy-MM-dd para dd/MM/yyyy
+      if (cliente['dataNascimento'] != null && cliente['dataNascimento'].isNotEmpty) {
+        final data = cliente['dataNascimento'];
+        final partes = data.split('-'); // Divide a data no formato yyyy-MM-dd
+        if (partes.length == 3) {
+          birthDateController.text = "${partes[2]}/${partes[1]}/${partes[0]}"; // Formata para dd/MM/yyyy
+        }
+      }
+
+      cpfController.text = cliente['cpf'] ?? '';
+      rgController.text = cliente['rg'] ?? '';
+      profissaoController.text = cliente['profissao'] ?? '';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -96,8 +129,6 @@ class _ClienteWidgetState extends State<ClienteWidget> {
                       ),
                     ),
                     gapW16,
-
-                    // Campo Data de Nascimento
                     Expanded(
                       flex: 3,
                       child: TextFormField(
@@ -117,11 +148,10 @@ class _ClienteWidgetState extends State<ClienteWidget> {
                       ),
                     ),
                     gapW16,
-
-                    // Campo Profissão
                     Expanded(
                       flex: 4,
                       child: TextFormField(
+                        controller: profissaoController,
                         decoration: const InputDecoration(
                           labelText: 'Profissão',
                           border: OutlineInputBorder(),
@@ -189,10 +219,85 @@ class _ClienteWidgetState extends State<ClienteWidget> {
                     horizontal: AppDefaults.padding * 0.5,
                   ),
                   child: ElevatedButton(
-                    onPressed: () {
+                    onPressed: () async {
                       if (formKey.currentState?.validate() == true) {
-                        // Lógica para salvar os dados
-                      } else {
+                        if (clientesController.clientesSelecionado != null && clientesController.clientesSelecionado != "") {
+                          var params = <String, dynamic>{};
+
+                          // Formatação da data de nascimento (dd/MM/yyyy -> yyyy-MM-dd)
+                          var formattedDate = birthDateController.text.split('/').reversed.join('-');
+
+                          // Remoção de máscaras do CPF (deixa apenas números)
+                          var formattedCpf = cpfController.text.replaceAll(RegExp(r'\D'), '');
+
+                          params["nome"] = nomeController.text;
+                          params["dataNascimento"] = formattedDate;
+                          params["telefone"] = phoneController.text;
+                          params["rg"] = rgController.text;
+                          params["cpf"] = formattedCpf;
+                          params["profissao"] = profissaoController.text;
+                          params["endereco"] = enderecoController.text;
+
+                          await clientesController.atualizarClientes(context, params, clientesController.clientesSelecionado['idPaciente']);
+                          if (clientesController.isError.isTrue) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Não foi possivel atualizar o usuário, por favor, tente novamente.'),
+                                backgroundColor: Colors.red,
+                                duration: Duration(seconds: 2),
+                              ),
+                            );
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Usuário atualizado com sucesso.'),
+                                backgroundColor: Colors.green,
+                                duration: Duration(seconds: 2),
+                              ),
+                            );
+                            await clientesController.listarClientes(context);
+                            context.go('/cadastro-search-cliente');
+                          }
+                        } else {
+                          var params = <String, dynamic>{};
+
+                          // Formatação da data de nascimento (dd/MM/yyyy -> yyyy-MM-dd)
+                          var formattedDate = birthDateController.text.split('/').reversed.join('-');
+
+                          // Remoção de máscaras do CPF (deixa apenas números)
+                          var formattedCpf = cpfController.text.replaceAll(RegExp(r'\D'), '');
+
+                          params["nome"] = nomeController.text;
+                          params["dataNascimento"] = formattedDate;
+                          params["telefone"] = phoneController.text;
+                          params["rg"] = rgController.text;
+                          params["cpf"] = formattedCpf;
+                          params["profissao"] = profissaoController.text;
+                          params["endereco"] = enderecoController.text;
+
+                          await clientesController.adicionarClientes(context, params);
+                          if (clientesController.isError.isTrue) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Não foi possivel adicionar o usuário, por favor, tente novamente.'),
+                                backgroundColor: Colors.red,
+                                duration: Duration(seconds: 2),
+                              ),
+                            );
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Usuário adicionado com sucesso.'),
+                                backgroundColor: Colors.green,
+                                duration: Duration(seconds: 2),
+                              ),
+                            );
+                            await clientesController.listarClientes(context);
+                            context.go('/cadastro-search-cliente');
+                          }
+                        }
+                      }
+                      else {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
                             content: Text(
@@ -209,7 +314,7 @@ class _ClienteWidgetState extends State<ClienteWidget> {
                       backgroundColor: Colors.pink,
                       padding: const EdgeInsets.symmetric(vertical: 16.0),
                     ),
-                    child: const Text('Salvar'),
+                    child: clientesController.clientesSelecionado != null && clientesController.clientesSelecionado != "" ? const Text('Atualizar') : const Text('Salvar'),
                   ),
                 ),
               ),
@@ -220,7 +325,7 @@ class _ClienteWidgetState extends State<ClienteWidget> {
                   ),
                   child: ElevatedButton(
                     onPressed: () {
-
+                      context.go('/cadastro-search-cliente');
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
@@ -239,3 +344,4 @@ class _ClienteWidgetState extends State<ClienteWidget> {
     );
   }
 }
+

@@ -8,8 +8,14 @@ import '../../../shared/widgets/sidemenu/sidebar.dart';
 
 final GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
 
-class Cliente extends StatelessWidget {
+class Cliente extends StatefulWidget {
   const Cliente({super.key});
+
+  @override
+  State<Cliente> createState() => _ClienteState();
+}
+
+class _ClienteState extends State<Cliente> {
 
   @override
   Widget build(BuildContext context) {

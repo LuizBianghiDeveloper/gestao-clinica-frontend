@@ -1,8 +1,6 @@
 import 'package:core_dashboard/shared/constants/defaults.dart';
 import 'package:core_dashboard/shared/constants/ghaps.dart';
-import 'package:core_dashboard/theme/app_colors.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -10,9 +8,11 @@ class CommentItem extends StatefulWidget {
   const CommentItem({
     super.key,
     required this.name,
+    required this.telefone,
   });
 
   final String name;
+  final String telefone;
 
   @override
   State<CommentItem> createState() => _CommentItemState();
@@ -20,9 +20,17 @@ class CommentItem extends StatefulWidget {
 
 class _CommentItemState extends State<CommentItem> {
 
+  String formatarTelefone(String telefone) {
+    return telefone.replaceAll(RegExp(r'[^0-9]'), '');
+  }
+
   Future<void> _launchWhatsApp() async {
-    final String phoneNumber = "+5531982540846";
-    final String message = "Felicidades! \n\nParabéns por escolher cuidar de si mesmo(a)! \n\nPara comemorar, a equipe da Clinica Thais Melo, oferece 10% de desconto em seu próximo procedimento. Continue brilhando e inspire todos ao seu redor!";
+    final String phoneNumber = "+55${formatarTelefone(widget.telefone)}";
+    final String message = "🎉 Parabéns! 🎉\n\n"
+        "A Clínica Thais Melo Estética Integrativa deseja a você um dia repleto de alegria e realizações! "
+        "Que este novo ano de vida traga muitas conquistas e momentos especiais. "
+        "Estamos aqui para cuidar de você e ajudar a realçar sua beleza. "
+        "Aproveite seu dia! 🎂✨";
 
 
     final Uri whatsappUrl = Uri.parse("https://wa.me/$phoneNumber?text=$message");

@@ -1,8 +1,11 @@
+import 'package:core_dashboard/controllers/clientes_controller.dart';
+import 'package:core_dashboard/controllers/usuarios_controller.dart';
 import 'package:core_dashboard/responsive.dart';
 import 'package:core_dashboard/shared/constants/defaults.dart';
 import 'package:core_dashboard/shared/constants/ghaps.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../constants/config.dart';
@@ -17,6 +20,8 @@ class Sidebar extends StatefulWidget {
 
 class _SidebarState extends State<Sidebar> {
   int _activeIndex = 0;
+  final ClientesController clientesController = Get.find<ClientesController>();
+  final UsuariosController usuariosController = Get.find<UsuariosController>();
 
   void _onItemPressed(int index) {
     setState(() {
@@ -96,18 +101,24 @@ class _SidebarState extends State<Sidebar> {
                           isSubmenu: true,
                           isActive: _activeIndex == 1,
                           title: "Cliente",
-                          onPressed: () {
+                          onPressed: () async {
                             _onItemPressed(1);
-                            context.go('/cadastro-search-cliente');
+                            await clientesController.listarClientes(context);
+                            if (clientesController.isError.isFalse) {
+                              context.go('/cadastro-search-cliente');
+                            }
                           },
                         ),
                         MenuTile(
                           isSubmenu: true,
                           isActive: _activeIndex == 2,
                           title: "Usuário",
-                          onPressed: () {
+                          onPressed: () async {
                             _onItemPressed(2);
-                            context.go('/cadastro-search-usuario');
+                            await usuariosController.listarUsuarios(context);
+                            if (clientesController.isError.isFalse) {
+                              context.go('/cadastro-search-usuario');
+                            }
                           },
                         ),
                         MenuTile(

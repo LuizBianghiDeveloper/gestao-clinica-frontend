@@ -1,6 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
+import '../../../controllers/clientes_controller.dart';
 import '../../../shared/constants/defaults.dart';
 import '../../../shared/constants/ghaps.dart';
 import '../../../theme/app_colors.dart';
@@ -14,62 +19,61 @@ class ClienteSearchPage extends StatefulWidget {
 
 class _ClienteSearchPageState extends State<ClienteSearchPage> {
   final TextEditingController searchController = TextEditingController();
-  List<String> allClientes = [
-    'Ana Paula Silva',
-    'Bruno Mendes Oliveira',
-    'Carlos Alberto Souza',
-    'Diana Costa Pereira',
-    'Eduardo Gomes Ferreira',
-    'Fernanda Lima Santos',
-    'Gabriel Rocha Lima',
-    'Helena Martins Alves',
-    'Igor Henrique Dias',
-    'Júlia de Souza Almeida',
-    'Karla Cristina Lima',
-    'Leonardo da Silva Santos',
-    'Mariana Oliveira Costa',
-    'Natália Mendes Nascimento',
-    'Otávio Augusto Lima',
-    'Paula Regina Cardoso',
-    'Quiteria de Almeida Oliveira',
-    'Ricardo Carvalho Pinto',
-    'Sofia Regina Ferreira',
-    'Thiago Fernandes da Costa',
-    'Ulisses Martins de Oliveira',
-    'Vanessa Silva Freitas',
-    'William Figueiredo Santos',
-    'Xuxa de Almeida',
-    'Yasmin Rodrigues da Silva',
-  ];
-
-  List<String> filteredClientes = [];
+  final ClientesController clientesController = Get.find<ClientesController>();
+  late final List<dynamic> dataList;
+  List<dynamic> filteredClientes = [];
 
   @override
   void initState() {
     super.initState();
-    filteredClientes = allClientes;
+    final dynamic decodedJson = jsonDecode(clientesController.clientes);
+    dataList = decodedJson['data'];
+    filteredClientes = dataList;
   }
 
   void _filterClientes(String query) {
-    List<String> results = [];
     if (query.isEmpty) {
-      results = allClientes;
+      setState(() {
+        filteredClientes = dataList;
+      });
     } else {
-      results = allClientes
-          .where((clientes) =>
-          clientes.toLowerCase().contains(query.toLowerCase()))
-          .toList();
-    }
+      final results = dataList.where((cliente) {
+        final nome = cliente['nome']?.toLowerCase() ?? '';
+        return nome.contains(query.toLowerCase());
+      }).toList();
 
-    setState(() {
-      filteredClientes = results;
-    });
+      setState(() {
+        filteredClientes = results;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final int itemCount = filteredClientes.length;
+
+    String formatarTelefone(String telefone) {
+      return telefone.replaceAll(RegExp(r'[^0-9]'), '');
+    }
+
+    Future<void> _launchWhatsApp(String telefone) async {
+      final String phoneNumber = "+55${formatarTelefone(telefone)}";
+      final String message = "🎉 Parabéns! 🎉\n\n"
+          "A Clínica Thais Melo Estética Integrativa deseja a você um dia repleto de alegria e realizações! "
+          "Que este novo ano de vida traga muitas conquistas e momentos especiais. "
+          "Estamos aqui para cuidar de você e ajudar a realçar sua beleza. "
+          "Aproveite seu dia! 🎂✨";
+
+
+      final Uri whatsappUrl = Uri.parse("https://wa.me/$phoneNumber?text=$message");
+
+      if (await canLaunchUrl(whatsappUrl)) {
+        await launchUrl(whatsappUrl, mode: LaunchMode.externalApplication);
+      } else {
+        throw 'Não foi possível abrir o WhatsApp.';
+      }
+    }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -110,6 +114,7 @@ class _ClienteSearchPageState extends State<ClienteSearchPage> {
               const SizedBox(width: 10),
               ElevatedButton(
                 onPressed: () {
+                  clientesController.clientesSelecionado = null;
                   context.go('/cadastro-cliente');
                 },
                 style: ElevatedButton.styleFrom(
@@ -158,7 +163,7 @@ class _ClienteSearchPageState extends State<ClienteSearchPage> {
               ),
               gapH16,
               SizedBox(
-                height: itemCount > 5 ? screenHeight * 0.5 : itemCount * 90,
+                height: itemCount > 5 ? screenHeight * 0.4 : itemCount * 90,
                 child: ListView.builder(
                   itemCount: itemCount,
                   padding: EdgeInsets.zero,
@@ -169,7 +174,7 @@ class _ClienteSearchPageState extends State<ClienteSearchPage> {
                           title: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(filteredClientes[index]),
+                              Text(filteredClientes[index]['nome']),
                               Row(
                                 children: [
                                   IconButton(
@@ -178,19 +183,63 @@ class _ClienteSearchPageState extends State<ClienteSearchPage> {
                                       color: Colors.green,
                                     ),
                                     onPressed: () {
-                                      // Ação do WhatsApp aqui
+                                      _launchWhatsApp(filteredClientes[index]['telefone']);
                                     },
                                   ),
                                   IconButton(
                                     icon: const Icon(Icons.edit, color: Colors.orange),
                                     onPressed: () {
-                                      print('Editar ${filteredClientes[index]}');
+                                      clientesController.clientesSelecionado = filteredClientes[index];
+                                      context.go('/cadastro-cliente');
                                     },
                                   ),
                                   IconButton(
                                     icon: const Icon(Icons.delete, color: Colors.red),
                                     onPressed: () {
-                                      print('Excluir ${filteredClientes[index]}');
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            title: const Text('Confirmação'),
+                                            content: Text(
+                                                'Tem certeza que deseja excluir o usuário ${filteredClientes[index]['nome']}?'),
+                                            actions: <Widget>[
+                                              TextButton(
+                                                child: const Text('Cancelar', style: TextStyle(color: Colors.pink),),
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                              ),
+                                              TextButton(
+                                                child: const Text('Excluir', style: TextStyle(color: Colors.pink),),
+                                                onPressed: () async {
+                                                  await clientesController.deletarClientes(context, filteredClientes[index]['idPaciente']);
+                                                  if (clientesController.isError.isTrue) {
+                                                    Navigator.of(context).pop();
+                                                    ScaffoldMessenger.of(context).showSnackBar(
+                                                      const SnackBar(
+                                                        content: Text('Não foi possivel excluir o usuário, por favor, tente novamente.'),
+                                                        backgroundColor: Colors.red,
+                                                        duration: Duration(seconds: 2),
+                                                      ),
+                                                    );
+                                                  } else {
+                                                    Navigator.of(context).pop();
+                                                    ScaffoldMessenger.of(context).showSnackBar(
+                                                      const SnackBar(
+                                                        content: Text('Usuário excluido com sucesso.'),
+                                                        backgroundColor: Colors.green,
+                                                        duration: Duration(seconds: 2),
+                                                      ),
+                                                    );
+                                                    context.go('/');
+                                                  }
+                                                },
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      );
                                     },
                                   ),
                                 ],

@@ -1,4 +1,8 @@
+import 'dart:convert';
+
+import 'package:core_dashboard/controllers/usuarios_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import '../../../shared/constants/defaults.dart';
 import '../../../shared/constants/ghaps.dart';
@@ -13,35 +17,33 @@ class UsuarioSearchPage extends StatefulWidget {
 
 class _UsuarioSearchPageState extends State<UsuarioSearchPage> {
   final TextEditingController searchController = TextEditingController();
-
-  List<String> allProfissionais = [
-    'Thais Melo',
-    'Administrador',
-    'Michelle'
-  ];
-
-  List<String> filteredProfissionais = [];
+  final UsuariosController usuariosController = Get.find<UsuariosController>();
+  late final List<dynamic> dataList;
+  List<dynamic> filteredProfissionais = [];
 
   @override
   void initState() {
     super.initState();
-    filteredProfissionais = allProfissionais;
+    final dynamic decodedJson = jsonDecode(usuariosController.usuarios);
+    dataList = decodedJson['data'];
+    filteredProfissionais = dataList;
   }
 
   void _filterProfissionais(String query) {
-    List<String> results = [];
     if (query.isEmpty) {
-      results = allProfissionais;
+      setState(() {
+        filteredProfissionais = dataList;
+      });
     } else {
-      results = allProfissionais
-          .where((profissional) =>
-          profissional.toLowerCase().contains(query.toLowerCase()))
-          .toList();
-    }
+      final results = dataList.where((usuario) {
+        final nome = usuario['nomeUsuario']?.toLowerCase() ?? '';
+        return nome.contains(query.toLowerCase());
+      }).toList();
 
-    setState(() {
-      filteredProfissionais = results;
-    });
+      setState(() {
+        filteredProfissionais = results;
+      });
+    }
   }
 
   @override
@@ -88,6 +90,7 @@ class _UsuarioSearchPageState extends State<UsuarioSearchPage> {
               const SizedBox(width: 10),
               ElevatedButton(
                 onPressed: () {
+                  usuariosController.usuarioSelecionado = null;
                   context.go('/cadastro-usuario');
                 },
                 style: ElevatedButton.styleFrom(
@@ -147,19 +150,63 @@ class _UsuarioSearchPageState extends State<UsuarioSearchPage> {
                           title: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(filteredProfissionais[index]),
+                              Text(filteredProfissionais[index]['nomeUsuario']),
                               Row(
                                 children: [
                                   IconButton(
                                     icon: const Icon(Icons.edit, color: Colors.orange),
                                     onPressed: () {
-                                      print('Editar ${filteredProfissionais[index]}');
+                                      usuariosController.usuarioSelecionado = filteredProfissionais[index];
+                                      context.go('/cadastro-usuario');
                                     },
                                   ),
                                   IconButton(
                                     icon: const Icon(Icons.delete, color: Colors.red),
                                     onPressed: () {
-                                      print('Excluir ${filteredProfissionais[index]}');
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            title: const Text('Confirmação'),
+                                            content: Text(
+                                                'Tem certeza que deseja excluir o usuário ${filteredProfissionais[index]['nome']}?'),
+                                            actions: <Widget>[
+                                              TextButton(
+                                                child: const Text('Cancelar', style: TextStyle(color: Colors.pink),),
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                              ),
+                                              TextButton(
+                                                child: const Text('Excluir', style: TextStyle(color: Colors.pink),),
+                                                onPressed: () async {
+                                                  await usuariosController.deletarUsuarios(context, filteredProfissionais[index]['idUsuario']);
+                                                  if (usuariosController.isError.isTrue) {
+                                                    Navigator.of(context).pop();
+                                                    ScaffoldMessenger.of(context).showSnackBar(
+                                                      const SnackBar(
+                                                        content: Text('Não foi possivel excluir o usuário, por favor, tente novamente.'),
+                                                        backgroundColor: Colors.red,
+                                                        duration: Duration(seconds: 2),
+                                                      ),
+                                                    );
+                                                  } else {
+                                                    Navigator.of(context).pop();
+                                                    ScaffoldMessenger.of(context).showSnackBar(
+                                                      const SnackBar(
+                                                        content: Text('Usuário excluido com sucesso.'),
+                                                        backgroundColor: Colors.green,
+                                                        duration: Duration(seconds: 2),
+                                                      ),
+                                                    );
+                                                    context.go('/');
+                                                  }
+                                                },
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      );
                                     },
                                   ),
                                 ],

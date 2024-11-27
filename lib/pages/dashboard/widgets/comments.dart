@@ -4,21 +4,25 @@ import 'package:core_dashboard/shared/constants/ghaps.dart';
 import 'package:core_dashboard/shared/widgets/section_title.dart';
 import 'package:core_dashboard/theme/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'dart:convert';
+import '../../../controllers/app_controller.dart';
 
-class Comments extends StatelessWidget {
+class Comments extends StatefulWidget {
   const Comments({super.key});
 
   @override
+  State<Comments> createState() => _CommentsState();
+}
+
+class _CommentsState extends State<Comments> {
+  final AppController appController = Get.find<AppController>();
+  @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
-    final List<String> birthdayList = [
-      'Ana Paula Silva',
-      'Bruno Mendes Oliveira',
-      'Carlos Alberto Souza',
-      'Bruno Mendes Oliveira',
-      'Bruno Mendes Oliveira'
-    ];
-    final int itemCount = birthdayList.length;
+    final dynamic decodedJson = jsonDecode(appController.aniversariantes);
+    final List<dynamic> dataList = decodedJson['data'];
+    final int itemCount = dataList.length;
 
     return Container(
       decoration: const BoxDecoration(
@@ -53,6 +57,18 @@ class Comments extends StatelessWidget {
             ),
           ),
           gapH16,
+          if (itemCount == 0)
+            Center(
+              child: Text(
+                "Nenhum aniversariante encontrado hoje.",
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.grey.shade600,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            )
+          else
           SizedBox(
             height: itemCount > 3 ? screenHeight * 0.35 : itemCount * 80,
             child: ListView.builder(
@@ -60,7 +76,8 @@ class Comments extends StatelessWidget {
               padding: EdgeInsets.zero,
               itemBuilder: (_, index) {
                 return CommentItem(
-                  name: birthdayList[index],
+                  name: dataList[index]['nome'],
+                  telefone: dataList[index]['telefone'],
                 );
               },
             ),

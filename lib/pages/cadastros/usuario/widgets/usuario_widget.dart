@@ -1,5 +1,8 @@
+import 'package:core_dashboard/controllers/usuarios_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text2/flutter_masked_text2.dart';
+import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../shared/constants/defaults.dart';
 import '../../../../shared/constants/ghaps.dart';
@@ -16,14 +19,25 @@ class UsuarioWidget extends StatefulWidget {
 class _UsuarioWidgetState extends State<UsuarioWidget> {
   final formKey = GlobalKey<FormState>();
 
-  final phoneController = MaskedTextController(mask: '(00) 00000-0000');
-  final birthDateController = MaskedTextController(mask: '00/00/0000');
   final senhaController = MaskedTextController(mask: '000.000.000-00');
   final TextEditingController nomeController = TextEditingController();
-  final TextEditingController enderecoController = TextEditingController();
+  final TextEditingController loginController = TextEditingController();
   final TextEditingController confirmaSenhaController = TextEditingController();
+  final UsuariosController usuariosController = Get.find<UsuariosController>();
+  String? selectedPerfil;
 
-  String? selectedPerfil; // Variável para armazenar o tipo de perfil selecionado
+  @override
+  void initState() {
+    super.initState();
+
+    if (usuariosController.usuarioSelecionado != null && usuariosController.usuarioSelecionado != "") {
+      final usuario = usuariosController.usuarioSelecionado;
+
+      loginController.text = usuario['login'] ?? '';
+      nomeController.text = usuario['nomeUsuario'] ?? '';
+      selectedPerfil = usuario['permissao'] ?? '';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,6 +76,28 @@ class _UsuarioWidgetState extends State<UsuarioWidget> {
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Por favor, insira o nome do usuario';
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
+                    gapW16,
+                  ],
+                ),
+                gapH16,
+                Row(
+                  children: [
+                    Expanded(
+                      flex: 3,
+                      child: TextFormField(
+                        controller: loginController,
+                        decoration: const InputDecoration(
+                          labelText: 'Login',
+                          border: OutlineInputBorder(),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Por favor, insira o login do usuario';
                           }
                           return null;
                         },
@@ -130,6 +166,7 @@ class _UsuarioWidgetState extends State<UsuarioWidget> {
                     Expanded(
                       flex: 3,
                       child: TextFormField(
+                        obscureText: true,
                         controller: confirmaSenhaController,
                         decoration: const InputDecoration(
                           labelText: 'Confirme a senha',
@@ -160,9 +197,64 @@ class _UsuarioWidgetState extends State<UsuarioWidget> {
                     horizontal: AppDefaults.padding * 0.5,
                   ),
                   child: ElevatedButton(
-                    onPressed: () {
+                    onPressed: () async {
                       if (formKey.currentState?.validate() == true ) {
-                        // Ação ao salvar o formulário
+                        if (usuariosController.usuarioSelecionado != null && usuariosController.usuarioSelecionado != "") {
+                          var params = <String, dynamic>{};
+
+                          params["nomeUsuario"] = nomeController.text;
+                          params["login"] = loginController.text;
+                          params["senha"] = senhaController.text;
+                          params["permissao"] = selectedPerfil;
+
+                          await usuariosController.atualizarUsuarios(context, params, usuariosController.usuarioSelecionado['idUsuario']);
+                          if (usuariosController.isError.isTrue) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Não foi possivel atualizar o usuário, por favor, tente novamente.'),
+                                backgroundColor: Colors.red,
+                                duration: Duration(seconds: 2),
+                              ),
+                            );
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Usuário atualizado com sucesso.'),
+                                backgroundColor: Colors.green,
+                                duration: Duration(seconds: 2),
+                              ),
+                            );
+                            await usuariosController.listarUsuarios(context);
+                            context.go('/cadastro-search-usuario');
+                          }
+                        } else {
+                          var params = <String, dynamic>{};
+                          params["nomeUsuario"] = nomeController.text;
+                          params["login"] = loginController.text;
+                          params["senha"] = senhaController.text;
+                          params["permissao"] = selectedPerfil;
+
+                          await usuariosController.adicionarUsuarios(context, params);
+                          if (usuariosController.isError.isTrue) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Não foi possivel adicionar o usuário, por favor, tente novamente.'),
+                                backgroundColor: Colors.red,
+                                duration: Duration(seconds: 2),
+                              ),
+                            );
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Usuário adicionado com sucesso.'),
+                                backgroundColor: Colors.green,
+                                duration: Duration(seconds: 2),
+                              ),
+                            );
+                            await usuariosController.listarUsuarios(context);
+                            context.go('/cadastro-search-usuario');
+                          }
+                        }
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
@@ -180,7 +272,7 @@ class _UsuarioWidgetState extends State<UsuarioWidget> {
                       backgroundColor: Colors.pink,
                       padding: const EdgeInsets.symmetric(vertical: 16.0),
                     ),
-                    child: const Text('Salvar'),
+                    child: usuariosController.usuarioSelecionado != null && usuariosController.usuarioSelecionado != "" ? const Text('Atualizar') : const Text('Salvar'),
                   ),
                 ),
               ),
@@ -191,7 +283,7 @@ class _UsuarioWidgetState extends State<UsuarioWidget> {
                   ),
                   child: ElevatedButton(
                     onPressed: () {
-
+                      context.go('/cadastro-search-usuario');
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,

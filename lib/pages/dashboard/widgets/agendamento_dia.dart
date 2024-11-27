@@ -1,17 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../controllers/app_controller.dart';
 import '../../../shared/constants/defaults.dart';
 import '../../../shared/constants/ghaps.dart';
 import '../../../shared/widgets/section_title.dart';
 import '../../../theme/app_colors.dart';
 
-class AgendamentoDia extends StatelessWidget {
+class AgendamentoDia extends StatefulWidget {
   const AgendamentoDia({super.key});
 
   @override
+  State<AgendamentoDia> createState() => _AgendamentoDiaState();
+}
+
+class _AgendamentoDiaState extends State<AgendamentoDia> {
+  final AppController appController = Get.find<AppController>();
+  @override
   Widget build(BuildContext context) {
-    // Lista de agendamentos fictícios
     final agendamentos = [
       {'paciente': 'Maria Silva', 'procedimento': 'Limpeza de Pele', 'horario': '10:00'},
       {'paciente': 'João Souza', 'procedimento': 'Massagem Relaxante', 'horario': '12:30'},
