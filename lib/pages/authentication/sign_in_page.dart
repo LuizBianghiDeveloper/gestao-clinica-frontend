@@ -10,6 +10,7 @@ import 'package:go_router/go_router.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import '../../controllers/app_controller.dart';
 import '../../controllers/clientes_controller.dart';
+import '../../controllers/profissional_controller.dart';
 
 class SignInPage extends StatefulWidget {
   const SignInPage({super.key});
@@ -24,6 +25,7 @@ class _SignInPageState extends State<SignInPage> {
   final AppController appController = Get.put(AppController());
   final ClientesController clientesController = Get.put(ClientesController());
   final UsuariosController usuariosController = Get.put(UsuariosController());
+  final ProfissionalController profissionalCOntroller = Get.put(ProfissionalController());
 
   @override
   Widget build(BuildContext context) {

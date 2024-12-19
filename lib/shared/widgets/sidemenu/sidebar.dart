@@ -8,6 +8,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../controllers/profissional_controller.dart';
 import '../../constants/config.dart';
 import 'menu_tile.dart';
 
@@ -22,6 +23,7 @@ class _SidebarState extends State<Sidebar> {
   int _activeIndex = 0;
   final ClientesController clientesController = Get.find<ClientesController>();
   final UsuariosController usuariosController = Get.find<UsuariosController>();
+  final ProfissionalController profissionalController = Get.find<ProfissionalController>();
 
   void _onItemPressed(int index) {
     setState(() {
@@ -116,7 +118,7 @@ class _SidebarState extends State<Sidebar> {
                           onPressed: () async {
                             _onItemPressed(2);
                             await usuariosController.listarUsuarios(context);
-                            if (clientesController.isError.isFalse) {
+                            if (usuariosController.isError.isFalse) {
                               context.go('/cadastro-search-usuario');
                             }
                           },
@@ -135,9 +137,12 @@ class _SidebarState extends State<Sidebar> {
                           isSubmenu: true,
                           isActive: _activeIndex == 4,
                           title: "Profissional",
-                          onPressed: () {
+                          onPressed: () async {
                             _onItemPressed(4);
-                            context.go('/cadastro-search-profissional');
+                            await profissionalController.listarProfissional(context);
+                            if (profissionalController.isError.isFalse) {
+                              context.go('/cadastro-search-profissional');
+                            }
                           },
                         ),
                         MenuTile(
