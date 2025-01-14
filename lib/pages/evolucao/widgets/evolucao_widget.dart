@@ -1,7 +1,12 @@
+import 'dart:convert';
+
+import 'package:core_dashboard/controllers/profissional_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text2/flutter_masked_text2.dart';
+import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../controllers/clientes_controller.dart';
 import '../../../shared/constants/defaults.dart';
 import '../../../shared/constants/ghaps.dart';
 import '../../../shared/widgets/section_title.dart';
@@ -15,56 +20,35 @@ class EvolucaoWidget extends StatefulWidget {
 }
 
 class _EvolucaoWidgetState extends State<EvolucaoWidget> {
+  final ClientesController clientesController = Get.find<ClientesController>();
+  final ProfissionalController profissionalController = Get.find<ProfissionalController>();
+  late final List<dynamic> dataList;
   final TextEditingController searchController = TextEditingController();
-  List<String> allEvolucoes = [
-    'Ana Paula Silva',
-    'Bruno Mendes Oliveira',
-    'Carlos Alberto Souza',
-    'Diana Costa Pereira',
-    'Eduardo Gomes Ferreira',
-    'Fernanda Lima Santos',
-    'Gabriel Rocha Lima',
-    'Helena Martins Alves',
-    'Igor Henrique Dias',
-    'Júlia de Souza Almeida',
-    'Karla Cristina Lima',
-    'Leonardo da Silva Santos',
-    'Mariana Oliveira Costa',
-    'Natália Mendes Nascimento',
-    'Otávio Augusto Lima',
-    'Paula Regina Cardoso',
-    'Quiteria de Almeida Oliveira',
-    'Ricardo Carvalho Pinto',
-    'Sofia Regina Ferreira',
-    'Thiago Fernandes da Costa',
-    'Ulisses Martins de Oliveira',
-    'Vanessa Silva Freitas',
-    'William Figueiredo Santos',
-    'Xuxa de Almeida',
-    'Yasmin Rodrigues da Silva',
-  ];
-  List<String> filteredEvolucoes = [];
+  List<dynamic> filteredEvolucoes = [];
 
   @override
   void initState() {
     super.initState();
-    filteredEvolucoes = allEvolucoes;
+    final dynamic decodedJson = jsonDecode(clientesController.clientes);
+    dataList = decodedJson['data'];
+    filteredEvolucoes = dataList;
   }
 
   void _filterEvolucoes(String query) {
-    List<String> results = [];
     if (query.isEmpty) {
-      results = allEvolucoes;
+      setState(() {
+        filteredEvolucoes = dataList;
+      });
     } else {
-      results = allEvolucoes
-          .where((evolucao) =>
-          evolucao.toLowerCase().contains(query.toLowerCase()))
-          .toList();
-    }
+      final results = dataList.where((cliente) {
+        final nome = cliente['nome']?.toLowerCase() ?? '';
+        return nome.contains(query.toLowerCase());
+      }).toList();
 
-    setState(() {
-      filteredEvolucoes = results;
-    });
+      setState(() {
+        filteredEvolucoes = results;
+      });
+    }
   }
 
   @override
@@ -116,14 +100,16 @@ class _EvolucaoWidgetState extends State<EvolucaoWidget> {
                           title: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(filteredEvolucoes[index]),
+                              Text(filteredEvolucoes[index]['nome']),
                               Row(
                                 children: [
                                   IconButton(
                                     icon: const Icon(Icons.arrow_forward, color: Colors.pink),
-                                    onPressed: () {
-                                      context.go('/evolucao-cliente/${filteredEvolucoes[index]}');
-                                      print('Editar ${filteredEvolucoes[index]}');
+                                    onPressed: () async {
+                                      await profissionalController.listarProfissional(context);
+                                      if (profissionalController.isError.isFalse) {
+                                        context.go('/evolucao-cliente/${filteredEvolucoes[index]['nome']}');
+                                      }
                                     },
                                   ),
                                 ],

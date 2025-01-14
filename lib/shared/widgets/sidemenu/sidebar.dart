@@ -1,4 +1,6 @@
 import 'package:core_dashboard/controllers/clientes_controller.dart';
+import 'package:core_dashboard/controllers/procedimentos_controller.dart';
+import 'package:core_dashboard/controllers/salas_controller.dart';
 import 'package:core_dashboard/controllers/usuarios_controller.dart';
 import 'package:core_dashboard/responsive.dart';
 import 'package:core_dashboard/shared/constants/defaults.dart';
@@ -23,7 +25,9 @@ class _SidebarState extends State<Sidebar> {
   int _activeIndex = 0;
   final ClientesController clientesController = Get.find<ClientesController>();
   final UsuariosController usuariosController = Get.find<UsuariosController>();
+  final SalasController salasController = Get.find<SalasController>();
   final ProfissionalController profissionalController = Get.find<ProfissionalController>();
+  final ProcedimentosController procedimentosController = Get.find<ProcedimentosController>();
 
   void _onItemPressed(int index) {
     setState(() {
@@ -149,18 +153,25 @@ class _SidebarState extends State<Sidebar> {
                           isSubmenu: true,
                           isActive: _activeIndex == 5,
                           title: "Sala",
-                          onPressed: () {
+                          onPressed: () async {
                             _onItemPressed(5);
-                            context.go('/cadastro-search-sala');
+                            await salasController.listarSalas(context);
+                            if (salasController.isError.isFalse) {
+                              context.go('/cadastro-search-sala');
+                            }
                           },
                         ),
                         MenuTile(
                           isSubmenu: true,
                           isActive: _activeIndex == 6,
                           title: "Procedimentos",
-                          onPressed: () {
+                          onPressed: () async {
                             _onItemPressed(6);
-                            context.go('/cadastro-search-procedimento');
+                            await procedimentosController.listarProcedimentos(context);
+                            if (procedimentosController.isError.isFalse) {
+                              context.go('/cadastro-search-procedimento');
+                            }
+
                           },
                         ),
                       ],
@@ -190,9 +201,12 @@ class _SidebarState extends State<Sidebar> {
                       title: "Evolução",
                       activeIconSrc: "assets/icons/check_all_light.svg",
                       inactiveIconSrc: "assets/icons/check_all_filled.svg",
-                      onPressed: () {
+                      onPressed: () async {
                         _onItemPressed(9);
-                        context.go('/evolucao');
+                        await clientesController.listarClientes(context);
+                        if (clientesController.isError.isFalse) {
+                          context.go('/evolucao');
+                        }
                       },
                     ),
                     MenuTile(

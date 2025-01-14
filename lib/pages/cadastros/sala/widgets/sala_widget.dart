@@ -1,4 +1,7 @@
+import 'package:core_dashboard/controllers/salas_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../shared/constants/defaults.dart';
 import '../../../../shared/constants/ghaps.dart';
@@ -16,8 +19,20 @@ class _SalaWidgetState extends State<SalaWidget> {
   final formKey = GlobalKey<FormState>();
 
   final TextEditingController nomeController = TextEditingController();
-  final TextEditingController numeroController = TextEditingController();
   final TextEditingController descricaoController = TextEditingController();
+  final SalasController salasController = Get.find<SalasController>();
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (salasController.salaSelecionado != null && salasController.salaSelecionado != "") {
+      final sala = salasController.salaSelecionado;
+
+      nomeController.text = sala['numero'] ?? '';
+      descricaoController.text = sala['descricao'] ?? '';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,23 +77,6 @@ class _SalaWidgetState extends State<SalaWidget> {
                       ),
                     ),
                     gapW16,
-                    Expanded(
-                      flex: 3,
-                      child: TextFormField(
-                        controller: numeroController,
-                        decoration: const InputDecoration(
-                          labelText: 'Numero',
-                          border: OutlineInputBorder(),
-                        ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Por favor, insira o número da sala';
-                          }
-                          return null;
-                        },
-                      ),
-                    ),
-                    gapW16,
                   ],
                 ),
                 gapH16,
@@ -87,7 +85,6 @@ class _SalaWidgetState extends State<SalaWidget> {
                     Expanded(
                       flex: 3,
                       child: TextFormField(
-                        obscureText: true,
                         controller: descricaoController,
                         decoration: const InputDecoration(
                           labelText: 'Descrição',
@@ -118,9 +115,60 @@ class _SalaWidgetState extends State<SalaWidget> {
                     horizontal: AppDefaults.padding * 0.5,
                   ),
                   child: ElevatedButton(
-                    onPressed: () {
+                    onPressed: () async {
                       if (formKey.currentState?.validate() == true ) {
-                        // Ação ao salvar o formulário
+                        if (salasController.salaSelecionado != null && salasController.salaSelecionado != "") {
+                          var params = <String, dynamic>{};
+
+                          params["numero"] = nomeController.text;
+                          params["descricao"] = descricaoController.text;
+
+                          await salasController.atualizarSala(context, params, salasController.salaSelecionado['idSala']);
+                          if (salasController.isError.isTrue) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Não foi possivel atualizar a sala, por favor, tente novamente.'),
+                                backgroundColor: Colors.red,
+                                duration: Duration(seconds: 2),
+                              ),
+                            );
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Sala atualizada com sucesso.'),
+                                backgroundColor: Colors.green,
+                                duration: Duration(seconds: 2),
+                              ),
+                            );
+                            await salasController.listarSalas(context);
+                            context.go('/cadastro-search-sala');
+                          }
+                        } else {
+                          var params = <String, dynamic>{};
+                          params["numero"] = nomeController.text;
+                          params["descricao"] = descricaoController.text;
+
+                          await salasController.adicionarSalas(context, params);
+                          if (salasController.isError.isTrue) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Não foi possivel adicionar a sala, por favor, tente novamente.'),
+                                backgroundColor: Colors.red,
+                                duration: Duration(seconds: 2),
+                              ),
+                            );
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Sala adicionada com sucesso.'),
+                                backgroundColor: Colors.green,
+                                duration: Duration(seconds: 2),
+                              ),
+                            );
+                            await salasController.listarSalas(context);
+                            context.go('/cadastro-search-sala');
+                          }
+                        }
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
@@ -138,7 +186,7 @@ class _SalaWidgetState extends State<SalaWidget> {
                       backgroundColor: Colors.pink,
                       padding: const EdgeInsets.symmetric(vertical: 16.0),
                     ),
-                    child: const Text('Salvar'),
+                    child: salasController.salaSelecionado != null && salasController.salaSelecionado != "" ? const Text('Atualizar') : const Text('Salvar'),
                   ),
                 ),
               ),
@@ -149,7 +197,7 @@ class _SalaWidgetState extends State<SalaWidget> {
                   ),
                   child: ElevatedButton(
                     onPressed: () {
-
+                      context.go('/cadastro-search-sala');
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,

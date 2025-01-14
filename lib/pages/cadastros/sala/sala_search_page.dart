@@ -1,4 +1,8 @@
+import 'dart:convert';
+
+import 'package:core_dashboard/controllers/salas_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import '../../../shared/constants/defaults.dart';
 import '../../../shared/constants/ghaps.dart';
@@ -13,42 +17,39 @@ class SalaSearchPage extends StatefulWidget {
 
 class _SalaSearchPageState extends State<SalaSearchPage> {
   final TextEditingController searchController = TextEditingController();
-
-  List<String> allSala = [
-    'Consultório 1',
-    'Consultório 2',
-    'Consultório 3',
-    'Consultório 4',
-  ];
-
-  List<String> filteredSala = [];
+  final SalasController salasController = Get.find<SalasController>();
+  late final List<dynamic> dataList;
+  List<dynamic> filteredSalas = [];
 
   @override
   void initState() {
     super.initState();
-    filteredSala = allSala;
+    final dynamic decodedJson = jsonDecode(salasController.sala);
+    dataList = decodedJson['data'];
+    filteredSalas = dataList;
   }
 
   void _filterSala(String query) {
-    List<String> results = [];
     if (query.isEmpty) {
-      results = allSala;
+      setState(() {
+        filteredSalas = dataList;
+      });
     } else {
-      results = allSala
-          .where((sala) =>
-          sala.toLowerCase().contains(query.toLowerCase()))
-          .toList();
-    }
+      final results = dataList.where((salas) {
+        final nome = salas['numero']?.toLowerCase() ?? '';
+        return nome.contains(query.toLowerCase());
+      }).toList();
 
-    setState(() {
-      filteredSala = results;
-    });
+      setState(() {
+        filteredSalas = results;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
-    final int itemCount = filteredSala.length;
+    final int itemCount = filteredSalas.length;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -88,6 +89,7 @@ class _SalaSearchPageState extends State<SalaSearchPage> {
               const SizedBox(width: 10),
               ElevatedButton(
                 onPressed: () {
+                  salasController.salaSelecionado = null;
                   context.go('/cadastro-sala');
                 },
                 style: ElevatedButton.styleFrom(
@@ -147,19 +149,64 @@ class _SalaSearchPageState extends State<SalaSearchPage> {
                           title: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(filteredSala[index]),
+                              Text(filteredSalas[index]['numero']),
                               Row(
                                 children: [
                                   IconButton(
                                     icon: const Icon(Icons.edit, color: Colors.orange),
                                     onPressed: () {
-                                      print('Editar ${filteredSala[index]}');
+                                      salasController.salaSelecionado = filteredSalas[index];
+                                      print('Editar ${filteredSalas[index]}');
+                                      context.go('/cadastro-sala');
                                     },
                                   ),
                                   IconButton(
                                     icon: const Icon(Icons.delete, color: Colors.red),
                                     onPressed: () {
-                                      print('Excluir ${filteredSala[index]}');
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            title: const Text('Confirmação'),
+                                            content: Text(
+                                                'Tem certeza que deseja excluir a sala ${filteredSalas[index]['numero']}?'),
+                                            actions: <Widget>[
+                                              TextButton(
+                                                child: const Text('Cancelar', style: TextStyle(color: Colors.pink),),
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                              ),
+                                              TextButton(
+                                                child: const Text('Excluir', style: TextStyle(color: Colors.pink),),
+                                                onPressed: () async {
+                                                  await salasController.deletarSala(context, filteredSalas[index]['idSala']);
+                                                  if (salasController.isError.isTrue) {
+                                                    Navigator.of(context).pop();
+                                                    ScaffoldMessenger.of(context).showSnackBar(
+                                                      const SnackBar(
+                                                        content: Text('Não foi possivel excluir a sala, por favor, tente novamente.'),
+                                                        backgroundColor: Colors.red,
+                                                        duration: Duration(seconds: 2),
+                                                      ),
+                                                    );
+                                                  } else {
+                                                    Navigator.of(context).pop();
+                                                    ScaffoldMessenger.of(context).showSnackBar(
+                                                      const SnackBar(
+                                                        content: Text('Sala excluida com sucesso.'),
+                                                        backgroundColor: Colors.green,
+                                                        duration: Duration(seconds: 2),
+                                                      ),
+                                                    );
+                                                    context.go('/');
+                                                  }
+                                                },
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      );
                                     },
                                   ),
                                 ],

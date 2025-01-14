@@ -1,3 +1,5 @@
+import 'package:core_dashboard/controllers/procedimentos_controller.dart';
+import 'package:core_dashboard/controllers/salas_controller.dart';
 import 'package:core_dashboard/controllers/usuarios_controller.dart';
 import 'package:core_dashboard/shared/constants/config.dart';
 import 'package:core_dashboard/shared/constants/extensions.dart';
@@ -25,7 +27,9 @@ class _SignInPageState extends State<SignInPage> {
   final AppController appController = Get.put(AppController());
   final ClientesController clientesController = Get.put(ClientesController());
   final UsuariosController usuariosController = Get.put(UsuariosController());
-  final ProfissionalController profissionalCOntroller = Get.put(ProfissionalController());
+  final SalasController salasController = Get.put(SalasController());
+  final ProfissionalController profissionalController = Get.put(ProfissionalController());
+  final ProcedimentosController procedimentosController = Get.put(ProcedimentosController());
 
   @override
   Widget build(BuildContext context) {

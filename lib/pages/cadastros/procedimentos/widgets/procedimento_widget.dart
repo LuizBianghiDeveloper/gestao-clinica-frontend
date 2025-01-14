@@ -1,5 +1,8 @@
+import 'package:core_dashboard/controllers/procedimentos_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text2/flutter_masked_text2.dart';
+import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../shared/constants/defaults.dart';
 import '../../../../shared/constants/ghaps.dart';
@@ -18,6 +21,20 @@ class _ProcedimentoWidgetState extends State<ProcedimentoWidget> {
   final TextEditingController nomeController = TextEditingController();
   final TextEditingController descricaoController = TextEditingController();
   final TextEditingController valorController = TextEditingController();
+  final ProcedimentosController procedimentosController = Get.find<ProcedimentosController>();
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (procedimentosController.procedimentosSelecionado != null && procedimentosController.procedimentosSelecionado != "") {
+      final procedimento = procedimentosController.procedimentosSelecionado;
+
+      nomeController.text = procedimento['nome'] ?? '';
+      descricaoController.text = procedimento['descricao'] ?? '';
+      valorController.text = procedimento['valor'] ?? '';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +87,6 @@ class _ProcedimentoWidgetState extends State<ProcedimentoWidget> {
                     Expanded(
                       flex: 3,
                       child: TextFormField(
-                        obscureText: true,
                         controller: descricaoController,
                         decoration: const InputDecoration(
                           labelText: 'Descrição',
@@ -118,9 +134,63 @@ class _ProcedimentoWidgetState extends State<ProcedimentoWidget> {
                     horizontal: AppDefaults.padding * 0.5,
                   ),
                   child: ElevatedButton(
-                    onPressed: () {
+                    onPressed: () async {
                       if (formKey.currentState?.validate() == true ) {
-                        // Ação ao salvar o formulário
+
+                        if (procedimentosController.procedimentosSelecionado != null && procedimentosController.procedimentosSelecionado != "") {
+                          var params = <String, dynamic>{};
+
+                          params["nome"] = nomeController.text;
+                          params["descricao"] = descricaoController.text;
+                          params["valor"] = valorController.text;
+
+                          await procedimentosController.atualizarProcedimentos(context, params, procedimentosController.procedimentosSelecionado['idProcedimento']);
+                          if (procedimentosController.isError.isTrue) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Não foi possivel atualizar o procedimento, por favor, tente novamente.'),
+                                backgroundColor: Colors.red,
+                                duration: Duration(seconds: 2),
+                              ),
+                            );
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Procedimento atualizado com sucesso.'),
+                                backgroundColor: Colors.green,
+                                duration: Duration(seconds: 2),
+                              ),
+                            );
+                            await procedimentosController.listarProcedimentos(context);
+                            context.go('/cadastro-search-procedimento');
+                          }
+                        } else {
+                          var params = <String, dynamic>{};
+                          params["nome"] = nomeController.text;
+                          params["descricao"] = descricaoController.text;
+                          params["valor"] = valorController.text;
+
+                          await procedimentosController.adicionarProcedimentos(context, params);
+                          if (procedimentosController.isError.isTrue) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Não foi possivel adicionar o procedimento, por favor, tente novamente.'),
+                                backgroundColor: Colors.red,
+                                duration: Duration(seconds: 2),
+                              ),
+                            );
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Procedimento adicionado com sucesso.'),
+                                backgroundColor: Colors.green,
+                                duration: Duration(seconds: 2),
+                              ),
+                            );
+                            await procedimentosController.listarProcedimentos(context);
+                            context.go('/cadastro-search-procedimento');
+                          }
+                        }
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
@@ -138,7 +208,7 @@ class _ProcedimentoWidgetState extends State<ProcedimentoWidget> {
                       backgroundColor: Colors.pink,
                       padding: const EdgeInsets.symmetric(vertical: 16.0),
                     ),
-                    child: const Text('Salvar'),
+                    child: procedimentosController.procedimentosSelecionado != null && procedimentosController.procedimentosSelecionado != "" ? const Text('Atualizar') : const Text('Salvar'),
                   ),
                 ),
               ),
@@ -149,7 +219,7 @@ class _ProcedimentoWidgetState extends State<ProcedimentoWidget> {
                   ),
                   child: ElevatedButton(
                     onPressed: () {
-
+                      context.go('/cadastro-search-procedimento');
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,

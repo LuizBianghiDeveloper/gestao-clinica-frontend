@@ -1,7 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text2/flutter_masked_text2.dart'; // Import da máscara
+import 'package:get/get.dart';
 import 'package:intl/intl.dart'; // Import para formatação de data
 
+import '../../../controllers/profissional_controller.dart';
 import '../../../shared/constants/defaults.dart';
 import '../../../shared/constants/ghaps.dart';
 import '../../../shared/widgets/section_title.dart';
@@ -19,15 +23,10 @@ class _EvolucaoClienteWidgetState extends State<EvolucaoClienteWidget> {
 
   final MaskedTextController dataController = MaskedTextController(mask: '00/00/0000');
   final TextEditingController descricaoController = TextEditingController();
-
+  final ProfissionalController profissionalController = Get.find<ProfissionalController>();
   String? selectedProfissional;
-
-  final List<String> profissionais = [
-    'Ana Romani',
-    'Thais Melo',
-    'Fernanda Costa',
-    'Pedro Costa',
-  ];
+  late final List<dynamic> dataList;
+  List<dynamic> profissionais = [];
 
   @override
   void initState() {
@@ -35,6 +34,9 @@ class _EvolucaoClienteWidgetState extends State<EvolucaoClienteWidget> {
     // Define a data atual no formato DD/MM/AAAA
     String formattedDate = DateFormat('dd/MM/yyyy').format(DateTime.now());
     dataController.text = formattedDate; // Preenche o campo de data com a data atual
+    final dynamic decodedJson = jsonDecode(profissionalController.profissional);
+    dataList = decodedJson['data'];
+    profissionais = dataList;
   }
 
   @override
@@ -103,10 +105,10 @@ class _EvolucaoClienteWidgetState extends State<EvolucaoClienteWidget> {
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
                     ),
-                    items: profissionais.map((String profissional) {
+                    items: profissionais.map((dynamic profissional) {
                       return DropdownMenuItem<String>(
-                        value: profissional,
-                        child: Text(profissional),
+                        value: profissional.toString(),
+                        child: Text(profissional['nome'].toString()),
                       );
                     }).toList(),
                     onChanged: (String? newValue) {

@@ -1,5 +1,8 @@
+import 'package:core_dashboard/controllers/profissional_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text2/flutter_masked_text2.dart';
+import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../shared/constants/defaults.dart';
 import '../../../../shared/constants/ghaps.dart';
@@ -16,15 +19,13 @@ class ProfissionalWidget extends StatefulWidget {
 class _ProfissionalWidgetState extends State<ProfissionalWidget> {
   final formKey = GlobalKey<FormState>();
 
-  final phoneController = MaskedTextController(mask: '(00) 00000-0000');
-  final birthDateController = MaskedTextController(mask: '00/00/0000');
-  final emailController = MaskedTextController(mask: '000.000.000-00');
   final TextEditingController nomeController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
   final TextEditingController especialidadeController = TextEditingController();
   final TextEditingController telefoneController = TextEditingController();
+  final ProfissionalController profissionalController = Get.find<ProfissionalController>();
 
-  Color? selectedColor; // Variável para armazenar a cor selecionada
-
+  Color? selectedColor;
   final List<Color> availableColors = [
     Colors.green,
     Colors.pinkAccent,
@@ -34,14 +35,59 @@ class _ProfissionalWidgetState extends State<ProfissionalWidget> {
     Colors.red,
   ];
 
-  final List<String> colorNames = [
-    "Verde",
-    "Rosa",
-    "Laranja",
-    "Ciano",
-    "Azul",
-    "Vermelho",
-  ];
+  @override
+  void initState() {
+    super.initState();
+
+    if (profissionalController.profissionalSelecionado != null &&
+        profissionalController.profissionalSelecionado != "") {
+      final profissional = profissionalController.profissionalSelecionado;
+
+      nomeController.text = profissional['nome'] ?? '';
+      especialidadeController.text = profissional['especialidade'] ?? '';
+      emailController.text = profissional['email'] ?? '';
+      telefoneController.text = profissional['telefone'] ?? '';
+
+      if (profissional['cor'] != null) {
+        selectedColor = getColorFromString(profissional['cor'] ?? '');
+      }
+    }
+  }
+
+  String? getStringFromColor(Color? color) {
+    if (color == null) return null;
+
+    if (color == Colors.green) return 'Green';
+    if (color == Colors.pinkAccent) return 'PinkAccent';
+    if (color == Colors.orange) return 'Orange';
+    if (color == Colors.cyan) return 'Cyan';
+    if (color == Colors.blue) return 'Blue';
+    if (color == Colors.red) return 'Red';
+
+    return null;
+  }
+
+
+  Color? getColorFromString(String colorName) {
+    switch (colorName.toLowerCase()) {
+      case 'green':
+        return Colors.green;
+      case 'pink':
+      case 'pinkaccent':
+        return Colors.pinkAccent;
+      case 'orange':
+        return Colors.orange;
+      case 'cyan':
+        return Colors.cyan;
+      case 'blue':
+        return Colors.blue;
+      case 'red':
+        return Colors.red;
+      default:
+        return null;
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -149,7 +195,6 @@ class _ProfissionalWidgetState extends State<ProfissionalWidget> {
                     Expanded(
                       flex: 3,
                       child: TextFormField(
-                        obscureText: true,
                         controller: emailController,
                         decoration: const InputDecoration(
                           labelText: 'Email',
@@ -197,9 +242,66 @@ class _ProfissionalWidgetState extends State<ProfissionalWidget> {
                     horizontal: AppDefaults.padding * 0.5,
                   ),
                   child: ElevatedButton(
-                    onPressed: () {
+                    onPressed: () async {
                       if (formKey.currentState?.validate() == true) {
-                        // Ação ao salvar o formulário
+                        if (profissionalController.profissionalSelecionado != null && profissionalController.profissionalSelecionado != "") {
+                          var params = <String, dynamic>{};
+
+                          params["nome"] = nomeController.text;
+                          params["especialidade"] = especialidadeController.text;
+                          params["email"] = emailController.text;
+                          params["telefone"] = telefoneController.text;
+                          params["cor"] = getStringFromColor(selectedColor);
+
+                          await profissionalController.atualizarProfissional(context, params, profissionalController.profissionalSelecionado['idProfissional']);
+                          if (profissionalController.isError.isTrue) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Não foi possivel atualizar o profissional, por favor, tente novamente.'),
+                                backgroundColor: Colors.red,
+                                duration: Duration(seconds: 2),
+                              ),
+                            );
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Profissional atualizado com sucesso.'),
+                                backgroundColor: Colors.green,
+                                duration: Duration(seconds: 2),
+                              ),
+                            );
+                            await profissionalController.listarProfissional(context);
+                            context.go('/cadastro-search-profissional');
+                          }
+                        } else {
+                          var params = <String, dynamic>{};
+                          params["nome"] = nomeController.text;
+                          params["especialidade"] = especialidadeController.text;
+                          params["email"] = emailController.text;
+                          params["telefone"] = telefoneController.text;
+                          params["cor"] = getStringFromColor(selectedColor);
+
+                          await profissionalController.adicionarProfissional(context, params);
+                          if (profissionalController.isError.isTrue) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Não foi possivel adicionar o profissional, por favor, tente novamente.'),
+                                backgroundColor: Colors.red,
+                                duration: Duration(seconds: 2),
+                              ),
+                            );
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Profissional adicionado com sucesso.'),
+                                backgroundColor: Colors.green,
+                                duration: Duration(seconds: 2),
+                              ),
+                            );
+                            await profissionalController.listarProfissional(context);
+                            context.go('/cadastro-search-profissional');
+                          }
+                        }
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
@@ -217,7 +319,7 @@ class _ProfissionalWidgetState extends State<ProfissionalWidget> {
                       backgroundColor: Colors.pink,
                       padding: const EdgeInsets.symmetric(vertical: 16.0),
                     ),
-                    child: const Text('Salvar'),
+                    child: profissionalController.profissionalSelecionado != null && profissionalController.profissionalSelecionado != "" ? const Text('Atualizar') : const Text('Salvar'),
                   ),
                 ),
               ),
@@ -228,7 +330,7 @@ class _ProfissionalWidgetState extends State<ProfissionalWidget> {
                   ),
                   child: ElevatedButton(
                     onPressed: () {
-                      // Ação ao cancelar
+                      context.go('/cadastro-search-profissional');
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,

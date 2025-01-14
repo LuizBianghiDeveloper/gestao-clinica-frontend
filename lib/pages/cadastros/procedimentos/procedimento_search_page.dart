@@ -1,4 +1,8 @@
+import 'dart:convert';
+
+import 'package:core_dashboard/controllers/procedimentos_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import '../../../shared/constants/defaults.dart';
 import '../../../shared/constants/ghaps.dart';
@@ -13,53 +17,33 @@ class ProcedimentoSearchPage extends StatefulWidget {
 
 class _ProcedimentoSearchPageState extends State<ProcedimentoSearchPage> {
   final TextEditingController searchController = TextEditingController();
-
-  List<String> allProcedimento = [
-    'Botox',
-    'Preenchimento Labial',
-    'Limpeza de Pele',
-    'Peeling Químico',
-    'Depilação a Laser',
-    'Tratamento para Acne',
-    'Rinomodelação',
-    'Microagulhamento',
-    'Lifting Facial',
-    'Tratamento de Melasma',
-    'Harmonização Facial',
-    'Escleroterapia',
-    'Carboxiterapia',
-    'Criolipólise',
-    'Drenagem Linfática',
-    'Laser Fracionado',
-    'Peeling de Diamante',
-    'Massagem Modeladora',
-    'Radiofrequência',
-    'Aplicação de Fios de Sustentação',
-  ];
-
-
-  List<String> filteredProcedimento = [];
+  final ProcedimentosController procedimentosController = Get.find<ProcedimentosController>();
+  late final List<dynamic> dataList;
+  List<dynamic> filteredProcedimento = [];
 
   @override
   void initState() {
     super.initState();
-    filteredProcedimento = allProcedimento;
+    final dynamic decodedJson = jsonDecode(procedimentosController.procedimentos);
+    dataList = decodedJson['data'];
+    filteredProcedimento = dataList;
   }
 
   void _filterProcedimento(String query) {
-    List<String> results = [];
     if (query.isEmpty) {
-      results = allProcedimento;
+      setState(() {
+        filteredProcedimento = dataList;
+      });
     } else {
-      results = allProcedimento
-          .where((procedimento) =>
-          procedimento.toLowerCase().contains(query.toLowerCase()))
-          .toList();
-    }
+      final results = dataList.where((procedimento) {
+        final nome = procedimento['nome']?.toLowerCase() ?? '';
+        return nome.contains(query.toLowerCase());
+      }).toList();
 
-    setState(() {
-      filteredProcedimento = results;
-    });
+      setState(() {
+        filteredProcedimento = results;
+      });
+    }
   }
 
   @override
@@ -105,6 +89,7 @@ class _ProcedimentoSearchPageState extends State<ProcedimentoSearchPage> {
               const SizedBox(width: 10),
               ElevatedButton(
                 onPressed: () {
+                  procedimentosController.procedimentosSelecionado = null;
                   context.go('/cadastro-procedimento');
                 },
                 style: ElevatedButton.styleFrom(
@@ -164,19 +149,64 @@ class _ProcedimentoSearchPageState extends State<ProcedimentoSearchPage> {
                           title: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(filteredProcedimento[index]),
+                              Text(filteredProcedimento[index]['nome']),
                               Row(
                                 children: [
                                   IconButton(
                                     icon: const Icon(Icons.edit, color: Colors.orange),
                                     onPressed: () {
+                                      procedimentosController.procedimentosSelecionado = filteredProcedimento[index];
                                       print('Editar ${filteredProcedimento[index]}');
+                                      context.go('/cadastro-procedimento');
                                     },
                                   ),
                                   IconButton(
                                     icon: const Icon(Icons.delete, color: Colors.red),
                                     onPressed: () {
-                                      print('Excluir ${filteredProcedimento[index]}');
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            title: const Text('Confirmação'),
+                                            content: Text(
+                                                'Tem certeza que deseja excluir o procedimento ${filteredProcedimento[index]['nome']}?'),
+                                            actions: <Widget>[
+                                              TextButton(
+                                                child: const Text('Cancelar', style: TextStyle(color: Colors.pink),),
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                              ),
+                                              TextButton(
+                                                child: const Text('Excluir', style: TextStyle(color: Colors.pink),),
+                                                onPressed: () async {
+                                                  await procedimentosController.deletarProcedimentos(context, filteredProcedimento[index]['idProcedimento']);
+                                                  if (procedimentosController.isError.isTrue) {
+                                                    Navigator.of(context).pop();
+                                                    ScaffoldMessenger.of(context).showSnackBar(
+                                                      const SnackBar(
+                                                        content: Text('Não foi possivel excluir o procedimento, por favor, tente novamente.'),
+                                                        backgroundColor: Colors.red,
+                                                        duration: Duration(seconds: 2),
+                                                      ),
+                                                    );
+                                                  } else {
+                                                    Navigator.of(context).pop();
+                                                    ScaffoldMessenger.of(context).showSnackBar(
+                                                      const SnackBar(
+                                                        content: Text('Procedimento excluido com sucesso.'),
+                                                        backgroundColor: Colors.green,
+                                                        duration: Duration(seconds: 2),
+                                                      ),
+                                                    );
+                                                    context.go('/');
+                                                  }
+                                                },
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      );
                                     },
                                   ),
                                 ],
