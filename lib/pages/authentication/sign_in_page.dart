@@ -1,5 +1,6 @@
 import 'package:core_dashboard/controllers/anamnese_controller.dart';
 import 'package:core_dashboard/controllers/procedimentos_controller.dart';
+import 'package:core_dashboard/controllers/produto_controller.dart';
 import 'package:core_dashboard/controllers/salas_controller.dart';
 import 'package:core_dashboard/controllers/usuarios_controller.dart';
 import 'package:core_dashboard/shared/constants/config.dart';
@@ -30,6 +31,7 @@ class _SignInPageState extends State<SignInPage> {
   final UsuariosController usuariosController = Get.put(UsuariosController());
   final SalasController salasController = Get.put(SalasController());
   final ProfissionalController profissionalController = Get.put(ProfissionalController());
+  final ProdutoController produtoController = Get.put(ProdutoController());
   final ProcedimentosController procedimentosController = Get.put(ProcedimentosController());
   final AnamneseController anamneseController = Get.put(AnamneseController());
 

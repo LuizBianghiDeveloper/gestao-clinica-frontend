@@ -1,4 +1,8 @@
+import 'dart:convert';
+
+import 'package:core_dashboard/controllers/produto_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import '../../../shared/constants/defaults.dart';
 import '../../../shared/constants/ghaps.dart';
@@ -20,45 +24,33 @@ class ProdutosSearchPage extends StatefulWidget {
 
 class _ProdutosSearchPageState extends State<ProdutosSearchPage> {
   final TextEditingController searchController = TextEditingController();
-  List<Produto> allProdutos = [
-    Produto('Hidratante Facial', 120.0),
-    Produto('Sérum Anti-Idade', 180.0),
-    Produto('Máscara de Argila', 50.0),
-    Produto('Creme para Olheiras', 90.0),
-    Produto('Protetor Solar Facial', 85.0),
-    Produto('Esfoliante Corporal', 70.0),
-    Produto('Óleo Corporal Hidratante', 110.0),
-    Produto('Gel de Limpeza Facial', 60.0),
-    Produto('Tônico Revitalizante', 95.0),
-    Produto('Creme Noturno', 130.0),
-    Produto('Ampola Capilar', 45.0),
-    Produto('Shampoo Anticaspa', 75.0),
-    Produto('Condicionador Nutritivo', 80.0),
-    Produto('Bálsamo para Lábios', 40.0),
-    Produto('Creme para as Mãos', 55.0),
-  ];
-  List<Produto> filteredProdutos = [];
+  final ProdutoController produtoController = Get.find<ProdutoController>();
+  late final List<dynamic> dataList;
+  List<dynamic> filteredProdutos = [];
 
   @override
   void initState() {
     super.initState();
-    filteredProdutos = allProdutos;
+    final dynamic decodedJson = jsonDecode(produtoController.produto);
+    dataList = decodedJson['data'];
+    filteredProdutos = dataList;
   }
 
   void _filterProdutos(String query) {
-    List<Produto> results = [];
     if (query.isEmpty) {
-      results = allProdutos;
+      setState(() {
+        filteredProdutos = dataList;
+      });
     } else {
-      results = allProdutos
-          .where((produto) =>
-          produto.nome.toLowerCase().contains(query.toLowerCase()))
-          .toList();
-    }
+      final results = dataList.where((profissional) {
+        final nome = profissional['nome']?.toLowerCase() ?? '';
+        return nome.contains(query.toLowerCase());
+      }).toList();
 
-    setState(() {
-      filteredProdutos = results;
-    });
+      setState(() {
+        filteredProdutos = results;
+      });
+    }
   }
 
   @override
@@ -105,6 +97,7 @@ class _ProdutosSearchPageState extends State<ProdutosSearchPage> {
               const SizedBox(width: 10),
               ElevatedButton(
                 onPressed: () {
+                  produtoController.produtoSelecionado = null;
                   context.go('/cadastro-produtos');
                 },
                 style: ElevatedButton.styleFrom(
@@ -158,26 +151,69 @@ class _ProdutosSearchPageState extends State<ProdutosSearchPage> {
                   itemCount: itemCount,
                   padding: EdgeInsets.zero,
                   itemBuilder: (_, index) {
-                    final produto = filteredProdutos[index];
                     return Column(
                       children: [
                         ListTile(
                           title: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text('${produto.nome} - R\$ ${produto.valor.toStringAsFixed(2)}'),
+                              Text(filteredProdutos[index]['nome']),
                               Row(
                                 children: [
                                   IconButton(
                                     icon: const Icon(Icons.edit, color: Colors.orange),
                                     onPressed: () {
-                                      print('Editar ${produto.nome}');
+                                      produtoController.produtoSelecionado = filteredProdutos[index];
+                                      context.go('/cadastro-produtos');
                                     },
                                   ),
                                   IconButton(
                                     icon: const Icon(Icons.delete, color: Colors.red),
                                     onPressed: () {
-                                      print('Excluir ${produto.nome}');
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            title: const Text('Confirmação'),
+                                            content: Text(
+                                                'Tem certeza que deseja excluir o produto ${filteredProdutos[index]['nome']}?'),
+                                            actions: <Widget>[
+                                              TextButton(
+                                                child: const Text('Cancelar', style: TextStyle(color: Colors.pink),),
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                              ),
+                                              TextButton(
+                                                child: const Text('Excluir', style: TextStyle(color: Colors.pink),),
+                                                onPressed: () async {
+                                                  await produtoController.deletarProduto(context, filteredProdutos[index]['idProduto']);
+                                                  if (produtoController.isError.isTrue) {
+                                                    Navigator.of(context).pop();
+                                                    ScaffoldMessenger.of(context).showSnackBar(
+                                                      const SnackBar(
+                                                        content: Text('Não foi possivel excluir o produto, por favor, tente novamente.'),
+                                                        backgroundColor: Colors.red,
+                                                        duration: Duration(seconds: 2),
+                                                      ),
+                                                    );
+                                                  } else {
+                                                    Navigator.of(context).pop();
+                                                    ScaffoldMessenger.of(context).showSnackBar(
+                                                      const SnackBar(
+                                                        content: Text('Produto excluido com sucesso.'),
+                                                        backgroundColor: Colors.green,
+                                                        duration: Duration(seconds: 2),
+                                                      ),
+                                                    );
+                                                    context.go('/');
+                                                  }
+                                                },
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      );
                                     },
                                   ),
                                 ],

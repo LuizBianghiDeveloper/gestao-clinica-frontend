@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text2/flutter_masked_text2.dart';
+import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../../controllers/produto_controller.dart';
 import '../../../../shared/constants/defaults.dart';
 import '../../../../shared/constants/ghaps.dart';
 import '../../../../shared/widgets/section_title.dart';
@@ -16,12 +19,26 @@ class ProdutosWidget extends StatefulWidget {
 class _ProdutosWidgetState extends State<ProdutosWidget> {
   final formKey = GlobalKey<FormState>();
 
-  final quantidadeController = MaskedTextController(mask: '(00) 00000-0000');
-  final precoController = MaskedTextController(mask: '00/00/0000');
-  final cpfController = MaskedTextController(mask: '000.000.000-00');
   final TextEditingController nomeController = TextEditingController();
   final TextEditingController descricaoController = TextEditingController();
-  final TextEditingController rgController = TextEditingController();
+  final TextEditingController precoController = TextEditingController();
+  final TextEditingController quantidadeController = TextEditingController();
+  final ProdutoController produtoController = Get.find<ProdutoController>();
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (produtoController.produtoSelecionado != null &&
+        produtoController.produtoSelecionado != "") {
+      final produto = produtoController.produtoSelecionado;
+
+      nomeController.text = produto['nome'] ?? '';
+      descricaoController.text = produto['descricao'] ?? '';
+      precoController.text = produto['valor'] ?? '';
+      quantidadeController.text = produto['quantidade'] ?? '';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -130,10 +147,66 @@ class _ProdutosWidgetState extends State<ProdutosWidget> {
                     horizontal: AppDefaults.padding * 0.5,
                   ),
                   child: ElevatedButton(
-                    onPressed: () {
+                    onPressed: () async {
                       if (formKey.currentState?.validate() == true ) {
+                        if (produtoController.produtoSelecionado != null && produtoController.produtoSelecionado != "") {
+                          var params = <String, dynamic>{};
 
-                      } else {
+                          params["nome"] = nomeController.text;
+                          params["descricao"] = descricaoController.text;
+                          params["valor"] = precoController.text;
+                          params["quantidade"] = quantidadeController.text;
+
+                          await produtoController.atualizarProduto(context, params, produtoController.produtoSelecionado['idProduto']);
+                          if (produtoController.isError.isTrue) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Não foi possivel atualizar o produto, por favor, tente novamente.'),
+                                backgroundColor: Colors.red,
+                                duration: Duration(seconds: 2),
+                              ),
+                            );
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Produto atualizado com sucesso.'),
+                                backgroundColor: Colors.green,
+                                duration: Duration(seconds: 2),
+                              ),
+                            );
+                            await produtoController.listarProduto(context);
+                            context.go('/cadastro-search-produtos');
+                          }
+                        } else {
+                          var params = <String, dynamic>{};
+                          params["nome"] = nomeController.text;
+                          params["descricao"] = descricaoController.text;
+                          params["valor"] = precoController.text;
+                          params["quantidade"] = quantidadeController.text;
+
+
+                          await produtoController.adicionarProduto(context, params);
+                          if (produtoController.isError.isTrue) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Não foi possivel adicionar o produto, por favor, tente novamente.'),
+                                backgroundColor: Colors.red,
+                                duration: Duration(seconds: 2),
+                              ),
+                            );
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Profissional adicionado com sucesso.'),
+                                backgroundColor: Colors.green,
+                                duration: Duration(seconds: 2),
+                              ),
+                            );
+                            await produtoController.listarProduto(context);
+                            context.go('/cadastro-search-produtos');
+                          }
+                        }
+                      }  else {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
                             content: Text(
@@ -150,7 +223,7 @@ class _ProdutosWidgetState extends State<ProdutosWidget> {
                       backgroundColor: Colors.pink,
                       padding: const EdgeInsets.symmetric(vertical: 16.0),
                     ),
-                    child: const Text('Salvar'),
+                    child: produtoController.produtoSelecionado != null && produtoController.produtoSelecionado != "" ? const Text('Atualizar') : const Text('Salvar'),
                   ),
                 ),
               ),
@@ -161,7 +234,7 @@ class _ProdutosWidgetState extends State<ProdutosWidget> {
                   ),
                   child: ElevatedButton(
                     onPressed: () {
-
+                      context.go('/cadastro-search-produto');
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,

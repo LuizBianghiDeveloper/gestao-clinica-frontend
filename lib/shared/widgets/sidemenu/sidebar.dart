@@ -1,5 +1,6 @@
 import 'package:core_dashboard/controllers/clientes_controller.dart';
 import 'package:core_dashboard/controllers/procedimentos_controller.dart';
+import 'package:core_dashboard/controllers/produto_controller.dart';
 import 'package:core_dashboard/controllers/salas_controller.dart';
 import 'package:core_dashboard/controllers/usuarios_controller.dart';
 import 'package:core_dashboard/responsive.dart';
@@ -27,6 +28,7 @@ class _SidebarState extends State<Sidebar> {
   final UsuariosController usuariosController = Get.find<UsuariosController>();
   final SalasController salasController = Get.find<SalasController>();
   final ProfissionalController profissionalController = Get.find<ProfissionalController>();
+  final ProdutoController produtoController = Get.find<ProdutoController>();
   final ProcedimentosController procedimentosController = Get.find<ProcedimentosController>();
 
   void _onItemPressed(int index) {
@@ -131,10 +133,12 @@ class _SidebarState extends State<Sidebar> {
                           isSubmenu: true,
                           isActive: _activeIndex == 3,
                           title: "Produtos",
-                          count: 16,
-                          onPressed: () {
+                          onPressed: () async {
                             _onItemPressed(3);
-                            context.go('/cadastro-search-produtos');
+                            await produtoController.listarProduto(context);
+                            if (produtoController.isError.isFalse) {
+                              context.go('/cadastro-search-produtos');
+                            }
                           },
                         ),
                         MenuTile(

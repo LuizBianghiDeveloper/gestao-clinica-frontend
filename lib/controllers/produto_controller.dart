@@ -7,16 +7,16 @@ import 'package:http/http.dart' as http;
 import '../constants/defaults.dart';
 import '../services/http_service.dart';
 
-class ProdutosController extends GetxController {
+class ProdutoController extends GetxController {
 
   RxBool isLoading = false.obs;
   var isError = false.obs;
   var message = "";
   HttpService httpService = HttpService();
-  var usuarios;
-  var usuariosAtualizado;
-  var usuariosAdicionado;
-  var usuarioSelecionado;
+  var produto;
+  var produtoAtualizado;
+  var produtoAdicionado;
+  var produtoSelecionado;
 
   @override
   void onInit() {
@@ -24,17 +24,17 @@ class ProdutosController extends GetxController {
     super.onInit();
   }
 
-  listarProdutos(BuildContext? context) async {
+  listarProduto(BuildContext? context) async {
     try {
       isLoading(true);
       isError(false);
-      final url = Uri.parse("${ApiKey.urlBase}/usuarios");
+      final url = Uri.parse("${ApiKey.urlBase}/produto");
       final headers = {
         'Content-Type': 'application/json; charset=UTF-8',
       };
       final result = await http.get(url, headers: headers);
       if (result.statusCode == 200) {
-        usuarios = utf8.decode(result.bodyBytes);
+        produto = utf8.decode(result.bodyBytes);
       } else {
         isError(true);
       }
@@ -43,17 +43,17 @@ class ProdutosController extends GetxController {
     }
   }
 
-  atualizarUsuarios(BuildContext? context, Map<String, dynamic>? params, int atributoDinamico) async {
+  atualizarProduto(BuildContext? context, Map<String, dynamic>? params, int atributoDinamico) async {
     try {
       isLoading(true);
       isError(false);
-      final url = Uri.parse("${ApiKey.urlBase}/usuarios/${atributoDinamico}");
+      final url = Uri.parse("${ApiKey.urlBase}/produto/${atributoDinamico}");
       final headers = {
         'Content-Type': 'application/json; charset=UTF-8',
       };
       final result = await http.put(url, headers: headers, body: json.encode(params));
       if (result.statusCode == 200) {
-        usuariosAtualizado = utf8.decode(result.bodyBytes);
+        produtoAtualizado = utf8.decode(result.bodyBytes);
       } else {
         isError(true);
       }
@@ -62,17 +62,17 @@ class ProdutosController extends GetxController {
     }
   }
 
-  deletarUsuarios(BuildContext? context, int atributoDinamico) async {
+  deletarProduto(BuildContext? context, int atributoDinamico) async {
     try {
       isLoading(true);
       isError(false);
-      final url = Uri.parse("${ApiKey.urlBase}/usuarios/${atributoDinamico}");
+      final url = Uri.parse("${ApiKey.urlBase}/produto/${atributoDinamico}");
       final headers = {
         'Content-Type': 'application/json; charset=UTF-8',
       };
       final result = await http.delete(url, headers: headers);
       if (result.statusCode == 200) {
-        usuariosAtualizado = utf8.decode(result.bodyBytes);
+        produtoAtualizado = utf8.decode(result.bodyBytes);
       } else {
         isError(true);
       }
@@ -81,17 +81,17 @@ class ProdutosController extends GetxController {
     }
   }
 
-  adicionarUsuarios(BuildContext? context, Map<String, dynamic>? params) async {
+  adicionarProduto(BuildContext? context, Map<String, dynamic>? params) async {
     try {
       isLoading(true);
       isError(false);
-      final url = Uri.parse("${ApiKey.urlBase}/usuarios");
+      final url = Uri.parse("${ApiKey.urlBase}/produto");
       final headers = {
         'Content-Type': 'application/json; charset=UTF-8',
       };
       final result = await http.post(url, headers: headers, body: json.encode(params));
       if (result.statusCode == 200) {
-        usuariosAdicionado = utf8.decode(result.bodyBytes);
+        produtoAdicionado = utf8.decode(result.bodyBytes);
       } else {
         isError(true);
       }

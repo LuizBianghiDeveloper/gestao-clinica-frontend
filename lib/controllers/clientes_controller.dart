@@ -17,6 +17,7 @@ class ClientesController extends GetxController {
   var clientesAtualizado;
   var clientesAdicionado;
   var clientesSelecionado;
+  var clientesAniversario;
 
   @override
   void onInit() {
@@ -54,6 +55,25 @@ class ClientesController extends GetxController {
       final result = await http.put(url, headers: headers, body: json.encode(params));
       if (result.statusCode == 200) {
         clientesAtualizado = utf8.decode(result.bodyBytes);
+      } else {
+        isError(true);
+      }
+    } finally {
+      isLoading(false);
+    }
+  }
+
+  aniversarioDiaClientes(BuildContext? context, Map<String, dynamic>? params, int atributoDinamico) async {
+    try {
+      isLoading(true);
+      isError(false);
+      final url = Uri.parse("${ApiKey.urlBase}/pacientes/aniversario/${atributoDinamico}");
+      final headers = {
+        'Content-Type': 'application/json; charset=UTF-8',
+      };
+      final result = await http.put(url, headers: headers, body: json.encode(params));
+      if (result.statusCode == 200) {
+        clientesAniversario = utf8.decode(result.bodyBytes);
       } else {
         isError(true);
       }
