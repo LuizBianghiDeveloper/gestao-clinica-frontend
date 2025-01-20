@@ -1,4 +1,7 @@
+import 'package:core_dashboard/controllers/anamnese_controller.dart';
+import 'package:core_dashboard/controllers/clientes_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import '../../shared/constants/ghaps.dart';
 import 'package:core_dashboard/pages/evolucao/widgets/evolucao_cliente_widget.dart';
@@ -15,6 +18,8 @@ class EvolucaoClientePage extends StatefulWidget {
 class _EvolucaoClientePageState extends State<EvolucaoClientePage> {
   bool showEvolucaoWidget = true;
   bool showEvolucoesList = false;
+  final AnamneseController anamneseController = Get.find<AnamneseController>();
+  final ClientesController clientesController = Get.find<ClientesController>();
 
   List<Map<String, String>> evolucoes = [
     {
@@ -92,12 +97,16 @@ class _EvolucaoClientePageState extends State<EvolucaoClientePage> {
                     child: const Text('Consultar Evoluções'),
                   ),
                   ElevatedButton(
-                    onPressed: () {
+                    onPressed: () async {
                       setState(() {
                         showEvolucaoWidget = false;
                         showEvolucoesList = false;
                       });
-                      context.go('/anamnese');
+                      await anamneseController.listarAnamnese(context, clientesController.clientesSelecionado['idPaciente']);
+                      if (anamneseController.isError.isFalse) {
+                        context.go('/anamnese');
+                      }
+
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.pink,

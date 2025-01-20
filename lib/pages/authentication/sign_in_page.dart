@@ -1,3 +1,4 @@
+import 'package:core_dashboard/controllers/anamnese_controller.dart';
 import 'package:core_dashboard/controllers/procedimentos_controller.dart';
 import 'package:core_dashboard/controllers/salas_controller.dart';
 import 'package:core_dashboard/controllers/usuarios_controller.dart';
@@ -30,6 +31,7 @@ class _SignInPageState extends State<SignInPage> {
   final SalasController salasController = Get.put(SalasController());
   final ProfissionalController profissionalController = Get.put(ProfissionalController());
   final ProcedimentosController procedimentosController = Get.put(ProcedimentosController());
+  final AnamneseController anamneseController = Get.put(AnamneseController());
 
   @override
   Widget build(BuildContext context) {
@@ -158,22 +160,7 @@ class _SignInPageState extends State<SignInPage> {
                                 btnOkColor: Colors.red,
                               ).show();
                             } else {
-                              await appController.agendamentoDoDia(
-                                  context, diaAtual);
-                              if (appController.isError.isTrue) {
-                                AwesomeDialog(
-                                  context: context,
-                                  dialogType: DialogType.error,
-                                  animType: AnimType.bottomSlide,
-                                  title: 'Atenção',
-                                  desc:
-                                  'Ocorreu um erro durante o login. Tente novamente ou verifique suas informações.',
-                                  btnOkOnPress: () {},
-                                  btnOkColor: Colors.red,
-                                ).show();
-                              } else {
-                                context.go('/');
-                              }
+                              context.go('/');
                             }
                           }
                         },

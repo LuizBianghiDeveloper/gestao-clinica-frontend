@@ -70,7 +70,7 @@ class _EvolucaoWidgetState extends State<EvolucaoWidget> {
           child: TextField(
             controller: searchController,
             decoration: const InputDecoration(
-              labelText: 'Digite o nome do usuário que deseja evoluir',
+              labelText: 'Digite o nome do paciente que deseja evoluir',
               border: OutlineInputBorder(),
               prefixIcon: Icon(Icons.search),
             ),
@@ -108,6 +108,7 @@ class _EvolucaoWidgetState extends State<EvolucaoWidget> {
                                     onPressed: () async {
                                       await profissionalController.listarProfissional(context);
                                       if (profissionalController.isError.isFalse) {
+                                        clientesController.clientesSelecionado = filteredEvolucoes[index];
                                         context.go('/evolucao-cliente/${filteredEvolucoes[index]['nome']}');
                                       }
                                     },
