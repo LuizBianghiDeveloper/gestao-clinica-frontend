@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../controllers/clientes_controller.dart';
+import '../../../shared/constants/config.dart';
 import '../../../shared/constants/defaults.dart';
 import '../../../shared/constants/ghaps.dart';
 import '../../../shared/widgets/section_title.dart';
@@ -106,7 +107,9 @@ class _EvolucaoWidgetState extends State<EvolucaoWidget> {
                                   IconButton(
                                     icon: const Icon(Icons.arrow_forward, color: Colors.pink),
                                     onPressed: () async {
+                                      AppConfig.showLoadingSpinner(context);
                                       await profissionalController.listarProfissional(context);
+                                      AppConfig.hideLoadingSpinner(context);
                                       if (profissionalController.isError.isFalse) {
                                         clientesController.clientesSelecionado = filteredEvolucoes[index];
                                         context.go('/evolucao-cliente/${filteredEvolucoes[index]['nome']}');

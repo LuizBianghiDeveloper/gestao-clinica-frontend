@@ -3,6 +3,7 @@ import 'package:core_dashboard/controllers/clientes_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
+import '../../shared/constants/config.dart';
 import '../../shared/constants/ghaps.dart';
 import 'package:core_dashboard/pages/evolucao/widgets/evolucao_cliente_widget.dart';
 
@@ -102,7 +103,9 @@ class _EvolucaoClientePageState extends State<EvolucaoClientePage> {
                         showEvolucaoWidget = false;
                         showEvolucoesList = false;
                       });
+                      AppConfig.showLoadingSpinner(context);
                       await anamneseController.listarAnamnese(context, clientesController.clientesSelecionado['idPaciente']);
+                      AppConfig.hideLoadingSpinner(context);
                       if (anamneseController.isError.isFalse) {
                         context.go('/anamnese');
                       }

@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
-
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import '../../../controllers/profissional_controller.dart';
 import '../../constants/config.dart';
 import 'menu_tile.dart';
@@ -111,7 +111,9 @@ class _SidebarState extends State<Sidebar> {
                           title: "Cliente",
                           onPressed: () async {
                             _onItemPressed(1);
+                            AppConfig.showLoadingSpinner(context);
                             await clientesController.listarClientes(context);
+                            AppConfig.hideLoadingSpinner(context);
                             if (clientesController.isError.isFalse) {
                               context.go('/cadastro-search-cliente');
                             }
@@ -123,7 +125,9 @@ class _SidebarState extends State<Sidebar> {
                           title: "Usuário",
                           onPressed: () async {
                             _onItemPressed(2);
+                            AppConfig.showLoadingSpinner(context);
                             await usuariosController.listarUsuarios(context);
+                            AppConfig.hideLoadingSpinner(context);
                             if (usuariosController.isError.isFalse) {
                               context.go('/cadastro-search-usuario');
                             }
@@ -135,7 +139,9 @@ class _SidebarState extends State<Sidebar> {
                           title: "Produtos",
                           onPressed: () async {
                             _onItemPressed(3);
+                            AppConfig.showLoadingSpinner(context);
                             await produtoController.listarProduto(context);
+                            AppConfig.hideLoadingSpinner(context);
                             if (produtoController.isError.isFalse) {
                               context.go('/cadastro-search-produtos');
                             }
@@ -147,7 +153,9 @@ class _SidebarState extends State<Sidebar> {
                           title: "Profissional",
                           onPressed: () async {
                             _onItemPressed(4);
+                            AppConfig.showLoadingSpinner(context);
                             await profissionalController.listarProfissional(context);
+                            AppConfig.hideLoadingSpinner(context);
                             if (profissionalController.isError.isFalse) {
                               context.go('/cadastro-search-profissional');
                             }
@@ -159,7 +167,9 @@ class _SidebarState extends State<Sidebar> {
                           title: "Sala",
                           onPressed: () async {
                             _onItemPressed(5);
+                            AppConfig.showLoadingSpinner(context);
                             await salasController.listarSalas(context);
+                            AppConfig.hideLoadingSpinner(context);
                             if (salasController.isError.isFalse) {
                               context.go('/cadastro-search-sala');
                             }
@@ -171,7 +181,9 @@ class _SidebarState extends State<Sidebar> {
                           title: "Procedimentos",
                           onPressed: () async {
                             _onItemPressed(6);
+                            AppConfig.showLoadingSpinner(context);
                             await procedimentosController.listarProcedimentos(context);
+                            AppConfig.hideLoadingSpinner(context);
                             if (procedimentosController.isError.isFalse) {
                               context.go('/cadastro-search-procedimento');
                             }
@@ -207,7 +219,9 @@ class _SidebarState extends State<Sidebar> {
                       inactiveIconSrc: "assets/icons/check_all_filled.svg",
                       onPressed: () async {
                         _onItemPressed(9);
+                        AppConfig.showLoadingSpinner(context);
                         await clientesController.listarClientes(context);
+                        AppConfig.hideLoadingSpinner(context);
                         if (clientesController.isError.isFalse) {
                           context.go('/evolucao');
                         }

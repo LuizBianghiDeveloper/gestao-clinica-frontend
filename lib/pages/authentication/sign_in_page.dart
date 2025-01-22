@@ -123,9 +123,8 @@ class _SignInPageState extends State<SignInPage> {
                         () => SizedBox(
                       width: 296,
                       child: ElevatedButton(
-                        onPressed: appController.isLoading.isTrue
-                            ? null
-                            : () async {
+                        onPressed: () async {
+                          AppConfig.showLoadingSpinner(context);
                           var params = <String, dynamic>{};
                           params["nomeUsuario"] =
                               emailController.text.trim();
@@ -134,6 +133,7 @@ class _SignInPageState extends State<SignInPage> {
                           await appController.autenticacao(
                               context, params);
                           if (appController.isError.isTrue) {
+                            AppConfig.hideLoadingSpinner(context);
                             AwesomeDialog(
                               context: context,
                               dialogType: DialogType.error,
@@ -151,6 +151,7 @@ class _SignInPageState extends State<SignInPage> {
                             await appController.aniversarianteDoDia(
                                 context, diaAtual);
                             if (appController.isError.isTrue) {
+                              AppConfig.hideLoadingSpinner(context);
                               AwesomeDialog(
                                 context: context,
                                 dialogType: DialogType.error,
@@ -162,6 +163,7 @@ class _SignInPageState extends State<SignInPage> {
                                 btnOkColor: Colors.red,
                               ).show();
                             } else {
+                              AppConfig.hideLoadingSpinner(context);
                               context.go('/');
                             }
                           }

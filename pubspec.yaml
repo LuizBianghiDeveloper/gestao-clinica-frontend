@@ -15,7 +15,7 @@ dependencies:
   get: ^4.6.5
   dio: ^4.0.6
   google_fonts: ^6.2.1
-  intl: ^0.18.1
+  intl: ^0.19.0
   awesome_dialog: ^3.2.1
   table_calendar: ^3.0.6
   flutter_masked_text2: ^0.9.1
@@ -24,6 +24,7 @@ dependencies:
   universal_io: ^2.0.4
   url_launcher: ^6.0.20
   font_awesome_flutter: ^10.3.0
+  flutter_spinkit: ^5.2.1
   flutter_localizations:
     sdk: flutter
 
