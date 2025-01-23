@@ -1,4 +1,6 @@
+import 'package:core_dashboard/controllers/anamnese_controller.dart';
 import 'package:core_dashboard/controllers/clientes_controller.dart';
+import 'package:core_dashboard/controllers/evolucao_controller.dart';
 import 'package:core_dashboard/controllers/procedimentos_controller.dart';
 import 'package:core_dashboard/controllers/produto_controller.dart';
 import 'package:core_dashboard/controllers/salas_controller.dart';
@@ -30,6 +32,8 @@ class _SidebarState extends State<Sidebar> {
   final ProfissionalController profissionalController = Get.find<ProfissionalController>();
   final ProdutoController produtoController = Get.find<ProdutoController>();
   final ProcedimentosController procedimentosController = Get.find<ProcedimentosController>();
+  final AnamneseController anamneseController = Get.find<AnamneseController>();
+  final EvolucaoController evolucaoController = Get.find<EvolucaoController>();
 
   void _onItemPressed(int index) {
     setState(() {
@@ -207,9 +211,15 @@ class _SidebarState extends State<Sidebar> {
                       title: "Anamnese",
                       activeIconSrc: "assets/icons/file_add_light.svg",
                       inactiveIconSrc: "assets/icons/file_add_filled.svg",
-                      onPressed: () {
+                      onPressed: () async {
                         _onItemPressed(8);
-                        context.go('/anamnese');
+                        anamneseController.anamnese = null;
+                        AppConfig.showLoadingSpinner(context);
+                        await clientesController.listarClientes(context);
+                        AppConfig.hideLoadingSpinner(context);
+                        if (clientesController.isError.isFalse) {
+                          context.go('/anamnese');
+                        }
                       },
                     ),
                     MenuTile(
@@ -232,9 +242,17 @@ class _SidebarState extends State<Sidebar> {
                       title: "Plano de tratamento",
                       activeIconSrc: "assets/icons/document_light.svg",
                       inactiveIconSrc: "assets/icons/document_filled.svg",
-                      onPressed: () {
+                      onPressed: () async {
                         _onItemPressed(10);
-                        context.go('/plano-tratamento');
+                        AppConfig.showLoadingSpinner(context);
+                        await clientesController.listarClientes(context);
+                        if (clientesController.isError.isFalse) {
+                          await procedimentosController.listarProcedimentos(context);
+                          AppConfig.hideLoadingSpinner(context);
+                          if (procedimentosController.isError.isFalse) {
+                            context.go('/plano-tratamento');
+                          }
+                        }
                       },
                     ),
                   ],

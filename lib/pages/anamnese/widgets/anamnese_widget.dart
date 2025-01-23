@@ -157,7 +157,7 @@ class _AnamneseWidgetState extends State<AnamneseWidget> {
                   ],
                 )
               : const SizedBox(),
-          anamneseController.anamnese == null ? gapH24 : const SizedBox(),
+          gapH24,
           anamneseController.anamnese == null
               ? DropdownButtonFormField<String>(
                   value: selectedProfissional,
@@ -201,7 +201,13 @@ class _AnamneseWidgetState extends State<AnamneseWidget> {
                     return null;
                   },
                 )
-              : const SizedBox(),
+              : Text(
+    "Cliente: " + clientesController.clientesSelecionado['nome'],
+    style: Theme.of(context)
+        .textTheme
+        .headlineLarge!
+        .copyWith(fontWeight: FontWeight.w200, fontSize: 24),
+    ),
           gapH24,
           const Row(
             children: [

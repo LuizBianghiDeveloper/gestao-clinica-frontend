@@ -1,6 +1,11 @@
+import 'dart:convert';
+
+import 'package:core_dashboard/controllers/procedimentos_controller.dart';
 import 'package:core_dashboard/utils/pdfUtils.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
+import '../../../controllers/clientes_controller.dart';
 import '../../../shared/constants/defaults.dart';
 import '../../../shared/constants/ghaps.dart';
 import '../../../shared/widgets/section_title.dart';
@@ -22,55 +27,12 @@ class _PlanoTratamentoWidgetState extends State<PlanoTratamentoWidget> {
   final TextEditingController observacaoController = TextEditingController();
   final TextEditingController sessaoController = TextEditingController();
 
-  final List<String> _clientes = [
-    'Ana Paula Silva',
-    'Bruno Mendes Oliveira',
-    'Carlos Alberto Souza',
-    'Diana Costa Pereira',
-    'Eduardo Gomes Ferreira',
-    'Fernanda Lima Santos',
-    'Gabriel Rocha Lima',
-    'Helena Martins Alves',
-    'Igor Henrique Dias',
-    'Júlia de Souza Almeida',
-    'Karla Cristina Lima',
-    'Leonardo da Silva Santos',
-    'Mariana Oliveira Costa',
-    'Natália Mendes Nascimento',
-    'Otávio Augusto Lima',
-    'Paula Regina Cardoso',
-    'Quiteria de Almeida Oliveira',
-    'Ricardo Carvalho Pinto',
-    'Sofia Regina Ferreira',
-    'Thiago Fernandes da Costa',
-    'Ulisses Martins de Oliveira',
-    'Vanessa Silva Freitas',
-    'William Figueiredo Santos',
-    'Xuxa de Almeida',
-    'Yasmin Rodrigues da Silva',
-  ];
-  final List<String> _procedimentos = [
-    'Botox',
-    'Preenchimento Labial',
-    'Limpeza de Pele',
-    'Peeling Químico',
-    'Depilação a Laser',
-    'Tratamento para Acne',
-    'Rinomodelação',
-    'Microagulhamento',
-    'Lifting Facial',
-    'Tratamento de Melasma',
-    'Harmonização Facial',
-    'Escleroterapia',
-    'Carboxiterapia',
-    'Criolipólise',
-    'Drenagem Linfática',
-    'Laser Fracionado',
-    'Peeling de Diamante',
-    'Massagem Modeladora',
-    'Radiofrequência',
-    'Aplicação de Fios de Sustentação',
-  ];
+  final ClientesController clientesController = Get.find<ClientesController>();
+  final ProcedimentosController procedimentosController = Get.find<ProcedimentosController>();
+  late final List<dynamic> dataList;
+  late final List<dynamic> dataListProcedimento;
+  List<dynamic> clientes = [];
+  List<dynamic> procedimento = [];
 
   final List<String> _formasPagamento = [
     'Pix',
@@ -78,6 +40,17 @@ class _PlanoTratamentoWidgetState extends State<PlanoTratamentoWidget> {
     'Crédito',
     'Débito',
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    final dynamic decodedJson = jsonDecode(clientesController.clientes);
+    final dynamic decodedJsonProcedimento = jsonDecode(procedimentosController.procedimentos);
+    dataList = decodedJson['data'];
+    dataListProcedimento = decodedJsonProcedimento['data'];
+    clientes = dataList;
+    procedimento = dataListProcedimento;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -103,11 +76,14 @@ class _PlanoTratamentoWidgetState extends State<PlanoTratamentoWidget> {
           Autocomplete<String>(
             optionsBuilder: (TextEditingValue textEditingValue) {
               if (textEditingValue.text.isEmpty) {
-                return _clientes.take(999);
+                return clientes.map((cliente) => cliente['nome'].toString()).take(999);
               }
-              return _clientes.where((String cliente) {
-                return cliente.toLowerCase().contains(textEditingValue.text.toLowerCase());
-              });
+              return clientes
+                  .where((cliente) => cliente['nome']
+                  .toString()
+                  .toLowerCase()
+                  .contains(textEditingValue.text.toLowerCase()))
+                  .map((cliente) => cliente['nome'].toString());
             },
             onSelected: (String selectedCliente) {
               setState(() {
@@ -138,11 +114,14 @@ class _PlanoTratamentoWidgetState extends State<PlanoTratamentoWidget> {
                 child: Autocomplete<String>(
                   optionsBuilder: (TextEditingValue textEditingValue) {
                     if (textEditingValue.text.isEmpty) {
-                      return _procedimentos.take(999);
+                      return procedimento.map((procedimento) => procedimento['nome'].toString()).take(999);
                     }
-                    return _procedimentos.where((String procedimento) {
-                      return procedimento.toLowerCase().contains(textEditingValue.text.toLowerCase());
-                    });
+                    return procedimento
+                        .where((procedimento) => procedimento['nome']
+                        .toString()
+                        .toLowerCase()
+                        .contains(textEditingValue.text.toLowerCase()))
+                        .map((procedimento) => procedimento['nome'].toString());
                   },
                   onSelected: (String selectedProcedimento) {
                     setState(() {

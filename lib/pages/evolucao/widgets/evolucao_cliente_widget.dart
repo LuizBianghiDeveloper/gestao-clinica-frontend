@@ -1,11 +1,15 @@
 import 'dart:convert';
 
+import 'package:core_dashboard/controllers/clientes_controller.dart';
+import 'package:core_dashboard/controllers/evolucao_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text2/flutter_masked_text2.dart'; // Import da máscara
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart'; // Import para formatação de data
 
 import '../../../controllers/profissional_controller.dart';
+import '../../../shared/constants/config.dart';
 import '../../../shared/constants/defaults.dart';
 import '../../../shared/constants/ghaps.dart';
 import '../../../shared/widgets/section_title.dart';
@@ -24,16 +28,18 @@ class _EvolucaoClienteWidgetState extends State<EvolucaoClienteWidget> {
   final MaskedTextController dataController = MaskedTextController(mask: '00/00/0000');
   final TextEditingController descricaoController = TextEditingController();
   final ProfissionalController profissionalController = Get.find<ProfissionalController>();
+  final EvolucaoController evolucaoController = Get.find<EvolucaoController>();
+  final ClientesController clientesController = Get.find<ClientesController>();
   String? selectedProfissional;
+  int? idProfissional;
   late final List<dynamic> dataList;
   List<dynamic> profissionais = [];
 
   @override
   void initState() {
     super.initState();
-    // Define a data atual no formato DD/MM/AAAA
     String formattedDate = DateFormat('dd/MM/yyyy').format(DateTime.now());
-    dataController.text = formattedDate; // Preenche o campo de data com a data atual
+    dataController.text = formattedDate;
     final dynamic decodedJson = jsonDecode(profissionalController.profissional);
     dataList = decodedJson['data'];
     profissionais = dataList;
@@ -65,7 +71,6 @@ class _EvolucaoClienteWidgetState extends State<EvolucaoClienteWidget> {
               key: formKey,
               child: Column(
                 children: [
-                  // Campo de data com máscara
                   TextFormField(
                     controller: dataController,
                     keyboardType: TextInputType.datetime,
@@ -83,7 +88,6 @@ class _EvolucaoClienteWidgetState extends State<EvolucaoClienteWidget> {
                     },
                   ),
                   gapH16,
-                  // Campo de descrição da evolução
                   TextFormField(
                     controller: descricaoController,
                     maxLines: 5,
@@ -107,13 +111,17 @@ class _EvolucaoClienteWidgetState extends State<EvolucaoClienteWidget> {
                     ),
                     items: profissionais.map((dynamic profissional) {
                       return DropdownMenuItem<String>(
-                        value: profissional.toString(),
+                        value: jsonEncode(profissional),
                         child: Text(profissional['nome'].toString()),
                       );
                     }).toList(),
                     onChanged: (String? newValue) {
                       setState(() {
                         selectedProfissional = newValue;
+                        if (selectedProfissional != null) {
+                          Map<String, dynamic> profissionalMap = jsonDecode(selectedProfissional!);
+                          idProfissional = profissionalMap['idProfissional'];
+                        }
                       });
                     },
                     validator: (value) {
@@ -136,22 +144,29 @@ class _EvolucaoClienteWidgetState extends State<EvolucaoClienteWidget> {
                       horizontal: AppDefaults.padding * 0.5,
                     ),
                     child: ElevatedButton(
-                      onPressed: () {
+                      onPressed: () async {
                         if (formKey.currentState?.validate() == true) {
-                          // Lógica para salvar a evolução
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text(
-                                'Evolução cadastrada com sucesso!',
-                                style: TextStyle(color: Colors.white),
+                          AppConfig.showLoadingSpinner(context);
+                          var params = <String, dynamic>{};
+                          params["descricao"] = descricaoController.text;
+                          params["dataEvolucao"] = _formatDateForBackend(dataController.text);
+                          await evolucaoController.adicionarEvolucao(context, params, clientesController.clientesSelecionado['idPaciente'], idProfissional!);
+                          AppConfig.hideLoadingSpinner(context);
+                          if (profissionalController.isError.isFalse) {
+                            context.go('/');
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                  'Evolução cadastrada com sucesso!',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                                backgroundColor: Colors.green,
+                                duration: Duration(seconds: 3),
                               ),
-                              backgroundColor: Colors.green,
-                              duration: Duration(seconds: 3),
-                            ),
-                          );
-                          // Limpar os campos após o cadastro
+                            );
+                          }
                           descricaoController.clear();
-                          selectedProfissional = null; // Reseta a seleção do Dropdown
+                          selectedProfissional = null;
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
@@ -200,4 +215,14 @@ class _EvolucaoClienteWidgetState extends State<EvolucaoClienteWidget> {
       ),
     );
   }
+
+  String _formatDateForBackend(String date) {
+    try {
+      final parsedDate = DateFormat('dd/MM/yyyy').parse(date);
+      return DateFormat('yyyy-MM-dd').format(parsedDate);
+    } catch (e) {
+      return date;
+    }
+  }
 }
+

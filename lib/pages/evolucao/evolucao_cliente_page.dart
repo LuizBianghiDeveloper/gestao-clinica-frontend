@@ -1,8 +1,12 @@
+import 'dart:convert';
+
 import 'package:core_dashboard/controllers/anamnese_controller.dart';
 import 'package:core_dashboard/controllers/clientes_controller.dart';
+import 'package:core_dashboard/controllers/evolucao_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import '../../shared/constants/config.dart';
 import '../../shared/constants/ghaps.dart';
 import 'package:core_dashboard/pages/evolucao/widgets/evolucao_cliente_widget.dart';
@@ -20,30 +24,17 @@ class _EvolucaoClientePageState extends State<EvolucaoClientePage> {
   bool showEvolucaoWidget = true;
   bool showEvolucoesList = false;
   final AnamneseController anamneseController = Get.find<AnamneseController>();
+  final EvolucaoController evolucaoController = Get.find<EvolucaoController>();
   final ClientesController clientesController = Get.find<ClientesController>();
-
-  List<Map<String, String>> evolucoes = [
-    {
-      'data': '10/10/2023',
-      'profissional': 'Ana Romani',
-      'descricao': 'Após avaliação, o paciente apresenta melhoras significativas no aspecto da pele, com redução visível das marcas de acne e maior uniformidade no tom.'
-    },
-    {
-      'data': '05/10/2023',
-      'profissional': 'Thais Melo',
-      'descricao': 'O paciente apresenta quadro estável, sem alterações significativas. Os sinais vitais estão normais e não houve reações adversas ao tratamento.'
-    },
-    {
-      'data': '01/10/2023',
-      'profissional': 'Thais Melo',
-      'descricao': 'Foi realizado acompanhamento pós-cirúrgico, com verificação de pontos e avaliação da cicatrização. O paciente está se recuperando conforme o esperado.'
-    },
-  ];
-
+  late final List<dynamic> dataList;
+  List<dynamic> filteredEvolucoes = [];
 
   @override
   void initState() {
     super.initState();
+    final dynamic decodedJson = jsonDecode(evolucaoController.evolucao);
+    dataList = decodedJson['data'];
+    filteredEvolucoes = dataList;
   }
 
   @override
@@ -109,7 +100,6 @@ class _EvolucaoClientePageState extends State<EvolucaoClientePage> {
                       if (anamneseController.isError.isFalse) {
                         context.go('/anamnese');
                       }
-
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.pink,
@@ -143,19 +133,19 @@ class _EvolucaoClientePageState extends State<EvolucaoClientePage> {
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24.0),
                 child: ListView.builder(
-                  itemCount: evolucoes.length,
+                  itemCount: filteredEvolucoes.length,
                   itemBuilder: (context, index) {
-                    final evolucao = evolucoes[index];
+                    final evolucao = filteredEvolucoes[index];
                     return Card(
                       color: Colors.white,
                       elevation: 4,
                       margin: const EdgeInsets.symmetric(vertical: 8),
                       child: ListTile(
-                        title: Text('Data: ${evolucao['data']}'),
+                        title: Text('Data: ${_formatDate(evolucao['dataEvolucao'])}'),
                         subtitle: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('Profissional: ${evolucao['profissional']}'),
+                            Text('Profissional: ${evolucao['profissional']['nome']}'),
                             gapH8,
                             Text('Descrição: ${evolucao['descricao']}'),
                           ],
@@ -170,4 +160,14 @@ class _EvolucaoClientePageState extends State<EvolucaoClientePage> {
       ),
     );
   }
+
+  String _formatDate(String date) {
+    try {
+      final parsedDate = DateTime.parse(date);
+      return DateFormat('dd-MM-yyyy').format(parsedDate);
+    } catch (e) {
+      return date;
+    }
+  }
+
 }

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:core_dashboard/controllers/evolucao_controller.dart';
 import 'package:core_dashboard/controllers/profissional_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text2/flutter_masked_text2.dart';
@@ -23,6 +24,7 @@ class EvolucaoWidget extends StatefulWidget {
 class _EvolucaoWidgetState extends State<EvolucaoWidget> {
   final ClientesController clientesController = Get.find<ClientesController>();
   final ProfissionalController profissionalController = Get.find<ProfissionalController>();
+  final EvolucaoController evolucaoController = Get.find<EvolucaoController>();
   late final List<dynamic> dataList;
   final TextEditingController searchController = TextEditingController();
   List<dynamic> filteredEvolucoes = [];
@@ -109,10 +111,13 @@ class _EvolucaoWidgetState extends State<EvolucaoWidget> {
                                     onPressed: () async {
                                       AppConfig.showLoadingSpinner(context);
                                       await profissionalController.listarProfissional(context);
-                                      AppConfig.hideLoadingSpinner(context);
                                       if (profissionalController.isError.isFalse) {
                                         clientesController.clientesSelecionado = filteredEvolucoes[index];
-                                        context.go('/evolucao-cliente/${filteredEvolucoes[index]['nome']}');
+                                        await evolucaoController.listarEvolucao(context, filteredEvolucoes[index]['idPaciente']);
+                                        AppConfig.hideLoadingSpinner(context);
+                                        if (profissionalController.isError.isFalse) {
+                                          context.go('/evolucao-cliente/${filteredEvolucoes[index]['nome']}');
+                                        }
                                       }
                                     },
                                   ),

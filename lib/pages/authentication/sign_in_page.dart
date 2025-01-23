@@ -14,6 +14,7 @@ import 'package:go_router/go_router.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import '../../controllers/app_controller.dart';
 import '../../controllers/clientes_controller.dart';
+import '../../controllers/evolucao_controller.dart';
 import '../../controllers/profissional_controller.dart';
 
 class SignInPage extends StatefulWidget {
@@ -34,6 +35,7 @@ class _SignInPageState extends State<SignInPage> {
   final ProdutoController produtoController = Get.put(ProdutoController());
   final ProcedimentosController procedimentosController = Get.put(ProcedimentosController());
   final AnamneseController anamneseController = Get.put(AnamneseController());
+  final EvolucaoController evolucaoController = Get.put(EvolucaoController());
 
   @override
   Widget build(BuildContext context) {
