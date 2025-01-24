@@ -1,75 +1,24 @@
 import 'dart:typed_data';
 import 'package:flutter/cupertino.dart';
+import 'package:get/get.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'dart:html' as html;
 import 'package:pdf/pdf.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'dart:typed_data';
 
+import '../controllers/procedimentos_controller.dart';
+
 class PdfUtils {
+  final ProcedimentosController procedimentosController = Get.find<ProcedimentosController>();
   static Future<void> abrirPlanoTratamentoPdf(String paciente,
-      String diagnostico, String avaliador, String observacao) async {
+  List<Map<String, String>> procedimentos, String avaliador, String observacao, String pagamentoSelecionado, {List<Map<String, String>>? parcelas}) async {
     final pdf = pw.Document();
-
-    List<Map<String, dynamic>> procedimentos = [
-      {
-        'servico': 'Botox',
-        'numero_sessoes': 1,
-        'unitario': 800.00,
-        'total': 800.00,
-        'desconto': 50.00,
-        'valor_final': 750.00,
-      },
-      {
-        'servico': 'Drenagem linfática',
-        'numero_sessoes': 3,
-        'unitario': 150.00,
-        'total': 450.00,
-        'desconto': 45.00,
-        'valor_final': 405.00,
-      },
-      {
-        'servico': 'Criolipólise',
-        'numero_sessoes': 1,
-        'unitario': 900.00,
-        'total': 900.00,
-        'desconto': 0.00,
-        'valor_final': 900.00,
-      },
-    ];
-
-    List<Map<String, dynamic>> parcelas = [
-      {
-        'parcelas': '1',
-        'vencimento': '10/11/2024',
-        'valor': '411.00',
-        'forma': 'Crédito'
-      },
-      {
-        'parcelas': '2',
-        'vencimento': '10/12/2024',
-        'valor': '411.00',
-        'forma': 'Crédito'
-      },
-      {
-        'parcelas': '3',
-        'vencimento': '10/01/2024',
-        'valor': '411.00',
-        'forma': 'Crédito'
-      },
-      {
-        'parcelas': '4',
-        'vencimento': '10/02/2024',
-        'valor': '411.00',
-        'forma': 'Crédito'
-      },
-      {
-        'parcelas': '5',
-        'vencimento': '10/03/2024',
-        'valor': '411.00',
-        'forma': 'Crédito'
-      },
-    ];
+    var total;
+    // Formatar os procedimentos para exibição no PDF
+    final procedimentosFormatados = procedimentos.map((proc) {
+      return '${proc['procedimento']} - ${proc['sessoes']} sessões';
+    }).join('\n');
 
     Future<Uint8List> loadAssetImage() async {
       final ByteData data = await rootBundle
@@ -119,14 +68,6 @@ class PdfUtils {
                           'Av. Rio Branco, 106 - Nova Lima/MG - E-mail: thaisesteticaintegrativa@gmail.com',
                           style: const pw.TextStyle(
                             fontSize: 10,
-                          ),
-                        ),
-                        pw.SizedBox(height: 24),
-                        pw.Text(
-                          'PROPOSTA VÁLIDA ATÉ: 14/11/2024',
-                          style: pw.TextStyle(
-                            fontSize: 10,
-                            fontStyle: pw.FontStyle.italic,
                           ),
                         ),
                       ],
@@ -274,7 +215,7 @@ class PdfUtils {
                         color: PdfColors.grey300,
                       ),
                       child: pw.Text(
-                        'Plano 123456789 - Personalizado',
+                        'Plano - Personalizado',
                         textAlign: pw.TextAlign.center,
                         style: pw.TextStyle(
                           fontSize: 10,
@@ -402,7 +343,7 @@ class PdfUtils {
                           color: PdfColors.white,
                         ),
                         child: pw.Text(
-                          procedimento['servico'],
+                          procedimento['procedimento']!,
                           textAlign: pw.TextAlign.center,
                           style: const pw.TextStyle(
                             fontSize: 10,
@@ -416,7 +357,7 @@ class PdfUtils {
                           color: PdfColors.white,
                         ),
                         child: pw.Text(
-                          procedimento['numero_sessoes'].toString(),
+                          procedimento['sessoes'].toString(),
                           textAlign: pw.TextAlign.center,
                           style: const pw.TextStyle(
                             fontSize: 10,
@@ -444,7 +385,12 @@ class PdfUtils {
                           color: PdfColors.white,
                         ),
                         child: pw.Text(
-                          procedimento['total'].toString(),
+                          (() {
+                            final valorUnitario = double.tryParse(procedimento['unitario'].toString()) ?? 0.0;
+                            final numeroSessoes = int.tryParse(procedimento['sessoes'].toString()) ?? 0;
+                            total = valorUnitario * numeroSessoes;
+                            return total.toStringAsFixed(2);
+                          })(),
                           textAlign: pw.TextAlign.center,
                           style: const pw.TextStyle(
                             fontSize: 10,
@@ -458,7 +404,7 @@ class PdfUtils {
                           color: PdfColors.white,
                         ),
                         child: pw.Text(
-                          procedimento['desconto'].toString(),
+                          "0.00",
                           textAlign: pw.TextAlign.center,
                           style: const pw.TextStyle(
                             fontSize: 10,
@@ -472,7 +418,12 @@ class PdfUtils {
                           color: PdfColors.white,
                         ),
                         child: pw.Text(
-                          procedimento['valor_final'].toString(),
+                          (() {
+                            final valorUnitario = double.tryParse(procedimento['unitario'].toString()) ?? 0.0;
+                            final numeroSessoes = int.tryParse(procedimento['sessoes'].toString()) ?? 0;
+                            total = valorUnitario * numeroSessoes;
+                            return total.toStringAsFixed(2);
+                          })(),
                           textAlign: pw.TextAlign.center,
                           style: const pw.TextStyle(
                             fontSize: 10,
@@ -509,7 +460,7 @@ class PdfUtils {
                       border: pw.Border.all(color: PdfColors.black),
                     ),
                     child: pw.Text(
-                      "R\$ 2.150,00",
+                      total.toStringAsFixed(2),
                       style: pw.TextStyle(
                         fontSize: 10,
                         fontWeight: pw.FontWeight.bold,
@@ -543,7 +494,7 @@ class PdfUtils {
                       border: pw.Border.all(color: PdfColors.black),
                     ),
                     child: pw.Text(
-                      "R\$ 2.055,00",
+                      total.toStringAsFixed(2),
                       style: pw.TextStyle(
                         fontSize: 10,
                         fontWeight: pw.FontWeight.bold,
@@ -573,7 +524,7 @@ class PdfUtils {
                       border: pw.Border.all(color: PdfColors.black),
                     ),
                     child: pw.Text(
-                      "R\$ 95,00",
+                      "R\$ 0,00",
                       style: pw.TextStyle(
                         fontSize: 10,
                         fontWeight: pw.FontWeight.bold,
@@ -603,7 +554,7 @@ class PdfUtils {
                       border: pw.Border.all(color: PdfColors.black),
                     ),
                     child: pw.Text(
-                      "R\$ 2.055,00",
+                      total.toStringAsFixed(2),
                       style: pw.TextStyle(
                         fontSize: 10,
                         fontWeight: pw.FontWeight.bold,
@@ -613,6 +564,7 @@ class PdfUtils {
                 ],
               ),
               pw.SizedBox(height: 8),
+              if (pagamentoSelecionado == 'Crédito')
               pw.Container(
                 padding: const pw.EdgeInsets.all(1),
                 width: double.infinity,
@@ -639,6 +591,7 @@ class PdfUtils {
                   ],
                 ),
               ),
+              if (pagamentoSelecionado == 'Crédito')
               pw.Container(
                 padding: const pw.EdgeInsets.all(1),
                 width: double.infinity,
@@ -710,7 +663,8 @@ class PdfUtils {
                   ],
                 ),
               ),
-              ...List.generate(parcelas.length, (index) {
+              if (pagamentoSelecionado == 'Crédito')
+          ...List.generate(parcelas!.length, (index) {
                 final parcela = parcelas[index];
                 return pw.Container(
                   padding: const pw.EdgeInsets.all(1),
@@ -726,7 +680,7 @@ class PdfUtils {
                           color: PdfColors.white,
                         ),
                         child: pw.Text(
-                          parcela['parcelas'],
+                          parcela['parcelas']!,
                           textAlign: pw.TextAlign.center,
                           style: const pw.TextStyle(
                             fontSize: 10,
@@ -831,7 +785,7 @@ class PdfUtils {
                       border: pw.Border.all(color: PdfColors.black),
                     ),
                     child: pw.Text(
-                      "R\$ 2.150,00",
+                      total.toStringAsFixed(2),
                       style: pw.TextStyle(
                         fontSize: 10,
                         fontWeight: pw.FontWeight.bold,
@@ -861,7 +815,7 @@ class PdfUtils {
                       border: pw.Border.all(color: PdfColors.black),
                     ),
                     child: pw.Text(
-                      "R\$ 95,00",
+                      "R\$ 0,00",
                       style: pw.TextStyle(
                         fontSize: 10,
                         fontWeight: pw.FontWeight.bold,
@@ -891,7 +845,7 @@ class PdfUtils {
                       border: pw.Border.all(color: PdfColors.black),
                     ),
                     child: pw.Text(
-                      "R\$ 2.055,00",
+                      total.toStringAsFixed(2),
                       style: pw.TextStyle(
                         fontSize: 10,
                         fontWeight: pw.FontWeight.bold,
@@ -915,12 +869,8 @@ class PdfUtils {
 
   static Future<void> abrirContratoPdf(
       String nome,
-      String estadoCivil,
       String profissao,
       String rua,
-      String bairro,
-      String numero,
-      String cep,
       String dia,
       String mes,
       String ano) async {
@@ -958,7 +908,7 @@ class PdfUtils {
               ),
               pw.SizedBox(height: 12),
               pw.Text(
-                "Como contratante, $nome, $estadoCivil, $profissao, residente e domiciliado na $rua, $bairro, $numero, $cep; Como contratada, Thais Melo Estética Integrativa, pessoa jurídica de direito privado, inscrita no CNPJ sob o número 43.131.909/0001-91, situada na Avenida Rio Branco, número 106, Centro, na cidade de Nova Lima, Minas Gerais, CEP 34.000.132, empresa legalmente representada por Thais Rodrigues Melo, esteticista, microempreendedora individual, registrada sob o n.º 797.411-57.",
+                "Como contratante, $nome, $profissao, residente e domiciliado na $rua; Como contratada, Thais Melo Estética Integrativa, pessoa jurídica de direito privado, inscrita no CNPJ sob o número 43.131.909/0001-91, situada na Avenida Rio Branco, número 106, Centro, na cidade de Nova Lima, Minas Gerais, CEP 34.000.132, empresa legalmente representada por Thais Rodrigues Melo, esteticista, microempreendedora individual, registrada sob o n.º 797.411-57.",
                 textAlign: pw.TextAlign.justify,
               ),
               pw.SizedBox(height: 16),

@@ -215,6 +215,7 @@ class _PlanoTratamentoWidgetState extends State<PlanoTratamentoWidget> {
               onChanged: (int? novoValor) {
                 setState(() {
                   _selectedParcelas = novoValor;
+                  procedimentosController.parcelasSelecionado = novoValor;
                 });
               },
             ),
@@ -227,21 +228,36 @@ class _PlanoTratamentoWidgetState extends State<PlanoTratamentoWidget> {
                 onPressed: () {
                   if (_selectedProcedimento != null && sessaoController.text.isNotEmpty) {
                     setState(() {
-                      // Verifica se o procedimento já está na lista
-                      int index = _procedimentosAdicionados.indexWhere((element) => element.startsWith(_selectedProcedimento!));
+                      // Busca o procedimento selecionado na lista `procedimento` para obter o valor
+                      final procedimentoSelecionado = procedimento.firstWhere(
+                            (item) => item['nome'] == _selectedProcedimento,
+                        orElse: () => null,
+                      );
 
-                      if (index != -1) {
-                        // Se o procedimento já existe, atualiza o número de sessões
-                        final existingEntry = _procedimentosAdicionados[index];
-                        final existingSessions = int.parse(existingEntry.split(' - ')[1].split(' ')[0]);
-                        final newSessions = int.parse(sessaoController.text);
-                        _procedimentosAdicionados[index] = '${_selectedProcedimento} - ${existingSessions + newSessions} sessões';
+                      if (procedimentoSelecionado != null) {
+                        final valor = double.tryParse(procedimentoSelecionado['valor'].toString()) ?? 0.0;
+                        final valorFormatado = valor.toStringAsFixed(2);
+                        int index = _procedimentosAdicionados.indexWhere(
+                              (element) => element.startsWith(_selectedProcedimento!),
+                        );
+
+                        if (index != -1) {
+                          // Se o procedimento já existe, atualiza o número de sessões
+                          final existingEntry = _procedimentosAdicionados[index];
+                          final existingSessions = int.parse(existingEntry.split(' - ')[1].split(' ')[0]);
+                          final newSessions = int.parse(sessaoController.text);
+                          _procedimentosAdicionados[index] = '${_selectedProcedimento} - ${existingSessions + newSessions} sessões - R\$${valorFormatado}';
+                        } else {
+                          // Caso contrário, adiciona o novo procedimento com o valor
+                          _procedimentosAdicionados.add('${_selectedProcedimento} - ${sessaoController.text} sessões - R\$${valorFormatado}');
+                        }
+
+                        sessaoController.clear();
                       } else {
-                        // Caso contrário, adiciona o novo procedimento
-                        _procedimentosAdicionados.add('${_selectedProcedimento} - ${sessaoController.text} sessões');
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Procedimento não encontrado!')),
+                        );
                       }
-
-                      sessaoController.clear();
                     });
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
@@ -314,7 +330,37 @@ class _PlanoTratamentoWidgetState extends State<PlanoTratamentoWidget> {
                         _procedimentosAdicionados.isNotEmpty &&
                         _selectedPagamento != null) {
 
-                      PdfUtils.abrirPlanoTratamentoPdf(_selectedCliente!, _procedimentosAdicionados.join(', '), "Administrador", observacaoController.text);
+                      final List<Map<String, String>> listaParcelas = _selectedPagamento == 'Crédito' && _selectedParcelas != null
+                          ? List.generate(_selectedParcelas!, (index) {
+                        final valorParcela = _procedimentosAdicionados.fold<double>(
+                          0.0,
+                              (sum, item) {
+                            final partes = item.split(' - ');
+                            final unitario = double.tryParse(partes[2].replaceAll('R\$', '').trim()) ?? 0.0;
+                            final sessoes = int.tryParse(partes[1].split(' ')[0]) ?? 0;
+                            return sum + (unitario * sessoes);
+                          },
+                        ) / _selectedParcelas!;
+
+                        return {
+                          'parcelas': '${index + 1}/${_selectedParcelas}',
+                          'vencimento': 'Vencimento ${index + 1}', // Adapte para calcular a data de vencimento real
+                          'valor': valorParcela.toStringAsFixed(2),
+                          'forma': 'Crédito',
+                        };
+                      })
+                          : [];
+
+                      final List<Map<String, String>> listaProcedimentos = _procedimentosAdicionados.map((item) {
+                        final partes = item.split(' - ');
+                        return {
+                          'procedimento': partes[0],
+                          'sessoes': partes[1].split(' ')[0], // Número de sessões
+                          'unitario': partes[2].replaceAll('R\$', ''), // Valor (sem o símbolo R$)
+                        };
+                      }).toList();
+
+                      PdfUtils.abrirPlanoTratamentoPdf(_selectedCliente!, listaProcedimentos, "Administrador", observacaoController.text,  _selectedPagamento!, parcelas: listaParcelas,);
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(content: Text('Preencha todos os campos antes de gerar o plano de tratamento!')),
@@ -343,9 +389,34 @@ class _PlanoTratamentoWidgetState extends State<PlanoTratamentoWidget> {
                   onPressed: () {
                     if (_selectedCliente != null &&
                         _procedimentosAdicionados.isNotEmpty &&
-                        _selectedPagamento != null ) {
+                        _selectedPagamento != null) {
 
-                      PdfUtils.abrirContratoPdf(_selectedCliente!, "casado", "médico", "Rua Joao Ferreira", "Retiro", "152", "34002-582", "31", "Outubro", "2024");
+                      final clienteSelecionado = clientes.firstWhere(
+                            (cliente) => cliente['nome'] == _selectedCliente,
+                        orElse: () => null,
+                      );
+
+                      if (clienteSelecionado != null) {
+                        final nome = clienteSelecionado['nome'];
+                        final profissao = clienteSelecionado['profissao'] ?? 'Não informado';
+                        final endereco = clienteSelecionado['endereco'] ?? 'Não informado';
+                        final dia = DateTime.now().day.toString();
+                        final mes = DateTime.now().month.toString().padLeft(2, '0');
+                        final ano = DateTime.now().year.toString();
+
+                        PdfUtils.abrirContratoPdf(
+                          nome,
+                          profissao,
+                          endereco,
+                          dia,
+                          mes,
+                          ano,
+                        );
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Cliente não encontrado!')),
+                        );
+                      }
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(content: Text('Preencha todos os campos antes de gerar o contrato!')),
@@ -368,7 +439,7 @@ class _PlanoTratamentoWidgetState extends State<PlanoTratamentoWidget> {
                       color: Colors.grey,
                     ),
                   ),
-                )
+                ),
               ],
             ),
         ],

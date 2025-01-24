@@ -17,6 +17,7 @@ class ProcedimentosController extends GetxController {
   var procedimentosAtualizado;
   var procedimentosAdicionado;
   var procedimentosSelecionado;
+  var parcelasSelecionado;
 
   @override
   void onInit() {
