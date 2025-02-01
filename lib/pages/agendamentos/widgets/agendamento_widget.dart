@@ -69,84 +69,151 @@
     void _gerarAgendamentos() {
       agendamentos.clear();
 
-      final List<String> pacientes = [
-        "João Silva", "Maria Souza", "Carlos Lima", "Ana Pereira",
-        "Bruno Santos", "Patrícia Almeida", "Marcos Teixeira", "Fernanda Costa",
-        "Renata Gomes", "Joana Dias", "Luís Fernandes", "Carla Silva",
-        "Pedro Costa", "Laura Nunes", "Thiago Mendes", "Daniela Souza"
-      ];
+      for (var agendamento in data) {
+        String horario = agendamento['horarioInicio'].toString().substring(0, 5); // Ex: "19:00"
+        Color cor = Colors.pink;
 
-      final List<String> procedimentos = [
-        "Drenagem", "Criolipólise", "Limpeza de Pele", "Massagem Relaxante",
-        "Peeling", "Radiofrequência", "Microagulhamento", "Laserterapia"
-      ];
-
-      final Map<String, Color> profissionais = {
-        "Ana Romani": Colors.green,
-        "Thais Melo": Colors.pinkAccent,
-        "Carlos Almeida": Colors.orange,
-        "Fernanda Costa": Colors.cyan,
-      };
-
-      final random = Random();
-
-      // Gera horários de 07:00 até 21:00 com intervalos de 30 minutos
-      for (int hour = 9; hour <= 20; hour++) {
-        for (int minute = 0; minute < 60; minute += 30) {
-          String horario = '${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}';
-
-          if (selectedDate.weekday == DateTime.sunday) {
-            continue; // Ignora se for domingo
-          }
-
-          if (selectedDate.weekday == DateTime.saturday) {
-            if (hour < 9 || hour > 14 || (hour == 14 && minute > 0)) {
-              continue; // Ignora horários fora do intervalo permitido
-            }
-          }
-
-          // Define uma quantidade aleatória de agendamentos (entre 0 e 4)
-          int quantidadeAgendamentos = random.nextInt(5); // Número entre 0 e 4
-
-          // Lista para armazenar os agendamentos do horário atual
-          List<Agendamento> agendamentosHorario = [];
-
-          // Conjunto para verificar os profissionais já agendados nesse horário
-          Set<String> profissionaisAgendados = {};
-
-          for (int i = 0; i < quantidadeAgendamentos; i++) {
-            // Seleciona um profissional aleatório e garante que ele ainda não foi agendado
-            String profissional;
-            do {
-              profissional = profissionais.keys.elementAt(random.nextInt(profissionais.length));
-            } while (profissionaisAgendados.contains(profissional));
-
-            // Marca o profissional como já agendado para esse horário
-            profissionaisAgendados.add(profissional);
-
-            // Seleciona aleatoriamente o procedimento e o paciente
-            String descricao = procedimentos[random.nextInt(procedimentos.length)];
-            String paciente = pacientes[random.nextInt(pacientes.length)];
-            Color cor = profissionais[profissional]!;
-            String sala = "Sala ${i + 1}";
-
-            // Cria o agendamento e o adiciona à lista do horário
-            agendamentosHorario.add(Agendamento(
-              descricao: descricao,
-              profissional: profissional,
-              paciente: paciente,
-              sala: sala,
-              cor: cor,
-            ));
-          }
-
-          // Adiciona a lista de agendamentos para o horário no mapa principal, se houver agendamentos
-          if (agendamentosHorario.isNotEmpty) {
-            agendamentos[horario] = agendamentosHorario;
-          }
+        if (agendamento['profissional']['cor'] == 'green') {
+          cor = Colors.green;
+        } else if (agendamento['profissional']['cor'] == 'pink') {
+          cor = Colors.pink;
+        } else if (agendamento['profissional']['cor'] == 'orange') {
+          cor = Colors.orange;
+        } else if (agendamento['profissional']['cor'] == 'cyan') {
+          cor = Colors.cyan;
+        } else if (agendamento['profissional']['cor'] == 'blue') {
+          cor = Colors.blue;
+        } else if (agendamento['profissional']['cor'] == 'red') {
+          cor = Colors.red;
         }
+        Agendamento agendamentoObj = Agendamento(
+          descricao: agendamento['procedimento']['nome'],
+          profissional: agendamento['profissional']['nome'],
+          sala: agendamento['sala']['numero'],
+          paciente: agendamento['paciente']['nome'],
+          cor: cor,
+        );
+
+        if (agendamentos[horario] == null) {
+          agendamentos[horario] = [];
+        }
+        agendamentos[horario]?.add(agendamentoObj);
       }
     }
+
+    final List<Map<String, dynamic>> data = [
+      {
+        "id": 60,
+        "profissional": {
+          "idProfissional": 2,
+          "nome": "Carlos Pereira",
+          "cor": "red",
+          "especialidade": "Cirurgião",
+          "telefone": "(31) 98888-0002",
+          "email": "carlos.pereira@example.com"
+        },
+        "paciente": {
+          "nome": "Luiz Fernando Bianghi Soares",
+          "dataNascimento": "1996-09-19",
+          "telefone": "(31) 99498-0238",
+          "endereco": "Rua Teste",
+          "profissao": "Programador",
+          "cpf": "06206138666",
+          "rg": "17773482",
+          "idPaciente": 8
+        },
+        "procedimento": {
+          "idProcedimento": 1,
+          "nome": "Limpeza de Pele",
+          "descricao": "Tratamento facial para revitalização da pele",
+          "valor": "150.00"
+        },
+        "sala": {
+          "idSala": 3,
+          "numero": "Sala Luiz Bianghi",
+          "descricao": "Sala deu bom"
+        },
+        "dataAgendamento": "2025-01-28",
+        "horarioInicio": "19:00:00",
+        "horarioFim": "20:00:00",
+        "recorrencia": "SEMANALMENTE",
+        "observacoes": "Paciente prefere não atrasares."
+      },
+      {
+        "id": 61,
+        "profissional": {
+          "idProfissional": 2,
+          "nome": "Joao Augusto",
+          "cor": "cyan",
+          "especialidade": "Cirurgião",
+          "telefone": "(31) 98888-0002",
+          "email": "carlos.pereira@example.com"
+        },
+        "paciente": {
+          "nome": "Josef House",
+          "dataNascimento": "1996-09-19",
+          "telefone": "(31) 99498-0238",
+          "endereco": "Rua Teste",
+          "profissao": "Programador",
+          "cpf": "06206138666",
+          "rg": "17773482",
+          "idPaciente": 8
+        },
+        "procedimento": {
+          "idProcedimento": 1,
+          "nome": "Limpeza de Pele",
+          "descricao": "Tratamento facial para revitalização da pele",
+          "valor": "150.00"
+        },
+        "sala": {
+          "idSala": 3,
+          "numero": "Sala Luiz Bianghi",
+          "descricao": "Sala deu bom"
+        },
+        "dataAgendamento": "2025-01-28",
+        "horarioInicio": "19:00:00",
+        "horarioFim": "20:00:00",
+        "recorrencia": "SEMANALMENTE",
+        "observacoes": "Paciente prefere não atrasares."
+      },
+      {
+        "id": 64,
+        "profissional": {
+          "idProfissional": 2,
+          "nome": "Carlos Pereira",
+          "cor": "pink",
+          "especialidade": "Cirurgião",
+          "telefone": "(31) 98888-0002",
+          "email": "carlos.pereira@example.com"
+        },
+        "paciente": {
+          "nome": "Luiz Fernando Bianghi Soares",
+          "dataNascimento": "1996-09-19",
+          "telefone": "(31) 99498-0238",
+          "endereco": "Rua Teste",
+          "profissao": "Programador",
+          "cpf": "06206138666",
+          "rg": "17773482",
+          "idPaciente": 8
+        },
+        "procedimento": {
+          "idProcedimento": 1,
+          "nome": "Limpeza de Pele",
+          "descricao": "Tratamento facial para revitalização da pele",
+          "valor": "150.00"
+        },
+        "sala": {
+          "idSala": 3,
+          "numero": "Sala Luiz Bianghi",
+          "descricao": "Sala deu bom"
+        },
+        "dataAgendamento": "2025-01-28",
+        "horarioInicio": "16:00:00",
+        "horarioFim": "17:00:00",
+        "recorrencia": "SEMANALMENTE",
+        "observacoes": "Paciente prefere não atrasares."
+      },
+    ];
 
 
     Future<void> _confirmarExclusao(

@@ -1,3 +1,4 @@
+import 'package:core_dashboard/controllers/agendamento_controller.dart';
 import 'package:core_dashboard/controllers/anamnese_controller.dart';
 import 'package:core_dashboard/controllers/procedimentos_controller.dart';
 import 'package:core_dashboard/controllers/produto_controller.dart';
@@ -12,6 +13,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:intl/intl.dart';
 import '../../controllers/app_controller.dart';
 import '../../controllers/clientes_controller.dart';
 import '../../controllers/evolucao_controller.dart';
@@ -36,6 +38,7 @@ class _SignInPageState extends State<SignInPage> {
   final ProcedimentosController procedimentosController = Get.put(ProcedimentosController());
   final AnamneseController anamneseController = Get.put(AnamneseController());
   final EvolucaoController evolucaoController = Get.put(EvolucaoController());
+  final AgendamentoController agendamentoController = Get.put(AgendamentoController());
 
   @override
   Widget build(BuildContext context) {
@@ -165,8 +168,12 @@ class _SignInPageState extends State<SignInPage> {
                                 btnOkColor: Colors.red,
                               ).show();
                             } else {
+                              final String dataAtual = DateFormat('yyyy-MM-dd').format(DateTime.now());
+                              await agendamentoController.listarAgendamentoDia(context, dataAtual);
                               AppConfig.hideLoadingSpinner(context);
-                              context.go('/');
+                              if (agendamentoController.isError.isFalse) {
+                                context.go('/');
+                              }
                             }
                           }
                         },

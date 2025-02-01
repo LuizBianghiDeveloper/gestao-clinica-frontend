@@ -1,9 +1,18 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text2/flutter_masked_text2.dart';
+import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 
+import '../../../controllers/agendamento_controller.dart';
+import '../../../controllers/app_controller.dart';
+import '../../../controllers/clientes_controller.dart';
+import '../../../controllers/procedimentos_controller.dart';
+import '../../../controllers/profissional_controller.dart';
+import '../../../controllers/salas_controller.dart';
 import '../../../responsive.dart';
 import '../../../shared/constants/defaults.dart';
 import '../../../shared/constants/ghaps.dart';
@@ -34,41 +43,28 @@ class NovoAgendamentoWidget extends StatefulWidget {
 class _NovoAgendamentoWidgetState extends State<NovoAgendamentoWidget> {
   final formKey = GlobalKey<FormState>();
   final List<String> _recorrenciaOpcoes = [
-    'Uma vez', 'Diariamente', 'Semanalmente', 'Mensalmente'
-  ];
-  final List<String> _clientes = [
-    'Ana Paula Silva', 'Bruno Mendes Oliveira', 'Carlos Alberto Souza',
-    'Diana Costa Pereira', 'Eduardo Gomes Ferreira', 'Fernanda Lima Santos',
-    'Gabriel Rocha Lima', 'Helena Martins Alves', 'Igor Henrique Dias',
-    'Júlia de Souza Almeida', 'Karla Cristina Lima', 'Leonardo da Silva Santos',
-    'Mariana Oliveira Costa', 'Natália Mendes Nascimento', 'Otávio Augusto Lima',
-    'Paula Regina Cardoso', 'Quiteria de Almeida Oliveira', 'Ricardo Carvalho Pinto',
-    'Sofia Regina Ferreira', 'Thiago Fernandes da Costa', 'Ulisses Martins de Oliveira',
-    'Vanessa Silva Freitas', 'William Figueiredo Santos', 'Xuxa de Almeida',
-    'Yasmin Rodrigues da Silva',
+    'Uma vez',
+    'Diariamente',
+    'Semanalmente',
+    'Mensalmente'
   ];
 
-  final List<String> _sala = [
-    'Sala 1', 'Sala 2', 'Sala 3', 'Sala 4'
-  ];
-
-  final List<String> _profissional = [
-    'Ana Romani', 'Thais Melo', 'Michelle'
-  ];
-
-  final List<String> _procedimentos = [
-    'Botox', 'Preenchimento Labial', 'Limpeza de Pele', 'Peeling Químico',
-    'Depilação a Laser', 'Tratamento para Acne', 'Rinomodelação',
-    'Microagulhamento', 'Lifting Facial', 'Tratamento de Melasma',
-    'Harmonização Facial', 'Escleroterapia', 'Carboxiterapia', 'Criolipólise',
-    'Drenagem Linfática', 'Laser Fracionado', 'Peeling de Diamante',
-    'Massagem Modeladora', 'Radiofrequência', 'Aplicação de Fios de Sustentação',
-  ];
-
+  final ClientesController clientesController = Get.find<ClientesController>();
+  final ProfissionalController profissionalController =
+      Get.find<ProfissionalController>();
+  final ProcedimentosController procedimentosController =
+      Get.find<ProcedimentosController>();
+  final SalasController salasController = Get.find<SalasController>();
+  final AgendamentoController agendamentoController =
+      Get.find<AgendamentoController>();
   String? _selectedCliente;
+  String? _selectedClienteId;
   String? _selectedProcedimento;
+  String? _selectedProcedimentoId;
   String? _selectedSala;
+  String? _selectedSalaId;
   String? _selectedProfissional;
+  String? _selectedProfissionalId;
   String? _selectedRecorrencia;
   final phoneController = MaskedTextController(mask: '(00) 00000-0000');
   final birthDateController = MaskedTextController(mask: '00/00/0000');
@@ -77,15 +73,38 @@ class _NovoAgendamentoWidgetState extends State<NovoAgendamentoWidget> {
   final TextEditingController enderecoController = TextEditingController();
   final TextEditingController rgController = TextEditingController();
   final TextEditingController _dataController = TextEditingController();
+  final TextEditingController observacaoController = TextEditingController();
   String? _selectedHorarioInicio;
   String? _selectedHorarioFim;
   final List<String> _horariosDisponiveis = [];
   final List<String> _horariosDisponiveisFim = [];
   DateTime? _selectedDate;
+  late final List<dynamic> dataList;
+  late final List<dynamic> dataListProcedimento;
+  late final List<dynamic> dataListProfissional;
+  late final List<dynamic> dataListSala;
+  List<dynamic> clientes = [];
+  List<dynamic> procedimento = [];
+  List<dynamic> profissional = [];
+  List<dynamic> sala = [];
 
   @override
   void initState() {
     super.initState();
+    final dynamic decodedJson = jsonDecode(clientesController.clientes);
+    final dynamic decodedJsonProcedimento =
+        jsonDecode(procedimentosController.procedimentos);
+    final dynamic decodedJsonProfissional =
+        jsonDecode(profissionalController.profissional);
+    final dynamic decodedJsonSala = jsonDecode(salasController.sala);
+    dataList = decodedJson['data'];
+    dataListProcedimento = decodedJsonProcedimento['data'];
+    dataListProfissional = decodedJsonProfissional['data'];
+    dataListSala = decodedJsonSala['data'];
+    clientes = dataList;
+    procedimento = dataListProcedimento;
+    profissional = dataListProfissional;
+    sala = dataListSala;
     _gerarHorarios();
   }
 
@@ -102,7 +121,8 @@ class _NovoAgendamentoWidgetState extends State<NovoAgendamentoWidget> {
   void _atualizarHorariosFim() {
     _horariosDisponiveisFim.clear();
     if (_selectedHorarioInicio != null) {
-      final DateTime horarioInicio = DateFormat('HH:mm').parse(_selectedHorarioInicio!);
+      final DateTime horarioInicio =
+          DateFormat('HH:mm').parse(_selectedHorarioInicio!);
       for (String horario in _horariosDisponiveis) {
         final DateTime horarioAtual = DateFormat('HH:mm').parse(horario);
         if (horarioAtual.isAfter(horarioInicio)) {
@@ -111,6 +131,7 @@ class _NovoAgendamentoWidgetState extends State<NovoAgendamentoWidget> {
       }
     }
   }
+
   Future<void> _showDatePickerDialog() async {
     await showDialog(
       context: context,
@@ -118,7 +139,8 @@ class _NovoAgendamentoWidgetState extends State<NovoAgendamentoWidget> {
         final size = MediaQuery.of(context).size;
         return AlertDialog(
           title: const Text('Selecione a Data'),
-          backgroundColor: Colors.white, // Define o fundo do AlertDialog como branco
+          backgroundColor: Colors.white,
+          // Define o fundo do AlertDialog como branco
           content: SizedBox(
             height: size.height * 0.5,
             width: size.width * 0.6,
@@ -130,14 +152,16 @@ class _NovoAgendamentoWidgetState extends State<NovoAgendamentoWidget> {
               onDaySelected: (selectedDay, focusedDay) {
                 setState(() {
                   _selectedDate = selectedDay;
-                  _dataController.text = DateFormat('dd/MM/yyyy').format(selectedDay);
+                  _dataController.text =
+                      DateFormat('dd/MM/yyyy').format(selectedDay);
                 });
                 Navigator.pop(context);
               },
               selectedDayPredicate: (day) => isSameDay(_selectedDate, day),
               calendarFormat: CalendarFormat.month,
               headerStyle: HeaderStyle(
-                titleTextFormatter: (date, locale) => DateFormat('MMMM yyyy', locale).format(date),
+                titleTextFormatter: (date, locale) =>
+                    DateFormat('MMMM yyyy', locale).format(date),
                 formatButtonVisible: false,
               ),
               calendarStyle: const CalendarStyle(
@@ -158,7 +182,6 @@ class _NovoAgendamentoWidgetState extends State<NovoAgendamentoWidget> {
       },
     );
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -182,17 +205,35 @@ class _NovoAgendamentoWidgetState extends State<NovoAgendamentoWidget> {
           gapH24,
           Autocomplete<String>(
             optionsBuilder: (TextEditingValue textEditingValue) {
-              if (textEditingValue.text.isEmpty) return _clientes.take(999);
-              return _clientes.where((String cliente) {
-                return cliente.toLowerCase().contains(textEditingValue.text.toLowerCase());
-              });
+              if (textEditingValue.text.isEmpty) {
+                return clientes
+                    .map((clientes) => clientes['nome'].toString())
+                    .take(999);
+              }
+              return clientes
+                  .where((clientes) => clientes['nome']
+                      .toString()
+                      .toLowerCase()
+                      .contains(textEditingValue.text.toLowerCase()))
+                  .map((clientes) => clientes['nome'].toString());
             },
             onSelected: (String selectedCliente) {
               setState(() {
                 _selectedCliente = selectedCliente;
+                _selectedClienteId = clientes
+                    .firstWhere(
+                      (cliente) => cliente['nome'] == selectedCliente,
+                      orElse: () => null, // Evita erro se não encontrar
+                    )?['idPaciente']
+                    ?.toString();
               });
+              print("Cliente Selecionado: $_selectedCliente");
+              print("ID do Cliente: $_selectedClienteId");
             },
-            fieldViewBuilder: (BuildContext context, TextEditingController fieldTextEditingController, FocusNode fieldFocusNode, VoidCallback onFieldSubmitted) {
+            fieldViewBuilder: (BuildContext context,
+                TextEditingController fieldTextEditingController,
+                FocusNode fieldFocusNode,
+                VoidCallback onFieldSubmitted) {
               return TextFormField(
                 controller: fieldTextEditingController,
                 focusNode: fieldFocusNode,
@@ -213,17 +254,34 @@ class _NovoAgendamentoWidgetState extends State<NovoAgendamentoWidget> {
               Expanded(
                 child: Autocomplete<String>(
                   optionsBuilder: (TextEditingValue textEditingValue) {
-                    if (textEditingValue.text.isEmpty) return _profissional.take(999);
-                    return _profissional.where((String profissional) {
-                      return profissional.toLowerCase().contains(textEditingValue.text.toLowerCase());
-                    });
+                    if (textEditingValue.text.isEmpty) {
+                      return profissional
+                          .map(
+                              (profissional) => profissional['nome'].toString())
+                          .take(999);
+                    }
+                    return profissional
+                        .where((profissional) => profissional['nome']
+                            .toString()
+                            .toLowerCase()
+                            .contains(textEditingValue.text.toLowerCase()))
+                        .map((profissional) => profissional['nome'].toString());
                   },
                   onSelected: (String selectedProfissional) {
                     setState(() {
                       _selectedProfissional = selectedProfissional;
+                      _selectedProfissionalId = profissional
+                          .firstWhere(
+                            (profissional) => profissional['nome'] == selectedProfissional,
+                        orElse: () => null, // Evita erro se não encontrar
+                      )?['idProfissional']
+                          ?.toString();
                     });
                   },
-                  fieldViewBuilder: (BuildContext context, TextEditingController fieldTextEditingController, FocusNode fieldFocusNode, VoidCallback onFieldSubmitted) {
+                  fieldViewBuilder: (BuildContext context,
+                      TextEditingController fieldTextEditingController,
+                      FocusNode fieldFocusNode,
+                      VoidCallback onFieldSubmitted) {
                     return TextFormField(
                       controller: fieldTextEditingController,
                       focusNode: fieldFocusNode,
@@ -232,7 +290,8 @@ class _NovoAgendamentoWidgetState extends State<NovoAgendamentoWidget> {
                         border: OutlineInputBorder(),
                       ),
                       onTap: () {
-                        if (!fieldFocusNode.hasFocus) fieldFocusNode.requestFocus();
+                        if (!fieldFocusNode.hasFocus)
+                          fieldFocusNode.requestFocus();
                       },
                     );
                   },
@@ -242,17 +301,33 @@ class _NovoAgendamentoWidgetState extends State<NovoAgendamentoWidget> {
               Expanded(
                 child: Autocomplete<String>(
                   optionsBuilder: (TextEditingValue textEditingValue) {
-                    if (textEditingValue.text.isEmpty) return _sala.take(999);
-                    return _sala.where((String sala) {
-                      return sala.toLowerCase().contains(textEditingValue.text.toLowerCase());
-                    });
+                    if (textEditingValue.text.isEmpty) {
+                      return sala
+                          .map((sala) => sala['numero'].toString())
+                          .take(999);
+                    }
+                    return sala
+                        .where((sala) => sala['numero']
+                            .toString()
+                            .toLowerCase()
+                            .contains(textEditingValue.text.toLowerCase()))
+                        .map((sala) => sala['numero'].toString());
                   },
                   onSelected: (String selectedSala) {
                     setState(() {
                       _selectedSala = selectedSala;
+                      _selectedSalaId = sala
+                          .firstWhere(
+                            (sala) => sala['numero'] == selectedSala,
+                        orElse: () => null,
+                      )?['idSala']
+                          ?.toString();
                     });
                   },
-                  fieldViewBuilder: (BuildContext context, TextEditingController fieldTextEditingController, FocusNode fieldFocusNode, VoidCallback onFieldSubmitted) {
+                  fieldViewBuilder: (BuildContext context,
+                      TextEditingController fieldTextEditingController,
+                      FocusNode fieldFocusNode,
+                      VoidCallback onFieldSubmitted) {
                     return TextFormField(
                       controller: fieldTextEditingController,
                       focusNode: fieldFocusNode,
@@ -261,7 +336,8 @@ class _NovoAgendamentoWidgetState extends State<NovoAgendamentoWidget> {
                         border: OutlineInputBorder(),
                       ),
                       onTap: () {
-                        if (!fieldFocusNode.hasFocus) fieldFocusNode.requestFocus();
+                        if (!fieldFocusNode.hasFocus)
+                          fieldFocusNode.requestFocus();
                       },
                     );
                   },
@@ -276,17 +352,34 @@ class _NovoAgendamentoWidgetState extends State<NovoAgendamentoWidget> {
               Expanded(
                 child: Autocomplete<String>(
                   optionsBuilder: (TextEditingValue textEditingValue) {
-                    if (textEditingValue.text.isEmpty) return _procedimentos.take(999);
-                    return _procedimentos.where((String procedimento) {
-                      return procedimento.toLowerCase().contains(textEditingValue.text.toLowerCase());
-                    });
+                    if (textEditingValue.text.isEmpty) {
+                      return procedimento
+                          .map(
+                              (procedimento) => procedimento['nome'].toString())
+                          .take(999);
+                    }
+                    return procedimento
+                        .where((procedimento) => procedimento['nome']
+                            .toString()
+                            .toLowerCase()
+                            .contains(textEditingValue.text.toLowerCase()))
+                        .map((procedimento) => procedimento['nome'].toString());
                   },
                   onSelected: (String selectedProcedimento) {
                     setState(() {
                       _selectedProcedimento = selectedProcedimento;
+                      _selectedProcedimentoId = procedimento
+                          .firstWhere(
+                            (procedimento) => procedimento['nome'] == selectedProcedimento,
+                        orElse: () => null,
+                      )?['idProcedimento']
+                          ?.toString();
                     });
                   },
-                  fieldViewBuilder: (BuildContext context, TextEditingController fieldTextEditingController, FocusNode fieldFocusNode, VoidCallback onFieldSubmitted) {
+                  fieldViewBuilder: (BuildContext context,
+                      TextEditingController fieldTextEditingController,
+                      FocusNode fieldFocusNode,
+                      VoidCallback onFieldSubmitted) {
                     return TextFormField(
                       controller: fieldTextEditingController,
                       focusNode: fieldFocusNode,
@@ -295,7 +388,8 @@ class _NovoAgendamentoWidgetState extends State<NovoAgendamentoWidget> {
                         border: OutlineInputBorder(),
                       ),
                       onTap: () {
-                        if (!fieldFocusNode.hasFocus) fieldFocusNode.requestFocus();
+                        if (!fieldFocusNode.hasFocus)
+                          fieldFocusNode.requestFocus();
                       },
                     );
                   },
@@ -337,7 +431,8 @@ class _NovoAgendamentoWidgetState extends State<NovoAgendamentoWidget> {
                     labelText: 'Horário Início',
                     border: OutlineInputBorder(),
                   ),
-                  items: _horariosDisponiveis.map<DropdownMenuItem<String>>((String horario) {
+                  items: _horariosDisponiveis
+                      .map<DropdownMenuItem<String>>((String horario) {
                     return DropdownMenuItem<String>(
                       value: horario,
                       child: Text(horario),
@@ -349,7 +444,8 @@ class _NovoAgendamentoWidgetState extends State<NovoAgendamentoWidget> {
                       _atualizarHorariosFim(); // Atualiza os horários de fim
                     });
                   },
-                  validator: (value) => value == null ? 'Horário de Início é obrigatório' : null,
+                  validator: (value) =>
+                      value == null ? 'Horário de Início é obrigatório' : null,
                 ),
               ),
               const SizedBox(width: 16),
@@ -360,7 +456,8 @@ class _NovoAgendamentoWidgetState extends State<NovoAgendamentoWidget> {
                     labelText: 'Horário Fim',
                     border: OutlineInputBorder(),
                   ),
-                  items: _horariosDisponiveisFim.map<DropdownMenuItem<String>>((String horario) {
+                  items: _horariosDisponiveisFim
+                      .map<DropdownMenuItem<String>>((String horario) {
                     return DropdownMenuItem<String>(
                       value: horario,
                       child: Text(horario),
@@ -371,7 +468,8 @@ class _NovoAgendamentoWidgetState extends State<NovoAgendamentoWidget> {
                       _selectedHorarioFim = value;
                     });
                   },
-                  validator: (value) => value == null ? 'Horário de Fim é obrigatório' : null,
+                  validator: (value) =>
+                      value == null ? 'Horário de Fim é obrigatório' : null,
                 ),
               ),
               const SizedBox(width: 16),
@@ -403,7 +501,7 @@ class _NovoAgendamentoWidgetState extends State<NovoAgendamentoWidget> {
             children: [
               Expanded(
                 child: TextFormField(
-                  controller: TextEditingController(),
+                  controller: observacaoController,
                   decoration: const InputDecoration(
                     labelText: 'Observações',
                     border: OutlineInputBorder(),
@@ -418,8 +516,41 @@ class _NovoAgendamentoWidgetState extends State<NovoAgendamentoWidget> {
             children: [
               Expanded(
                 child: ElevatedButton(
-                  onPressed: () {
-                    context.go('/agendamento');
+                  onPressed: () async {
+                    var params = <String, dynamic>{};
+                    final DateFormat formatter = DateFormat('yyyy-MM-dd'); // Define o formato desejado
+                    DateTime parsedDate = DateFormat('dd/MM/yyyy').parse(_dataController.text);
+                    params["dataAgendamento"] = formatter.format(parsedDate);
+                    params["horarioInicio"] = _selectedHorarioInicio;
+                    params["horarioFim"] = _selectedHorarioFim;
+                    params["recorrencia"] = _selectedRecorrencia;
+                    params["observacoes"] = observacaoController.text;
+
+                    await agendamentoController.adicionarAgendamento(
+                        context, params, _selectedClienteId!, _selectedProfissionalId!, _selectedProcedimentoId!, _selectedSalaId!);
+                    if (agendamentoController.isError.isTrue) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                              'Não foi possivel adicionar o agendamento, por favor, tente novamente.'),
+                          backgroundColor: Colors.red,
+                          duration: Duration(seconds: 2),
+                        ),
+                      );
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Agendamento adicionado com sucesso.'),
+                          backgroundColor: Colors.green,
+                          duration: Duration(seconds: 2),
+                        ),
+                      );
+                      final String dataAtual =
+                          DateFormat('yyyy-MM-dd').format(DateTime.now());
+                      await agendamentoController.listarAgendamentoDia(
+                          context, dataAtual);
+                      context.go('/agendamento');
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.pink,

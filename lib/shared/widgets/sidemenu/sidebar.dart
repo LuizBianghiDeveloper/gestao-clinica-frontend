@@ -1,3 +1,4 @@
+import 'package:core_dashboard/controllers/agendamento_controller.dart';
 import 'package:core_dashboard/controllers/anamnese_controller.dart';
 import 'package:core_dashboard/controllers/clientes_controller.dart';
 import 'package:core_dashboard/controllers/evolucao_controller.dart';
@@ -13,6 +14,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:intl/intl.dart';
 import '../../../controllers/profissional_controller.dart';
 import '../../constants/config.dart';
 import 'menu_tile.dart';
@@ -34,6 +36,7 @@ class _SidebarState extends State<Sidebar> {
   final ProcedimentosController procedimentosController = Get.find<ProcedimentosController>();
   final AnamneseController anamneseController = Get.find<AnamneseController>();
   final EvolucaoController evolucaoController = Get.find<EvolucaoController>();
+  final AgendamentoController agendamentoController = Get.find<AgendamentoController>();
 
   void _onItemPressed(int index) {
     setState(() {
@@ -191,7 +194,6 @@ class _SidebarState extends State<Sidebar> {
                             if (procedimentosController.isError.isFalse) {
                               context.go('/cadastro-search-procedimento');
                             }
-
                           },
                         ),
                       ],
@@ -201,9 +203,15 @@ class _SidebarState extends State<Sidebar> {
                       title: "Agendamentos",
                       activeIconSrc: "assets/icons/message_light.svg",
                       inactiveIconSrc: "assets/icons/message_filled.svg",
-                      onPressed: () {
+                      onPressed: () async {
                         _onItemPressed(7);
-                        context.go('/agendamento');
+                        AppConfig.showLoadingSpinner(context);
+                        final String dataAtual = DateFormat('yyyy-MM-dd').format(DateTime.now());
+                        await agendamentoController.listarAgendamentoDia(context, dataAtual);
+                        AppConfig.hideLoadingSpinner(context);
+                        if (agendamentoController.isError.isFalse) {
+                          context.go('/agendamento');
+                        }
                       },
                     ),
                     MenuTile(

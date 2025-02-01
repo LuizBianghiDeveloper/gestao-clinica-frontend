@@ -1,14 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 
+import '../../../controllers/agendamento_controller.dart';
+import '../../../controllers/clientes_controller.dart';
+import '../../../controllers/procedimentos_controller.dart';
+import '../../../controllers/profissional_controller.dart';
+import '../../../controllers/salas_controller.dart';
+import '../../../shared/constants/config.dart';
 import '../../../shared/constants/defaults.dart';
 import '../../../shared/constants/ghaps.dart';
 import '../../../shared/widgets/section_title.dart';
 import '../../../theme/app_colors.dart';
 
-class Overview extends StatelessWidget {
+class Overview extends StatefulWidget {
   const Overview({super.key});
 
+  @override
+  State<Overview> createState() => _OverviewState();
+}
+
+class _OverviewState extends State<Overview> {
+  final ClientesController clientesController = Get.find<ClientesController>();
+  final ProfissionalController profissionalController = Get.find<ProfissionalController>();
+  final ProcedimentosController procedimentosController = Get.find<ProcedimentosController>();
+  final SalasController salasController = Get.find<SalasController>();
+  final AgendamentoController agendamentoController = Get.find<AgendamentoController>();
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -37,8 +55,22 @@ class Overview extends StatelessWidget {
                     borderRadius: BorderRadius.circular(AppDefaults.borderRadius),
                   ),
                   child: InkWell(
-                    onTap: () {
-                      context.go('/novo-agendamento');
+                    onTap: () async {
+                      AppConfig.showLoadingSpinner(context);
+                      await clientesController.listarClientes(context);
+                      if (clientesController.isError.isFalse) {
+                        await profissionalController.listarProfissional(context);
+                        if (profissionalController.isError.isFalse) {
+                          await procedimentosController.listarProcedimentos(context);
+                          if (procedimentosController.isError.isFalse) {
+                            await salasController.listarSalas(context);
+                            AppConfig.hideLoadingSpinner(context);
+                            if (salasController.isError.isFalse) {
+                              context.go('/novo-agendamento');
+                            }
+                          }
+                        }
+                      }
                     },
                     child: const Padding(
                       padding: EdgeInsets.symmetric(vertical: 24, horizontal: AppDefaults.padding),
@@ -68,8 +100,14 @@ class Overview extends StatelessWidget {
                     borderRadius: BorderRadius.circular(AppDefaults.borderRadius),
                   ),
                   child: InkWell(
-                    onTap: () {
-                      context.go('/agendamento');
+                    onTap: () async {
+                      AppConfig.showLoadingSpinner(context);
+                      final String dataAtual = DateFormat('yyyy-MM-dd').format(DateTime.now());
+                      await agendamentoController.listarAgendamentoDia(context, dataAtual);
+                      AppConfig.hideLoadingSpinner(context);
+                      if (agendamentoController.isError.isFalse) {
+                        context.go('/agendamento');
+                      }
                     },
                     child: const Padding(
                       padding: EdgeInsets.symmetric(vertical: 24, horizontal: AppDefaults.padding),
